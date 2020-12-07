@@ -65,7 +65,8 @@
 
       <div class="required field">
         <label>内容</label>
-        <Editor :options="options" :initialValue="note.content" ref="toastuiEditor"></Editor>
+        <!--        <Editor :options="options" :initialValue="note.content" ref="toastuiEditor"></Editor>-->
+        <Editor :init="config" v-model="note.content"></Editor>
       </div>
       <div class="right floated">
         <button class="ui button" @click="cancel">取消</button>
@@ -78,12 +79,12 @@
 </template>
 
 <script lang="ts">
+  /* eslint-disable @typescript-eslint/camelcase */
   import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
-  import 'codemirror/lib/codemirror.css'
-  import '@toast-ui/editor/dist/toastui-editor.css'
   import Dropdown from '@/components/Dropdown.vue'
-  import {Editor} from '@/components/vue-editor'
+  //import {Editor} from '@/components/vue-editor'
+  import Editor from '@tinymce/tinymce-vue'
   import {Category, Note} from '@/models/Note'
   import {Notebook} from '@/models/Notebook'
 
@@ -102,6 +103,41 @@
     note: Note = new Note()
     options = {
       initialEditType: 'wysiwyg'
+    }
+    config = {
+      height: 550,
+      branding: false,
+      plugins: [
+        'autolink link media table advlist lists hr',
+        'code codesample image preview fullscreen',
+        'insertdatetime toc paste wordcount help'
+      ],
+      images_upload_url: '/images',
+      codesample_global_prismjs: true,
+      codesample_languages: [
+        {text: 'Java', value: 'java'},
+        {text: 'JavaStacktrace', value: 'javastacktrace'},
+        {text: 'Kotlin', value: 'kotlin'},
+        {text: 'JavaScript', value: 'javascript'},
+        {text: 'Typescript', value: 'typescript'},
+        {text: 'CSS', value: 'css'},
+        {text: 'Docker', value: 'docker'},
+        {text: 'Bash', value: 'bash'},
+        {text: 'Regex', value: 'regex'},
+        {text: 'Nginx', value: 'nginx'},
+        {text: 'SQL', value: 'sql'},
+        {text: 'JSON', value: 'json'},
+        {text: 'XML', value: 'xml'},
+        {text: 'YAML', value: 'yaml'},
+      ],
+      content_css: [
+        'https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.5.1-99/skins/ui/oxide/content.min.css',
+        'prism.css',
+      ],
+      toolbar:
+        'undo redo | formatselect | bold italic backcolor | \
+        alignleft aligncenter alignright alignjustify | link image media | \
+        bullist numlist outdent indent | codesample | removeformat code preview fullscreen | help'
     }
 
     mounted() {
@@ -163,9 +199,9 @@
     }
 
     submit() {
-      const editor: Editor = this.$refs.toastuiEditor as Editor
-      this.note.markdown = editor.invoke('isMarkdownMode')
-      this.note.content = this.note.markdown ? editor.invoke('getMarkdown') : editor.invoke('getHtml')
+      // const editor: Editor = this.$refs.toastuiEditor as Editor
+      // this.note.markdown = editor.invoke('isMarkdownMode')
+      // this.note.content = this.note.markdown ? editor.invoke('getMarkdown') : editor.invoke('getHtml')
       if (this.id) {
         axios.put(`/notes/${this.id}`, this.note).then(({data}) => {
           this.note = data

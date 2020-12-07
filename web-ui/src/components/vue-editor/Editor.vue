@@ -2,8 +2,10 @@
   <div class="editor" ref="toastuiEditor"></div>
 </template>
 <script>
-  import 'highlight.js/styles/github.css';
-  import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight';
+  import '@toast-ui/editor/dist/toastui-editor-viewer.css'
+  import codeSyntaxHighlight from '@toast-ui/editor-plugin-code-syntax-highlight'
+  import hljs from 'highlight.js'
+  import 'highlight.js/styles/github.css'
   import '@toast-ui/editor/dist/i18n/zh-cn'
   import Editor from '@toast-ui/editor'
   import { optionsMixin } from './mixin/option'
@@ -50,8 +52,9 @@
           ...this.computedOptions,
           ...this.options,
           initialValue: this.initialValue,
-          plugins: [[codeSyntaxHighlight]],
-          el: this.$refs.toastuiEditor }
+          plugins: [[codeSyntaxHighlight, { hljs }]],
+          el: this.$refs.toastuiEditor
+        }
         this.editor = new Editor(options)
       },
       getRootElement () {

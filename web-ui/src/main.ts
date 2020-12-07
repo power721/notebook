@@ -1,3 +1,4 @@
+
 import Vue from 'vue'
 import axios from 'axios'
 import {Select, Option, Radio, RadioGroup} from 'element-ui'
@@ -11,7 +12,32 @@ import auth from './services/account.service'
 import {date, datetime, duration, fromNow, time} from './filters'
 import UserAccount from '@/views/user/UserAccount.vue'
 
-require('semantic-ui-css/semantic.min.css')
+import 'tinymce/tinymce'
+import 'tinymce/icons/default'
+import 'tinymce/themes/silver'
+import 'tinymce/plugins/paste'
+import 'tinymce/plugins/code'
+import 'tinymce/plugins/codesample'
+import 'tinymce/plugins/lists'
+import 'tinymce/plugins/advlist'
+import 'tinymce/plugins/autolink'
+import 'tinymce/plugins/insertdatetime'
+import 'tinymce/plugins/media'
+import 'tinymce/plugins/link'
+import 'tinymce/plugins/hr'
+import 'tinymce/plugins/image'
+import 'tinymce/plugins/table'
+import 'tinymce/plugins/preview'
+import 'tinymce/plugins/toc'
+import 'tinymce/plugins/fullscreen'
+import 'tinymce/plugins/help'
+import 'tinymce/plugins/wordcount'
+
+import 'tinymce/skins/ui/oxide/skin.min.css'
+import 'tinymce/skins/ui/oxide/content.min.css'
+import 'tinymce/skins/content/default/content.min.css'
+
+import 'semantic-ui-css/semantic.min.css'
 
 Vue.config.productionTip = false
 

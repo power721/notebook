@@ -3,12 +3,12 @@
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
-<!--      <div class="section">笔记本</div>-->
-<!--      <i class="right chevron icon divider"></i>-->
+      <!--      <div class="section">笔记本</div>-->
+      <!--      <i class="right chevron icon divider"></i>-->
       <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
       <i class="right chevron icon divider"></i>
-<!--      <div class="section">笔记</div>-->
-<!--      <i class="right chevron icon divider"></i>-->
+      <!--      <div class="section">笔记</div>-->
+      <!--      <i class="right chevron icon divider"></i>-->
       <div class="active section">{{note.title}}</div>
     </div>
     <div class="ui divider"></div>
@@ -42,7 +42,7 @@
         </template>
         <template v-else>本文编写于 {{note.createdTime | fromNow}}，其中某些信息可能已经过时。</template>
       </div>
-      <Viewer :options="options" :initialValue="note.content"></Viewer>
+      <div v-html="note.content"></div>
     </div>
   </div>
 </template>
@@ -50,25 +50,15 @@
 <script lang="ts">
   import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
-  import 'codemirror/lib/codemirror.css'
-  import '@toast-ui/editor/dist/toastui-editor-viewer.css'
   import {Note} from '@/models/Note'
-  import {Viewer} from '@/components/vue-editor'
   import accountService from '@/services/account.service'
 
-  @Component({
-    components: {
-      Viewer
-    }
-  })
+  @Component
   export default class NoteDetails extends Vue {
     id: string = ''
     old: boolean = false
     author: boolean = false
     note: Note = new Note()
-    options = {
-      initialEditType: 'wysiwyg'
-    }
 
     mounted() {
       this.id = this.$route.params.id
@@ -77,13 +67,14 @@
 
     load() {
       axios.get(`/notes/${this.id}?view=true`).then(({data}) => {
-        this.options.initialEditType = data.markdown ? 'markdown' : 'wysiwyg'
         this.note = data
         document.title = this.note.title
         const now = new Date().getTime()
         const diff = now - new Date(this.note.createdTime).getTime()
         this.old = diff > 1000 * 3600 * 24 * 360
         this.author = accountService.account.id === this.note.author.id
+      }).then(() => {
+        setTimeout(() => window.Prism.highlightAll(), 0)
       })
     }
   }

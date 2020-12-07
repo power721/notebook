@@ -104,11 +104,14 @@
       if (history.content) {
         this.history = history
         this.modal = true
+        setTimeout(() => window.Prism.highlightAll(), 0)
       } else {
         axios.get(`/notes/${this.id}/content/${history.version}`).then(({data}) => {
           history.content = data.content
           this.history = data
           this.modal = true
+        }).then(() => {
+          setTimeout(() => window.Prism.highlightAll(), 0)
         })
       }
     }

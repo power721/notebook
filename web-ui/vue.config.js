@@ -27,6 +27,11 @@ module.exports = {
         ws: true,
         changeOrigin: true
       },
+      '/images': {
+        target: API,
+        ws: true,
+        changeOrigin: true
+      },
     }
   },
   css: {extract: false}
