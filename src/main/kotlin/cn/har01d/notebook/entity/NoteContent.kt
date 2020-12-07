@@ -19,5 +19,5 @@ class NoteContent(
 interface NoteContentRepository : JpaRepository<NoteContent, Int> {
     fun deleteAllByNote(note: Note)
     fun findByNoteOrderByIdDesc(note: Note): List<NoteContent>
-    fun findByNoteAndVersion(note: Note, version: Int): NoteContent
+    fun findByNoteAndVersion(note: Note, version: Int): NoteContent?
 }

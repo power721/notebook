@@ -23,6 +23,7 @@
         <span :data-tooltip="note.updatedTime | datetime" v-if="note.updatedTime">
           编辑于{{note.updatedTime | fromNow}}
         </span>
+        {{note.views}} <i class="eye icon"></i>
         <router-link data-tooltip="历史记录" v-if="author&&note.version>1" :to="'/notes/'+note.id+'/history'">
           <i class="list icon"></i>
         </router-link>
@@ -75,7 +76,7 @@
     }
 
     load() {
-      axios.get(`/notes/${this.id}`).then(({data}) => {
+      axios.get(`/notes/${this.id}?view=true`).then(({data}) => {
         this.options.initialEditType = data.markdown ? 'markdown' : 'wysiwyg'
         this.note = data
         document.title = this.note.title

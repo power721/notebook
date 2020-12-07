@@ -52,6 +52,12 @@ class NoteService(
         return note
     }
 
+    fun updateViews(note: Note) {
+        // TODO: check IP
+        note.views = note.views + 1
+        noteRepository.save(note)
+    }
+
     fun create(dto: NoteDto): Note {
         if (dto.title.isBlank()) {
             throw AppException("笔记标题不能为空")
@@ -123,7 +129,19 @@ class NoteService(
         if (note.author.id != user.id) {
             throw AppForbiddenException("用户无权操作")
         }
-        return contentRepository.findByNoteAndVersion(note, version)
+        return contentRepository.findByNoteAndVersion(note, version) ?: throw AppNotFoundException("版本不存在")
+    }
+
+    fun revertNoteContent(id: String, version: Int): Note {
+        val user = userService.requireCurrentUser()
+        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        if (note.author.id != user.id) {
+            throw AppForbiddenException("用户无权操作")
+        }
+        val content = contentRepository.findByNoteAndVersion(note, version) ?: throw AppNotFoundException("版本不存在")
+        note.content = content
+        note.updatedTime = Instant.now()
+        return noteRepository.save(note)
     }
 
     fun delete(id: String) {

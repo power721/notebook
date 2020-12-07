@@ -33,12 +33,12 @@
 
     <div class="ui left aligned raised segment">
       <div class="ui link divided items">
-        <div class="item" v-for="history in list" :key="history.version" @click.prevent="show(history)">
-          <a class="ui top right attached label" v-if="note.version===history.version">当前版本</a>
+        <div class="item" v-for="item in list" :key="item.version" @click.prevent="show(item)">
           <div class="content">
-            <a class="header">版本{{history.version}}： {{history.title}}</a>
+            <a class="ui right floated red label" v-if="note.version===item.version">当前版本</a>
+            <a class="header">版本{{item.version}}： {{item.title}}</a>
             <div class="extra">
-              创建于{{history.createdTime | fromNow}}({{history.createdTime | datetime}})
+              创建于{{item.createdTime | fromNow}}({{item.createdTime | datetime}})
             </div>
           </div>
         </div>
@@ -50,6 +50,10 @@
         版本{{history.version}}： {{history.title}}
       </template>
       <Viewer :options="options" :initialValue="history.content"></Viewer>
+      <template slot="actions">
+        <div @click="modal=false" class="ui cancel button">取消</div>
+        <div @click="revert" class="ui negative button" data-tooltip="恢复到此版本" v-if="note.version!==history.version">恢复</div>
+      </template>
     </Modal>
   </div>
 </template>
@@ -105,6 +109,15 @@
           history.content = data.content
           this.history = data
           this.modal = true
+        })
+      }
+    }
+
+    revert() {
+      if (this.note.version != this.history.version) {
+        axios.post(`/notes/${this.id}/content/${this.history.version}`).then(({data}) => {
+          this.note = data
+          this.modal = false
         })
       }
     }

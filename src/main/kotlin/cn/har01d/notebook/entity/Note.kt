@@ -17,6 +17,7 @@ class Note(
         @OneToOne var content: NoteContent? = null,
         @Enumerated(EnumType.STRING) @Column(length = 16, nullable = false) var access: Access = Access.PUBLIC,
         @JsonProperty("id") @Column(nullable = false, unique = true) var rid: String,
+        @Column(nullable = false) var views: Int = 0,
         var updatedTime: Instant? = null,
         @Column(nullable = false) val createdTime: Instant = Instant.now(),
         @JsonIgnore @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Int? = null

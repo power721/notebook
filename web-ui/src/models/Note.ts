@@ -26,6 +26,7 @@ export class Note {
   markdown: boolean = false
   access: string = 'PUBLIC'
   version: number = 0
+  views: number = 0
   createdTime: string = ''
   updatedTime: string = ''
 }
