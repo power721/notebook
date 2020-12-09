@@ -51,8 +51,10 @@
       </template>
       <Viewer :options="options" :initialValue="history.content"></Viewer>
       <template slot="actions">
-        <div @click="modal=false" class="ui cancel button">取消</div>
-        <div @click="revert" class="ui negative button" data-tooltip="恢复到此版本" v-if="note.version!==history.version">恢复</div>
+        <button @click="modal=false" class="ui cancel button">取消</button>
+        <button @click="revert" class="ui negative button" data-tooltip="恢复到此版本" v-if="note.version!==history.version">
+          恢复
+        </button>
       </template>
     </Modal>
   </div>

@@ -1,29 +1,27 @@
+import { Role } from '@/models/Account'
 <template>
   <div class="ui left aligned container">
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
-      <div class="section">我的笔记本</div>
+      <div class="section">分类</div>
     </div>
     <div class="ui divider"></div>
 
-    <a href="javascript:void(0)" class="ui add icon primary button" data-tooltip="创建笔记本" v-if="authenticated"
+    <a href="javascript:void(0)" class="ui add icon primary button" data-tooltip="创建分类" v-if="admin"
        @click="modal=true">
       <i class="add icon"></i>
     </a>
 
     <div class="ui divided items">
-      <div class="item" v-for="notebook in notebooks" :key="notebook.id">
+      <div class="item" v-for="category in categories" :key="category.id">
         <div class="content">
-          <router-link class="header" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>
-          <div class="meta">
-            <a>@{{notebook.owner.username}}</a>
-          </div>
+          <router-link class="header" :to="'/categories/'+category.id">{{category.name}}</router-link>
           <div class="description">
-            <p>{{notebook.description}}</p>
+            <p>{{category.description}}</p>
           </div>
           <div class="extra">
-            创建于{{notebook.createdTime | fromNow}}({{notebook.createdTime | datetime}})
+            创建于{{category.createdTime | fromNow}}({{category.createdTime | datetime}})
           </div>
         </div>
       </div>
@@ -31,20 +29,20 @@
 
     <Pagination v-model="page" :totalPages="totalPages" @change="go"></Pagination>
 
-    <Modal v-model="modal" title="创建笔记本" size="large">
+    <Modal v-model="modal" title="创建分类" size="large">
       <form class="ui form">
         <div class="required field">
           <label>标题</label>
-          <input type="text" name="title" v-model="notebook.name" placeholder="标题">
+          <input type="text" name="title" v-model="category.name" placeholder="标题">
         </div>
         <div class="field">
           <label>描述</label>
-          <textarea v-model="notebook.description"></textarea>
+          <textarea v-model="category.description"></textarea>
         </div>
       </form>
       <template slot="actions">
         <button @click="modal=false" class="ui cancel button">取消</button>
-        <button @click="submit" class="ui primary button" :disabled="!notebook.name">保存</button>
+        <button @click="submit" class="ui primary button" :disabled="!category.name">保存</button>
       </template>
     </Modal>
   </div>
@@ -52,10 +50,11 @@
 <script lang="ts">
   import axios from 'axios'
   import {Component} from 'vue-property-decorator'
-  import {Notebook} from '@/models/Notebook'
   import {Pageable} from '@/components/Pageable'
   import Pagination from '@/components/Pagination.vue'
   import Modal from '@/components/Modal.vue'
+  import {Category} from '@/models/Category'
+  import {goTop} from '@/utils/utils'
 
   @Component<Pageable>({
     components: {
@@ -69,37 +68,38 @@
       }
     }
   })
-  export default class MyNotebooks extends Pageable {
+  export default class CategoryList extends Pageable {
     modal: boolean = false
-    notebook: Notebook = new Notebook()
-    notebooks: Notebook[] = []
+    category: Category = new Category()
+    categories: Category[] = []
 
-    get authenticated(): boolean {
-      return this.$store.state.authenticated
+    get admin(): boolean {
+      return this.$store.state.user.role == 'ROLE_ADMIN'
     }
 
     mounted() {
-      document.title = '我的笔记本'
+      document.title = '分类'
       this.page = +this.$route.query.page || 1
       this.load()
     }
 
     load() {
-      axios.get(`/users/-/notebooks?page=${this.page - 1}&size=${this.size}`).then(({data}) => {
-        this.notebooks = data.content
+      axios.get(`/categories?page=${this.page - 1}&size=${this.size}`).then(({data}) => {
+        this.categories = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
+        goTop()
       })
     }
 
     go(page: number) {
-      this.$router.push('/my-notebooks?page=' + page)
+      this.$router.push('/categories?page=' + page)
     }
 
     submit() {
-      axios.post(`/notebooks`, this.notebook).then(({data}) => {
-        this.notebook = new Notebook()
-        this.notebooks.push(data)
+      axios.post(`/categories`, this.category).then(({data}) => {
+        this.category = new Category()
+        this.categories.push(data)
         this.modal = false
       })
     }

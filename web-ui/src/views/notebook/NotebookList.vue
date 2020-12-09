@@ -43,8 +43,8 @@
         </div>
       </form>
       <template slot="actions">
-        <div @click="modal=false" class="ui cancel button">取消</div>
-        <div @click="submit" class="ui primary button" :disabled="!notebook.name">保存</div>
+        <button @click="modal=false" class="ui cancel button">取消</button>
+        <button @click="submit" class="ui primary button" :disabled="!notebook.name">保存</button>
       </template>
     </Modal>
   </div>
@@ -56,6 +56,7 @@
   import {Pageable} from '@/components/Pageable'
   import Pagination from '@/components/Pagination.vue'
   import Modal from '@/components/Modal.vue'
+  import {goTop} from '@/utils/utils'
 
   @Component<Pageable>({
     components: {
@@ -89,6 +90,7 @@
         this.notebooks = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
+        goTop()
       })
     }
 

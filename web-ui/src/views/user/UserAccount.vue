@@ -18,14 +18,14 @@
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
   import accountService from '@/services/account.service'
-  import {Account, Role} from '@/models/Account'
+  import {Account} from '@/models/Account'
 
   @Component
   export default class UserAccount extends Vue {
     visible: boolean = false
 
     get admin(): boolean {
-      return this.$store.state.user.role === Role.ROLE_ADMIN
+      return this.$store.state.user.role === 'ROLE_ADMIN'
     }
 
     get account(): Account {

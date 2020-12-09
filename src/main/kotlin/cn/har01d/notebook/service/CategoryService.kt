@@ -1,20 +1,42 @@
 package cn.har01d.notebook.service
 
+import cn.har01d.notebook.core.Access
 import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppNotFoundException
+import cn.har01d.notebook.dto.CategoryDto
 import cn.har01d.notebook.entity.Category
 import cn.har01d.notebook.entity.CategoryRepository
+import cn.har01d.notebook.entity.Note
+import cn.har01d.notebook.entity.NoteRepository
 import cn.har01d.notebook.service.IdUtils.CATEGORY_OFFSET
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class CategoryService(private val repository: CategoryRepository) {
+class CategoryService(
+        private val repository: CategoryRepository,
+        private val noteRepository: NoteRepository,
+        private val userService: UserService
+) {
 
     fun list(pageable: Pageable) = repository.findAll(pageable)
 
-    fun create(dto: Category): Category {
+    fun get(id: String): Category {
+        return repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("分类不存在")
+    }
+
+    fun getNotes(id: String, pageable: Pageable): Page<Note> {
+        val user = userService.getCurrentUser()
+        val category = repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("笔记本不存在")
+        if (user != null) {
+            return noteRepository.findByCategoryAndAccessOrAuthor(category, Access.PUBLIC, user, pageable)
+        }
+        return noteRepository.findByCategoryAndAccess(category, Access.PUBLIC, pageable)
+    }
+
+    fun create(dto: CategoryDto): Category {
         if (repository.existsByName(dto.name)) {
             throw AppException("分类已经存在")
         }
@@ -22,7 +44,7 @@ class CategoryService(private val repository: CategoryRepository) {
         return repository.save(category)
     }
 
-    fun update(id: String, dto: Category): Category {
+    fun update(id: String, dto: CategoryDto): Category {
         val other = repository.findByName(dto.name)
         val category = repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("分类不存在")
         if (other != null && other.id != category.id) {

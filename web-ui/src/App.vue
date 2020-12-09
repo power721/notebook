@@ -3,7 +3,8 @@
     <div id="nav">
       <router-link to="/">首页</router-link> |
       <router-link to="/notebooks">笔记本</router-link> |
-      <router-link to="/">分类</router-link> |
+      <router-link to="/categories">分类</router-link>
+      |
       <router-link to="/about">关于</router-link>
     </div>
     <UserAccount></UserAccount>

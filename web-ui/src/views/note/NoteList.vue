@@ -28,6 +28,7 @@
   import {Note} from '@/models/Note'
   import {Pageable} from '@/components/Pageable'
   import Pagination from '@/components/Pagination.vue'
+  import {goTop} from '@/utils/utils'
 
   @Component<Pageable>({
     components: {
@@ -54,6 +55,7 @@
         this.notes = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
+        goTop()
       })
     }
 

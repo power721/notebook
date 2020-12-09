@@ -3,9 +3,21 @@
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
+      <template v-if="notebook.name">
+        <router-link class="section" to="/notebooks">笔记本</router-link>
+        <i class="right chevron icon divider"></i>
+        <router-link class="section" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>
+        <i class="right chevron icon divider"></i>
+      </template>
+      <template v-if="category.name">
+        <router-link class="section" to="/categories">分类</router-link>
+        <i class="right chevron icon divider"></i>
+        <router-link class="section" :to="'/categories/'+category.id">{{category.name}}</router-link>
+        <i class="right chevron icon divider"></i>
+      </template>
       <template v-if="id">
-        <!--        <div class="section">笔记本</div>-->
-        <!--        <i class="right chevron icon divider"></i>-->
+        <div class="section">笔记本</div>
+        <i class="right chevron icon divider"></i>
         <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
         <i class="right chevron icon divider"></i>
         <!--        <div class="section">笔记</div>-->
@@ -85,8 +97,9 @@
   import Dropdown from '@/components/Dropdown.vue'
   //import {Editor} from '@/components/vue-editor'
   import Editor from '@tinymce/tinymce-vue'
-  import {Category, Note} from '@/models/Note'
+  import {Note} from '@/models/Note'
   import {Notebook} from '@/models/Notebook'
+  import {Category} from '@/models/Category'
 
   @Component({
     components: {
@@ -97,7 +110,8 @@
   export default class EditNote extends Vue {
     id: string = ''
     loading: boolean = false
-    notebookId: string = ''
+    notebook: Notebook = new Notebook()
+    category: Category = new Category()
     notebooks: Notebook[] = []
     categories: Category[] = []
     note: Note = new Note()
@@ -143,9 +157,13 @@
     mounted() {
       document.title = '创建笔记'
       this.id = this.$route.params.id
-      this.notebookId = this.$route.query.notebook as string
-      if (this.notebookId) {
-        this.note.notebookId = this.notebookId
+      this.notebook.id = this.$route.query.notebook as string
+      if (this.notebook.id) {
+        this.note.notebookId = this.notebook.id
+      }
+      this.category.id = this.$route.query.category as string
+      if (this.category.id) {
+        this.note.categoryId = this.category.id
       }
       this.load()
       if (this.id) {
@@ -156,14 +174,20 @@
     load() {
       axios.get('/users/-/notebooks').then(({data}) => {
         this.notebooks = data.content
-        if (!this.id && !this.notebookId) {
+        if (!this.id && !this.notebook.id) {
           this.note.notebookId = this.notebooks[0].id
+        }
+        if (this.notebook.id) {
+          this.notebook.name = this.notebooks.find(e => e.id === this.notebook.id)?.name || ''
         }
       })
       axios.get('/categories').then(({data}) => {
         this.categories = data.content
-        if (!this.id) {
+        if (!this.id && !this.category.id) {
           this.note.categoryId = this.categories[0].id
+        }
+        if (this.category.id) {
+          this.category.name = this.categories.find(e => e.id === this.category.id)?.name || ''
         }
       })
     }
@@ -191,8 +215,10 @@
     cancel() {
       if (this.id) {
         this.$router.push('/notes/' + this.id)
-      } else if (this.notebookId) {
-        this.$router.push('/notebooks/' + this.notebookId)
+      } else if (this.notebook.id) {
+        this.$router.push('/notebooks/' + this.notebook.id)
+      } else if (this.category.id) {
+        this.$router.push('/categories/' + this.category.id)
       } else {
         this.$router.push('/')
       }

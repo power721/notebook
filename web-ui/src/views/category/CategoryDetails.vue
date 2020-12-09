@@ -3,37 +3,38 @@
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
-      <router-link class="section" to="/notebooks">笔记本</router-link>
+      <router-link class="section" to="/categories">分类</router-link>
       <i class="right chevron icon divider"></i>
-      <div class="active section">{{notebook.name}}</div>
+      <div class="active section">{{category.name}}</div>
     </div>
     <div class="ui divider"></div>
 
     <div class="ui center aligned raised segment">
-      <h1 class="ui header">{{notebook.name}}</h1>
+      <h1 class="ui header">{{category.name}}</h1>
       <div class="metadata">
-        <a>@{{notebook.owner.username}}</a>
-        <span :data-tooltip="notebook.createdTime | datetime">
-          创建于{{notebook.createdTime | fromNow}}
+        <span :data-tooltip="category.createdTime | datetime">
+          创建于{{category.createdTime | fromNow}}
         </span>
-        <a href="javascript:void(0)" data-tooltip="编辑笔记本" @click="edit" v-if="author">
+        <a href="javascript:void(0)" data-tooltip="编辑分类" @click="edit" v-if="admin">
           <i class="edit icon"></i>
         </a>
 
       </div>
       <div class="ui info message">
-        {{notebook.description}}
+        {{category.description}}
       </div>
     </div>
 
     <div class="ui left aligned raised segment">
       <div class="ui warning message" v-if="notes.length===0">
         还没有笔记。
-        <template v-if="author">
-          <router-link :to="'/notes/-/new?notebook='+id">创建</router-link>一个？
+        <template v-if="authenticated">
+          <router-link :to="'/notes/-/new?category='+id">创建</router-link>
+          一个？
         </template>
       </div>
-      <router-link class="ui right floated icon primary button" data-tooltip="创建笔记" :to="'/notes/-/new?notebook='+id" v-if="author&&notes.length">
+      <router-link class="ui right floated icon primary button" data-tooltip="创建笔记" :to="'/notes/-/new?category='+id"
+                   v-if="authenticated&&notes.length">
         <i class="add icon"></i>
       </router-link>
       <div class="ui divided items">
@@ -52,7 +53,7 @@
     </div>
     <Pagination v-model="page" :totalPages="totalPages" @change="go"></Pagination>
 
-    <Modal v-model="modal" title="更新笔记本" size="large">
+    <Modal v-model="modal" title="更新分类" size="large">
       <form class="ui form">
         <div class="required field">
           <label>标题</label>
@@ -75,11 +76,10 @@
   import axios from 'axios'
   import {Component} from 'vue-property-decorator'
   import {Note} from '@/models/Note'
-  import {Notebook} from '@/models/Notebook'
   import Modal from '@/components/Modal.vue'
-  import accountService from '@/services/account.service'
   import Pagination from '@/components/Pagination.vue'
   import {Pageable} from '@/components/Pageable'
+  import {Category} from '@/models/Category'
   import {goTop} from '@/utils/utils'
 
   @Component<Pageable>({
@@ -94,13 +94,20 @@
       }
     }
   })
-  export default class NotebookDetails extends Pageable {
+  export default class CategoryDetails extends Pageable {
     id: string = ''
     modal: boolean = false
-    author: boolean = false
-    notebook: Notebook = new Notebook()
-    nb: Notebook = new Notebook()
+    category: Category = new Category()
+    nb: Category = new Category()
     notes: Note[] = []
+
+    get authenticated(): boolean {
+      return this.$store.state.authenticated
+    }
+
+    get admin(): boolean {
+      return this.$store.state.user.role == 'ROLE_ADMIN'
+    }
 
     mounted() {
       this.id = this.$route.params.id
@@ -109,14 +116,13 @@
     }
 
     loadNotebook() {
-      axios.get(`/notebooks/${this.id}`).then(({data}) => {
-        this.notebook = data
-        this.author = accountService.account.id === this.notebook.owner.id
+      axios.get(`/categories/${this.id}`).then(({data}) => {
+        this.category = data
       })
     }
 
     load() {
-      axios.get(`/notebooks/${this.id}/notes?page=${this.page-1}&size=${this.size}`).then(({data}) => {
+      axios.get(`/categories/${this.id}/notes?page=${this.page - 1}&size=${this.size}`).then(({data}) => {
         this.notes = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
@@ -125,17 +131,17 @@
     }
 
     go(page: number) {
-      this.$router.push(`/notebooks/${this.id}?page=${page}`)
+      this.$router.push(`/categories/${this.id}?page=${page}`)
     }
 
     edit() {
-      this.nb = Object.assign(this.nb, this.notebook)
+      this.nb = Object.assign(this.nb, this.category)
       this.modal = true
     }
 
     submit() {
-      axios.put(`/notebooks/${this.id}`, this.nb).then(({data}) => {
-        this.notebook = data
+      axios.put(`/categories/${this.id}`, this.nb).then(({data}) => {
+        this.category = data
         this.modal = false
       })
     }

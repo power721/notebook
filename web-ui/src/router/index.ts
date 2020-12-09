@@ -10,6 +10,8 @@ import NotebookDetails from '@/views/notebook/NotebookDetails.vue'
 import NotebookList from '@/views/notebook/NotebookList.vue'
 import MyNotebooks from '@/views/notebook/MyNotebooks.vue'
 import MyNotes from '@/views/note/MyNotes.vue'
+import CategoryList from '@/views/category/CategoryList.vue'
+import CategoryDetails from '@/views/category/CategoryDetails.vue'
 
 Vue.use(VueRouter)
 
@@ -18,6 +20,16 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'NoteList',
     component: NoteList
+  },
+  {
+    path: '/categories',
+    name: 'CategoryList',
+    component: CategoryList
+  },
+  {
+    path: '/categories/:id',
+    name: 'CategoryDetails',
+    component: CategoryDetails
   },
   {
     path: '/notebooks',

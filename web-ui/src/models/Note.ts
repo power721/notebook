@@ -1,17 +1,11 @@
 import {User} from '@/models/User'
 import {Notebook} from '@/models/Notebook'
+import {Category} from '@/models/Category'
 
 export enum Access {
   PUBLIC,
   SECRET,
   PRIVATE
-}
-
-export class Category {
-  id: string = ''
-  name: string = ''
-  description: string = ''
-  createdTime: string = ''
 }
 
 export class Note {
