@@ -74,7 +74,10 @@
         this.old = diff > 1000 * 3600 * 24 * 360
         this.author = accountService.account.id === this.note.author.id
       }).then(() => {
-        setTimeout(() => window.Prism.highlightAll(), 0)
+        setTimeout(() => {
+          document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
+        }, 0)
+        setTimeout(() => (window as any).Prism.highlightAll(), 0)
       })
     }
   }

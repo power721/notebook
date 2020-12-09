@@ -34,7 +34,6 @@ import 'tinymce/plugins/help'
 import 'tinymce/plugins/wordcount'
 
 import 'tinymce/skins/ui/oxide/skin.min.css'
-import 'tinymce/skins/ui/oxide/content.min.css'
 import 'tinymce/skins/content/default/content.min.css'
 
 import 'semantic-ui-css/semantic.min.css'

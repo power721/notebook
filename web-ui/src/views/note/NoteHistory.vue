@@ -104,14 +104,20 @@
       if (history.content) {
         this.history = history
         this.modal = true
-        setTimeout(() => window.Prism.highlightAll(), 0)
+        setTimeout(() => {
+          document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
+        }, 0)
+        setTimeout(() => (window as any).Prism.highlightAll(), 0)
       } else {
         axios.get(`/notes/${this.id}/content/${history.version}`).then(({data}) => {
           history.content = data.content
           this.history = data
           this.modal = true
         }).then(() => {
-          setTimeout(() => window.Prism.highlightAll(), 0)
+          setTimeout(() => {
+            document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
+          }, 0)
+          setTimeout(() => (window as any).Prism.highlightAll(), 0)
         })
       }
     }

@@ -1,10 +1,10 @@
-const webpack = require('webpack');
-const path = require('path');
+const webpack = require('webpack')
+const path = require('path')
 
-const API = 'http://127.0.0.1:8080';
+const API = 'http://127.0.0.1:8080'
 
 module.exports = {
-  // outputDir: path.resolve(__dirname, '../src/main/resources/static'),
+  outputDir: path.resolve(__dirname, '../src/main/resources/static'),
   devServer: {
     proxy: {
       '/accounts': {
@@ -34,15 +34,13 @@ module.exports = {
       },
     }
   },
-  css: {extract: false}
-  /*chainWebpack: config => {
-    config
-      .plugin('provide')
-      .use(webpack.ProvidePlugin, [{
-        $: 'jquery',
-        jquery: 'jquery',
-        jQuery: 'jquery',
-        'window.jQuery': 'jquery',
-      }]);
-  },*/
-};
+  css: { extract: false },
+  // chainWebpack: config => {
+  //   config
+  //     .plugin('provide')
+  //     .use(webpack.ProvidePlugin, [{
+  //       Prism: 'Prism',
+  //       'window.Prism': 'Prism',
+  //     }])
+  // },
+}
