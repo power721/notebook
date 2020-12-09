@@ -4,7 +4,7 @@ import { Role } from '@/models/Account'
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
-      <div class="section">分类</div>
+      <div class="active section">分类</div>
     </div>
     <div class="ui divider"></div>
 

@@ -16,8 +16,8 @@
         <i class="right chevron icon divider"></i>
       </template>
       <template v-if="id">
-        <div class="section">笔记本</div>
-        <i class="right chevron icon divider"></i>
+        <!--        <div class="section">笔记本</div>-->
+        <!--        <i class="right chevron icon divider"></i>-->
         <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
         <i class="right chevron icon divider"></i>
         <!--        <div class="section">笔记</div>-->

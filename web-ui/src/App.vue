@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">首页</router-link> |
+      <router-link to="/" exact>首页</router-link>
+      |
       <router-link to="/notebooks">笔记本</router-link> |
       <router-link to="/categories">分类</router-link>
       |
@@ -39,7 +40,7 @@
   color: #2c3e50;
 }
 
-#nav a.router-link-exact-active {
+#nav a.router-link-active {
   color: #42b983;
 }
 </style>
