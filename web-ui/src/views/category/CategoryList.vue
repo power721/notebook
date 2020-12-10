@@ -84,7 +84,7 @@ import { Role } from '@/models/Account'
     }
 
     load() {
-      axios.get(`/categories?page=${this.page - 1}&size=${this.size}`).then(({data}) => {
+      axios.get(`/categories?page=${this.page - 1}&size=${this.size}&sort=id,desc`).then(({data}) => {
         this.categories = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements

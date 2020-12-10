@@ -56,7 +56,7 @@
 
     load() {
       this.loading = true
-      axios.get(`/notes?page=${this.page - 1}&size=${this.size}`).then(({data}) => {
+      axios.get(`/notes?page=${this.page - 1}&size=${this.size}&sort=id,desc`).then(({data}) => {
         this.notes = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements

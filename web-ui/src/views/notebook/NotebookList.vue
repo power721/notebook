@@ -86,7 +86,7 @@
     }
 
     load() {
-      axios.get(`/notebooks?page=${this.page - 1}&size=${this.size}`).then(({data}) => {
+      axios.get(`/notebooks?page=${this.page - 1}&size=${this.size}&sort=id,desc`).then(({data}) => {
         this.notebooks = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements

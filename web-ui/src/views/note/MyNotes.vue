@@ -59,7 +59,7 @@
     }
 
     load() {
-      axios.get(`/users/-/notes?page=${this.page - 1}&size=${this.size}`).then(({data}) => {
+      axios.get(`/users/-/notes?page=${this.page - 1}&size=${this.size}&sort=id,desc`).then(({data}) => {
         this.notes = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements

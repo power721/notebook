@@ -112,18 +112,19 @@
     mounted() {
       this.id = this.$route.params.id
       this.page = +this.$route.query.page || 1
-      this.loadNotebook()
+      this.loadCategory()
       this.load()
     }
 
-    loadNotebook() {
+    loadCategory() {
       axios.get(`/categories/${this.id}`).then(({data}) => {
         this.category = data
+        document.title = this.category.name + ' - 分类'
       })
     }
 
     load() {
-      axios.get(`/categories/${this.id}/notes?page=${this.page - 1}&size=${this.size}`).then(({data}) => {
+      axios.get(`/categories/${this.id}/notes?page=${this.page - 1}&size=${this.size}&sort=id,desc`).then(({data}) => {
         this.notes = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements

@@ -74,9 +74,9 @@
     <Modal v-model="confirm" :title="notebook.name">
       <div>
         <p>是否删除此笔记本？</p>
-        <div class="ui checkbox">
+        <div class="ui checkbox" v-if="totalElements">
           <input type="checkbox" name="force" v-model="force">
-          <label>强制删除所有笔记</label>
+          <label>强制删除所有{{totalElements}}个笔记</label>
         </div>
       </div>
       <template slot="actions">
@@ -131,11 +131,12 @@
       axios.get(`/notebooks/${this.id}`).then(({data}) => {
         this.notebook = data
         this.author = accountService.account.id === this.notebook.owner.id
+        document.title = this.notebook.name + ' - 笔记本'
       })
     }
 
     load() {
-      axios.get(`/notebooks/${this.id}/notes?page=${this.page-1}&size=${this.size}`).then(({data}) => {
+      axios.get(`/notebooks/${this.id}/notes?page=${this.page - 1}&size=${this.size}&sort=id,desc`).then(({data}) => {
         this.notes = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
