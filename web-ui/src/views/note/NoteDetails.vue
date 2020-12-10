@@ -23,6 +23,7 @@
         <span :data-tooltip="note.updatedTime | datetime" v-if="note.updatedTime">
           编辑于{{note.updatedTime | fromNow}}
         </span>
+        <router-link class="ui teal label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
         {{note.views}} <i class="eye icon"></i>
         <router-link data-tooltip="历史记录" v-if="author&&note.version>1" :to="'/notes/'+note.id+'/history'">
           <i class="list icon"></i>
