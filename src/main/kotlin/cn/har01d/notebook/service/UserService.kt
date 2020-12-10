@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service
 class UserService(
         private val repository: UserRepository,
         private val passwordEncoder: PasswordEncoder,
-        private val notebookRepository: NotebookRepository
+        private val notebookRepository: NotebookRepository,
+        private val configService: ConfigService
 ) {
     fun getCurrentUser(): User? {
         val authentication = SecurityContextHolder.getContext().authentication
@@ -36,6 +37,14 @@ class UserService(
 
     fun requireCurrentUser(): User {
         return getCurrentUser() ?: throw AppUnauthorizedException("用户未登录")
+    }
+
+    fun signup(dto: AccountDto): User {
+        val disabled = configService.get("disable_signup", false)
+        if (disabled) {
+            throw AppForbiddenException("禁止用户注册")
+        }
+        return createUser(dto)
     }
 
     fun createUser(dto: AccountDto): User {

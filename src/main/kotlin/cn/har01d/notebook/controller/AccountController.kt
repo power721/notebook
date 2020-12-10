@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/accounts")
 class AccountController(val userService: UserService) {
     @PostMapping("/signup")
-    fun signup(@RequestBody account: AccountDto) = userService.createUser(account).toVo()
+    fun signup(@RequestBody account: AccountDto) = userService.signup(account).toVo()
 
     @GetMapping("/info")
     fun info() = userService.requireCurrentUser().toVo()

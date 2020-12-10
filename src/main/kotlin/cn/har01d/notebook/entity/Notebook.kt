@@ -16,6 +16,7 @@ class Notebook(
 )
 
 interface NotebookRepository : JpaRepository<Notebook, Int> {
+    fun countByOwner(user: User): Long
     fun existsByOwnerAndName(user: User, name: String): Boolean
     fun findByOwnerAndName(user: User, name: String): Notebook?
     fun findByOwner(user: User, pageable: Pageable): Page<Notebook>

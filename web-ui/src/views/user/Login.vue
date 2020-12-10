@@ -31,7 +31,7 @@
           </form>
         </div>
       </div>
-      <div class="extra content">
+      <div class="extra content" v-if="!disableSignup">
         没有帐号？
         <router-link to="/signup">注册</router-link>
       </div>
@@ -40,6 +40,7 @@
 </template>
 
 <script lang="ts">
+  import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
   import accountService from '@/services/account.service'
 
@@ -47,6 +48,7 @@
   export default class Login extends Vue {
     error: string = ''
     success: boolean = false
+    disableSignup: boolean = false
     account = {
       username: '',
       password: '',
@@ -55,6 +57,15 @@
 
     mounted() {
       document.title = '用户登录'
+      this.load()
+    }
+
+    load() {
+      axios.get('/config/disable_signup').then(({data}) => {
+        if (data) {
+          this.disableSignup = data.value === 'true'
+        }
+      })
     }
 
     submit() {

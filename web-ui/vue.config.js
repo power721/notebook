@@ -32,6 +32,11 @@ module.exports = {
         ws: true,
         changeOrigin: true
       },
+      '/config': {
+        target: API,
+        ws: true,
+        changeOrigin: true
+      },
     }
   },
   css: { extract: false },

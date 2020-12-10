@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service
 class NotebookService(
         private val notebookRepository: NotebookRepository,
         private val noteRepository: NoteRepository,
-        private val userService: UserService
+        private val userService: UserService,
+        private val configService: ConfigService
 ) {
     fun list(q: String?, pageable: Pageable): Page<Notebook> {
         return if (q != null) {
@@ -54,6 +55,10 @@ class NotebookService(
         val user = userService.requireCurrentUser()
         if (notebookRepository.existsByOwnerAndName(user, dto.name)) {
             throw AppException("笔记本名字已经存在")
+        }
+        val limit = configService.get("notebooks_limit", 20)
+        if (notebookRepository.countByOwner(user) >= limit) {
+            throw AppException("笔记本数量不能超过$limit")
         }
         val notebook = Notebook(dto.name, dto.description, user)
         return notebookRepository.save(notebook)
