@@ -111,6 +111,7 @@
 
     mounted() {
       this.id = this.$route.params.id
+      this.page = +this.$route.query.page || 1
       this.loadNotebook()
       this.load()
     }
