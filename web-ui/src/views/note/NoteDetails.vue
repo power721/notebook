@@ -28,6 +28,9 @@
         <router-link data-tooltip="历史记录" v-if="author&&note.version>1" :to="'/notes/'+note.id+'/history'">
           <i class="list icon"></i>
         </router-link>
+        <a href="javascript:void(0)" data-tooltip="删除笔记" @click="confirm=true" v-if="author">
+          <i class="delete red icon"></i>
+        </a>
         <router-link data-tooltip="编辑笔记" v-if="author" :to="'/notes/'+note.id+'/edit'">
           <i class="edit icon"></i>
         </router-link>
@@ -45,6 +48,14 @@
       </div>
       <div v-html="note.content"></div>
     </div>
+
+    <Modal v-model="confirm" :title="note.title">
+      <p>是否删除此笔记？</p>
+      <template slot="actions">
+        <button @click="confirm=false" class="ui cancel button">取消</button>
+        <button @click="deleteNote" class="ui negative button">删除</button>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -53,12 +64,18 @@
   import {Component, Vue} from 'vue-property-decorator'
   import {Note} from '@/models/Note'
   import accountService from '@/services/account.service'
+  import Modal from '@/components/Modal.vue'
 
-  @Component
+  @Component({
+    components: {
+      Modal,
+    }
+  })
   export default class NoteDetails extends Vue {
     id: string = ''
     old: boolean = false
     author: boolean = false
+    confirm: boolean = false
     note: Note = new Note()
 
     mounted() {
@@ -79,6 +96,14 @@
           document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
         }, 0)
         setTimeout(() => (window as any).Prism.highlightAll(), 0)
+      })
+    }
+
+    deleteNote() {
+      axios.delete(`/notes/${this.id}`).then(() => {
+        this.confirm = false
+        this.$toasted.success('删除成功')
+        this.$router.push('/notebooks/' + this.note.notebook.id)
       })
     }
   }

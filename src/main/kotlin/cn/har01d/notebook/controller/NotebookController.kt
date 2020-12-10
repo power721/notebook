@@ -25,5 +25,5 @@ class NotebookController(private val service: NotebookService) {
     fun update(@PathVariable id: String, @RequestBody dto: NotebookDto) = service.update(id, dto).toVo()
 
     @DeleteMapping("{id}")
-    fun delete(@PathVariable id: String) = service.delete(id)
+    fun delete(@PathVariable id: String, force: Boolean) = service.delete(id, force)
 }

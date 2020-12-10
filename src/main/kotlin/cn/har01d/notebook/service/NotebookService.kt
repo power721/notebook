@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import javax.transaction.Transactional
 
 @Service
 class NotebookService(
@@ -82,12 +83,22 @@ class NotebookService(
         return notebookRepository.save(notebook)
     }
 
-    fun delete(id: String) {
+    @Transactional
+    fun delete(id: String, force: Boolean = false) {
         val user = userService.requireCurrentUser()
         val notebook = notebookRepository.findByIdOrNull(decode(id)) ?: return
         if (notebook.owner.id != user.id) {
             throw AppForbiddenException("用户无权操作")
         }
+
+        if (force) {
+            noteRepository.deleteAllByNotebook(notebook)
+        } else {
+            if (noteRepository.countByNotebook(notebook) > 0) {
+                throw AppForbiddenException("笔记本不为空")
+            }
+        }
+
         notebookRepository.delete(notebook)
     }
 

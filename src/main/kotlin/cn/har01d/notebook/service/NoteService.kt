@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.Instant
+import javax.transaction.Transactional
 
 @Service
 class NoteService(
@@ -144,6 +145,7 @@ class NoteService(
         return noteRepository.save(note)
     }
 
+    @Transactional
     fun delete(id: String) {
         val user = userService.requireCurrentUser()
         val note = noteRepository.findByRid(id) ?: return

@@ -16,10 +16,12 @@
         <span :data-tooltip="notebook.createdTime | datetime">
           创建于{{notebook.createdTime | fromNow}}
         </span>
+        <a href="javascript:void(0)" data-tooltip="删除笔记" @click="confirm=true" v-if="author">
+          <i class="delete red icon"></i>
+        </a>
         <a href="javascript:void(0)" data-tooltip="编辑笔记本" @click="edit" v-if="author">
           <i class="edit icon"></i>
         </a>
-
       </div>
       <div class="ui info message">
         {{notebook.description}}
@@ -68,6 +70,20 @@
         <button @click="submit" class="ui primary button" :disabled="!nb.name">保存</button>
       </template>
     </Modal>
+
+    <Modal v-model="confirm" :title="notebook.name">
+      <div>
+        <p>是否删除此笔记本？</p>
+        <div class="ui checkbox">
+          <input type="checkbox" name="force" v-model="force">
+          <label>强制删除所有笔记</label>
+        </div>
+      </div>
+      <template slot="actions">
+        <button @click="confirm=false" class="ui cancel button">取消</button>
+        <button @click="deleteNotebook" class="ui negative button">删除</button>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -97,6 +113,8 @@
   export default class NotebookDetails extends Pageable {
     id: string = ''
     modal: boolean = false
+    confirm: boolean = false
+    force: boolean = false
     author: boolean = false
     notebook: Notebook = new Notebook()
     nb: Notebook = new Notebook()
@@ -137,6 +155,14 @@
       axios.put(`/notebooks/${this.id}`, this.nb).then(({data}) => {
         this.notebook = data
         this.modal = false
+      })
+    }
+
+    deleteNotebook() {
+      axios.delete(`/notebooks/${this.id}?force=${this.force}`).then(() => {
+        this.confirm = false
+        this.$toasted.success('删除成功')
+        this.$router.push('/my-notebooks')
       })
     }
   }

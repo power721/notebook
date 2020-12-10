@@ -25,6 +25,8 @@ class Note(
 )
 
 interface NoteRepository : JpaRepository<Note, Int> {
+    fun countByNotebook(notebook: Notebook): Long
+    fun deleteAllByNotebook(notebook: Notebook)
     fun findByRid(rid: String): Note?
     fun findByAccess(access: Access, pageable: Pageable): Page<Note>
     fun findByNotebook(notebook: Notebook, pageable: Pageable): Page<Note>
