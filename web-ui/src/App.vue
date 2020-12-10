@@ -1,14 +1,20 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/" exact>首页</router-link>
-      |
-      <router-link to="/notebooks">笔记本</router-link> |
-      <router-link to="/categories">分类</router-link>
-      |
-      <router-link to="/about">关于</router-link>
+  <div id="app" class="ui center aligned container">
+    <div class="ui pointing menu">
+      <router-link class="item" to="/" exact>首页</router-link>
+      <router-link class="item" to="/notebooks">笔记本</router-link>
+      <router-link class="item" to="/categories">分类</router-link>
+      <router-link class="item" to="/about">关于</router-link>
+      <div class="right menu">
+        <!--        <div class="item">-->
+        <!--          <div class="ui transparent icon input">-->
+        <!--            <input type="text" placeholder="Search...">-->
+        <!--            <i class="search link icon"></i>-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <UserAccount></UserAccount>
+      </div>
     </div>
-    <UserAccount></UserAccount>
     <router-view/>
   </div>
 </template>
@@ -29,18 +35,5 @@
   text-align: center;
   color: #2c3e50;
   padding-bottom: 16px;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-active {
-  color: #42b983;
 }
 </style>

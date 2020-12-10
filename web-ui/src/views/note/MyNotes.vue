@@ -10,7 +10,8 @@
     <router-link class="ui add icon primary button" data-tooltip="创建笔记" to="/notes/-/new">
       <i class="edit icon"></i>
     </router-link>
-    <div class="ui divided items">
+
+    <div class="ui divided items raised segment">
       <div class="item" v-for="note in notes" :key="note.id">
         <div class="content">
           <router-link class="header" :to="'/notes/'+note.id">{{note.title}}</router-link>

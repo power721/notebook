@@ -4,10 +4,11 @@
       <div class="text" @click.stop="visible=!visible">{{account.username}}</div>
       <i class="dropdown icon" @click.stop="visible=!visible"></i>
       <div class="menu transition" :class="{visible: visible}">
+        <router-link class="item" to="/notes/-/new">创建笔记</router-link>
         <router-link class="item" to="/my-notebooks">我的笔记本</router-link>
         <router-link class="item" to="/my-notes">我的笔记</router-link>
-        <router-link class="item" to="/info">用户设置</router-link>
-        <router-link class="item" to="/admin" v-if="admin">管理中心</router-link>
+        <!--        <router-link class="item" to="/info">用户设置</router-link>-->
+        <!--        <router-link class="item" to="/admin" v-if="admin">管理中心</router-link>-->
         <div class="item" @click.stop="logout">退出登录</div>
       </div>
     </div>
@@ -49,8 +50,7 @@
 
 <style scoped>
   .login {
-    position: absolute;
-    right: 30px;
-    top: 6px;
+    margin-top: 12px;
+    margin-right: 12px;
   }
 </style>

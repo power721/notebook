@@ -13,7 +13,7 @@ import { Role } from '@/models/Account'
       <i class="add icon"></i>
     </a>
 
-    <div class="ui divided items">
+    <div class="ui divided items raised segment">
       <div class="item" v-for="category in categories" :key="category.id">
         <div class="content">
           <router-link class="header" :to="'/categories/'+category.id">{{category.name}}</router-link>
@@ -109,6 +109,6 @@ import { Role } from '@/models/Account'
 <style scoped>
   .add.button {
     float: right;
-    margin-top: -60px;
+    margin-top: -56px;
   }
 </style>

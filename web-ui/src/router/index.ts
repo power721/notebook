@@ -12,6 +12,7 @@ import MyNotebooks from '@/views/notebook/MyNotebooks.vue'
 import MyNotes from '@/views/note/MyNotes.vue'
 import CategoryList from '@/views/category/CategoryList.vue'
 import CategoryDetails from '@/views/category/CategoryDetails.vue'
+import About from '@/views/About.vue'
 
 Vue.use(VueRouter)
 
@@ -87,10 +88,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/about',
     name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: About
   }
 ]
 

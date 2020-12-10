@@ -12,7 +12,7 @@
       <i class="add icon"></i>
     </a>
 
-    <div class="ui divided items">
+    <div class="ui divided items raised segment">
       <div class="item" v-for="notebook in notebooks" :key="notebook.id">
         <div class="content">
           <router-link class="header" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>

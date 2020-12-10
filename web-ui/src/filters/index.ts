@@ -17,7 +17,7 @@ export function datetime(value: number | string) {
   const hour = dateObj.getHours()
   const minute = dateObj.getMinutes()
   const second = dateObj.getSeconds()
-  return year + '-' + toFix2(month) + '-' + toFix2(day) + ' ' + toFix2(hour) + ':' + toFix2(minute) + ':' + toFix2(second)
+  return year + '-' + toFix2(month) + '-' + toFix2(day) + ' ' + toFix2(hour) + ':' + toFix2(minute)// + ':' + toFix2(second)
 }
 
 export function date(value: number | string) {
