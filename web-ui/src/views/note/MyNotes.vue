@@ -16,10 +16,12 @@
         <div class="content">
           <router-link class="header" :to="'/notes/'+note.id">{{note.title}}</router-link>
           <div class="meta">
-            <a>{{note.author.username}}</a>
             <router-link :to="'/notebooks/'+note.notebook.id">@{{note.notebook.name}}</router-link>
           </div>
-          <div class="extra">
+          <div class="extra" v-if="note.updatedTime">
+            编辑于{{note.updatedTime | fromNow}}({{note.updatedTime | datetime}})
+          </div>
+          <div class="extra" v-else>
             创建于{{note.createdTime | fromNow}}({{note.createdTime | datetime}})
           </div>
         </div>

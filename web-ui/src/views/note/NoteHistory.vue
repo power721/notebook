@@ -49,7 +49,7 @@
       <template slot="title">
         版本{{history.version}}： {{history.title}}
       </template>
-      <Viewer :options="options" :initialValue="history.content"></Viewer>
+      <div v-html="history.content"></div>
       <template slot="actions">
         <button @click="modal=false" class="ui cancel button">取消</button>
         <button @click="revert" class="ui negative button" data-tooltip="恢复到此版本" v-if="note.version!==history.version">
@@ -64,13 +64,12 @@
   import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
   import {Note, NoteHistory} from '@/models/Note'
-  import {Viewer} from '@/components/vue-editor'
+  import {ResponseError} from '@/models/ResponseError'
   import accountService from '@/services/account.service'
   import Modal from '@/components/Modal.vue'
 
   @Component({
     components: {
-      Viewer,
       Modal
     }
   })
@@ -81,9 +80,6 @@
     list: NoteHistory[] = []
     history: NoteHistory = new NoteHistory()
     note: Note = new Note()
-    options = {
-      initialEditType: 'wysiwyg'
-    }
 
     mounted() {
       this.id = this.$route.params.id
@@ -92,13 +88,16 @@
 
     load() {
       axios.get(`/notes/${this.id}`).then(({data}) => {
-        this.options.initialEditType = data.markdown ? 'markdown' : 'wysiwyg'
         this.note = data
         document.title = this.note.title + ' - 编辑历史'
         this.author = accountService.account.id === this.note.author.id
       })
       axios.get(`/notes/${this.id}/history`).then(({data}) => {
         this.list = data
+      }, (error: ResponseError) => {
+        if (error.status === 403) {
+          this.$router.push('/')
+        }
       })
     }
 

@@ -100,6 +100,7 @@
   import {Note} from '@/models/Note'
   import {Notebook} from '@/models/Notebook'
   import {Category} from '@/models/Category'
+  import accountService from '@/services/account.service'
 
   @Component({
     components: {
@@ -208,6 +209,10 @@
         this.note = data
         this.note.notebookId = this.note.notebook.id
         this.note.categoryId = this.note.category.id
+        if (accountService.account.id !== this.note.author.id) {
+          this.$toasted.error('用户无权操作')
+          this.$router.push('/')
+        }
         document.title = this.note.title + ' - 编辑'
       })
     }

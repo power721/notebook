@@ -16,9 +16,6 @@
       <div class="item" v-for="notebook in notebooks" :key="notebook.id">
         <div class="content">
           <router-link class="header" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>
-          <div class="meta">
-            <a>@{{notebook.owner.username}}</a>
-          </div>
           <div class="description">
             <p>{{notebook.description}}</p>
           </div>
