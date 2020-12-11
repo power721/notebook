@@ -3,12 +3,8 @@
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
-      <!--      <div class="section">笔记本</div>-->
-      <!--      <i class="right chevron icon divider"></i>-->
       <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
       <i class="right chevron icon divider"></i>
-      <!--      <div class="section">笔记</div>-->
-      <!--      <i class="right chevron icon divider"></i>-->
       <div class="active section">{{note.title}}</div>
     </div>
     <div class="ui divider"></div>
@@ -27,15 +23,6 @@
         </span>
         <router-link class="ui teal label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
         <template v-if="note.access!=='PRIVATE'">{{note.views}} <i class="eye icon"></i></template>
-        <!--        <router-link data-tooltip="历史记录" v-if="author&&note.version>1" :to="'/notes/'+note.id+'/history'">-->
-        <!--          <i class="list icon"></i>-->
-        <!--        </router-link>-->
-        <!--        <a href="javascript:void(0)" data-tooltip="删除笔记" @click="confirm=true" v-if="author">-->
-        <!--          <i class="delete red icon"></i>-->
-        <!--        </a>-->
-        <!--        <router-link data-tooltip="编辑笔记" v-if="author" :to="'/notes/'+note.id+'/edit'">-->
-        <!--          <i class="edit icon"></i>-->
-        <!--        </router-link>-->
         <Dropdown icon="bars" position="top right" :pointing="true" v-if="author">
           <router-link class="item" :to="'/notes/'+note.id+'/edit'">编辑笔记</router-link>
           <router-link class="item" :to="'/notes/'+note.id+'/history'">历史记录</router-link>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ui active dropdown" :class="[{visible: show, pointing: pointing}, position]" tabindex="0"
+  <div class="ui active dropdown" :class="[{visible: show, pointing: pointing, inline: inline}, position]" tabindex="0"
        @click.stop="show=true">
     <i class="icon" :class="iconClass" @click.stop="show=!show"></i>
     <div class="menu transition" :class="{visible: show}" tabindex="-1">
@@ -14,11 +14,12 @@
 
   @Component
   export default class Dropdown extends Vue {
+    @Prop({default: false}) private inline!: boolean
     @Prop({default: false}) private pointing!: boolean
     @Prop() private position!: string
     @Prop({default: 'dropdown'}) private icon!: string
-    handler: number = 0
-    show: boolean = false
+    private handler: number = 0
+    private show: boolean = false
 
     get iconClass() {
       return {

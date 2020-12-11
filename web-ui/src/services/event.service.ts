@@ -1,34 +1,39 @@
-export type Handler = (event: Event) => any
+class Handler {
+  id: number
+  event: string
+  handler: (event: Event) => any
+
+  constructor(id: number, event: string, handler: (event: Event) => any) {
+    this.id = id
+    this.event = event
+    this.handler = handler
+  }
+}
 
 class EventService {
-  id: number = 0
-  map: Map<number, Handler> = new Map<number, Handler>()
-  eventMap: Map<string, Handler[]> = new Map<string, Handler[]>()
+  map: Map<string, Handler[]> = new Map<string, Handler[]>()
 
-  onclick(event: MouseEvent) {
-    const handlers = this.eventMap.get('click') || []
-    handlers.forEach(handler => {
-      handler(event)
-    })
-  }
-
-  on(event: string, handler: Handler): number {
-    const handlers = this.eventMap.get(event) || []
-    handlers.push(handler)
-    this.eventMap.set(event, handlers)
-    this.map.set(this.id, handler)
-    return this.id++
+  on(event: string, handler: (event: Event) => any): number {
+    const handlers = this.map.get(event) || []
+    const id = new Date().getTime()
+    handlers.push(new Handler(id, event, handler))
+    this.map.set(event, handlers)
+    return id
   }
 
   off(event: string, id: number) {
-    const handlers = this.eventMap.get(event) || []
-    const handler = this.map.get(id)
-    if (handler) {
-      const index = handlers.indexOf(handler)
-      if (index > -1) {
-        this.eventMap.set(event, handlers.splice(index))
-      }
+    const handlers = this.map.get(event) || []
+    const index = handlers.findIndex(e => e.id === id)
+    if (index > -1) {
+      handlers.splice(index, 1)
     }
+  }
+
+  onclick(event: MouseEvent) {
+    const handlers = this.map.get('click') || []
+    handlers.forEach(handler => {
+      handler.handler(event)
+    })
   }
 }
 
