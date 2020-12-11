@@ -14,7 +14,9 @@
     <div class="ui divider"></div>
 
     <div class="ui center aligned raised segment">
-      <h1 class="ui header">{{note.title}}</h1>
+      <h1 class="ui header">
+        {{note.title}}<span class="ui label" v-if="note.access!=='PUBLIC'">{{note.access}}</span>
+      </h1>
       <div class="metadata">
         <a>@{{note.author.username}}</a>
         <span :data-tooltip="note.createdTime | datetime">
@@ -24,16 +26,22 @@
           编辑于{{note.updatedTime | fromNow}}
         </span>
         <router-link class="ui teal label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
-        {{note.views}} <i class="eye icon"></i>
-        <router-link data-tooltip="历史记录" v-if="author&&note.version>1" :to="'/notes/'+note.id+'/history'">
-          <i class="list icon"></i>
-        </router-link>
-        <a href="javascript:void(0)" data-tooltip="删除笔记" @click="confirm=true" v-if="author">
-          <i class="delete red icon"></i>
-        </a>
-        <router-link data-tooltip="编辑笔记" v-if="author" :to="'/notes/'+note.id+'/edit'">
-          <i class="edit icon"></i>
-        </router-link>
+        <template v-if="note.access!=='PRIVATE'">{{note.views}} <i class="eye icon"></i></template>
+        <!--        <router-link data-tooltip="历史记录" v-if="author&&note.version>1" :to="'/notes/'+note.id+'/history'">-->
+        <!--          <i class="list icon"></i>-->
+        <!--        </router-link>-->
+        <!--        <a href="javascript:void(0)" data-tooltip="删除笔记" @click="confirm=true" v-if="author">-->
+        <!--          <i class="delete red icon"></i>-->
+        <!--        </a>-->
+        <!--        <router-link data-tooltip="编辑笔记" v-if="author" :to="'/notes/'+note.id+'/edit'">-->
+        <!--          <i class="edit icon"></i>-->
+        <!--        </router-link>-->
+        <Dropdown icon="bars" position="top right" :pointing="true" v-if="author">
+          <router-link class="item" :to="'/notes/'+note.id+'/edit'">编辑笔记</router-link>
+          <router-link class="item" :to="'/notes/'+note.id+'/history'">历史记录</router-link>
+          <a class="item" @click="confirm=true">删除笔记</a>
+          <a class="item" @click="modal=true">移动笔记</a>
+        </Dropdown>
       </div>
     </div>
 
@@ -64,10 +72,12 @@
   import {Component, Vue} from 'vue-property-decorator'
   import {Note} from '@/models/Note'
   import accountService from '@/services/account.service'
+  import Dropdown from '@/components/Dropdown.vue'
   import Modal from '@/components/Modal.vue'
 
   @Component({
     components: {
+      Dropdown,
       Modal,
     }
   })
@@ -75,6 +85,7 @@
     id: string = ''
     old: boolean = false
     author: boolean = false
+    modal: boolean = false
     confirm: boolean = false
     note: Note = new Note()
 
@@ -110,5 +121,9 @@
 </script>
 
 <style scoped>
-
+  .top.right.dropdown {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
 </style>

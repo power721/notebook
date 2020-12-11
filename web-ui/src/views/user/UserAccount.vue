@@ -1,9 +1,9 @@
 <template>
   <div class="login">
-    <div class="ui dropdown active" :class="{visible: visible}" v-if="account.id">
-      <div class="text" @click.stop="visible=!visible">{{account.username}}</div>
-      <i class="dropdown icon" @click.stop="visible=!visible"></i>
-      <div class="menu transition" :class="{visible: visible}">
+    <div class="ui dropdown active" :class="{visible: show}" v-if="account.id">
+      <div class="text" @click.stop="show=!show">{{account.username}}</div>
+      <i class="dropdown icon" @click.stop="show=!show"></i>
+      <div class="menu transition" :class="{visible: show}">
         <router-link class="item" to="/notes/-/new">创建笔记</router-link>
         <router-link class="item" to="/my-notebooks">我的笔记本</router-link>
         <router-link class="item" to="/my-notes">我的笔记</router-link>
@@ -20,10 +20,12 @@
   import {Component, Vue} from 'vue-property-decorator'
   import accountService from '@/services/account.service'
   import {Account} from '@/models/Account'
+  import eventService from '@/services/event.service'
 
   @Component
   export default class UserAccount extends Vue {
-    visible: boolean = false
+    handler: number = 0
+    show: boolean = false
 
     get admin(): boolean {
       return this.$store.state.user.role === 'ROLE_ADMIN'
@@ -34,9 +36,13 @@
     }
 
     mounted() {
-      document.onclick = () => {
-        this.visible = false
-      }
+      this.handler = eventService.on('click', () => {
+        this.show = false
+      })
+    }
+
+    destroyed() {
+      eventService.off('click', this.handler)
     }
 
     logout() {

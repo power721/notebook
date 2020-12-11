@@ -1,10 +1,17 @@
 <template>
   <div class="ui left aligned container">
-    <div class="ui raised segment" :class="{loading: loading}">
-      <router-link class="ui add icon primary button" data-tooltip="创建笔记" to="/notes/-/new">
-        <i class="edit icon"></i>
-      </router-link>
+    <div class="ui breadcrumb">
+      <router-link class="section" :exact="true" to="/">首页</router-link>
+      <i class="right chevron icon divider"></i>
+      <div class="active section">笔记</div>
+    </div>
+    <div class="ui divider"></div>
 
+    <router-link class="ui add icon primary button" data-tooltip="创建笔记" to="/notes/-/new">
+      <i class="edit icon"></i>
+    </router-link>
+
+    <div class="ui raised segment" :class="{loading: loading}">
       <div class="ui divided items">
         <div class="item" v-for="note in notes" :key="note.id">
           <div class="content">
@@ -77,6 +84,6 @@
 <style scoped>
   .add.button {
     float: right;
-    margin-top: -10px;
+    margin-top: -56px;
   }
 </style>

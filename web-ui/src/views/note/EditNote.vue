@@ -77,7 +77,6 @@
 
       <div class="required field">
         <label>内容</label>
-        <!--        <Editor :options="options" :initialValue="note.content" ref="toastuiEditor"></Editor>-->
         <Editor :init="config" v-model="note.content"></Editor>
       </div>
       <div class="right floated">
@@ -94,8 +93,6 @@
   /* eslint-disable @typescript-eslint/camelcase */
   import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
-  import Dropdown from '@/components/Dropdown.vue'
-  //import {Editor} from '@/components/vue-editor'
   import Editor from '@tinymce/tinymce-vue'
   import {Note} from '@/models/Note'
   import {Notebook} from '@/models/Notebook'
@@ -104,8 +101,7 @@
 
   @Component({
     components: {
-      Editor,
-      Dropdown
+      Editor
     }
   })
   export default class EditNote extends Vue {
