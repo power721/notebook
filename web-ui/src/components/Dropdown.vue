@@ -2,7 +2,7 @@
   <div class="ui active dropdown" :class="[{visible: show, pointing: pointing, inline: inline}, position]" tabindex="0"
        @click.stop="show=true">
     <i class="icon" :class="iconClass" @click.stop="show=!show"></i>
-    <div class="menu transition" :class="{visible: show}" tabindex="-1">
+    <div class="menu transition" :class="{visible: show}" tabindex="-1" @click.stop="show=!show">
       <slot></slot>
     </div>
   </div>

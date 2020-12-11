@@ -9,6 +9,11 @@
     </div>
     <div class="ui divider"></div>
 
+    <router-link class="ui add icon primary button" data-tooltip="创建笔记" :to="'/notes/-/new?notebook='+id"
+                 v-if="author&&notes.length">
+      <i class="add icon"></i>
+    </router-link>
+
     <div class="ui center aligned raised segment">
       <h1 class="ui header">{{notebook.name}}</h1>
       <div class="metadata">
@@ -16,7 +21,10 @@
         <span :data-tooltip="notebook.createdTime | datetime">
           创建于{{notebook.createdTime | fromNow}}
         </span>
-        <a href="javascript:void(0)" data-tooltip="删除笔记" @click="confirm=true" v-if="author">
+        <span :data-tooltip="notebook.updatedTime | datetime">
+          编辑于{{notebook.updatedTime | fromNow}}
+        </span>
+        <a href="javascript:void(0)" data-tooltip="删除笔记本" @click="confirm=true" v-if="author">
           <i class="delete red icon"></i>
         </a>
         <a href="javascript:void(0)" data-tooltip="编辑笔记本" @click="edit" v-if="author">
@@ -35,9 +43,14 @@
           <router-link :to="'/notes/-/new?notebook='+id">创建</router-link>一个？
         </template>
       </div>
-      <router-link class="ui right floated icon primary button" data-tooltip="创建笔记" :to="'/notes/-/new?notebook='+id" v-if="author&&notes.length">
-        <i class="add icon"></i>
-      </router-link>
+      <Dropdown icon="bars" position="top right" :pointing="true" v-else>
+        <a class="item" :class="{active:sort==='createdTime,desc'}" @click="sorted('createdTime,desc')">创建时间(最新)</a>
+        <a class="item" :class="{active:sort==='createdTime,asc'}" @click="sorted('createdTime,asc')">创建时间(最早)</a>
+        <a class="item" :class="{active:sort==='updatedTime,desc'}" @click="sorted('updatedTime,desc')">更新时间(最新)</a>
+        <a class="item" :class="{active:sort==='updatedTime,asc'}" @click="sorted('updatedTime,asc')">更新时间(最早)</a>
+        <a class="item" :class="{active:sort==='content.title,desc'}" @click="sorted('content.title,desc')">标题(降序)</a>
+        <a class="item" :class="{active:sort==='content.title,asc'}" @click="sorted('content.title,asc')">标题(升序)</a>
+      </Dropdown>
       <div class="ui divided items">
         <div class="item" v-for="note in notes" :key="note.id">
           <div class="content">
@@ -96,15 +109,17 @@
   import {Note} from '@/models/Note'
   import {Notebook} from '@/models/Notebook'
   import Modal from '@/components/Modal.vue'
-  import accountService from '@/services/account.service'
+  import Dropdown from '@/components/Dropdown.vue'
   import Pagination from '@/components/Pagination.vue'
   import {Pageable} from '@/components/Pageable'
   import {goTop} from '@/utils/utils'
+  import accountService from '@/services/account.service'
 
   @Component<Pageable>({
     components: {
       Modal,
-      Pagination
+      Pagination,
+      Dropdown
     },
     watch: {
       '$route'(to) {
@@ -139,7 +154,7 @@
     }
 
     load() {
-      axios.get(`/notebooks/${this.id}/notes?page=${this.page - 1}&size=${this.size}&sort=id,desc`).then(({data}) => {
+      axios.get(`/notebooks/${this.id}/notes?${this.query}`).then(({data}) => {
         this.notes = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
@@ -172,3 +187,10 @@
     }
   }
 </script>
+
+<style scoped>
+  .add.button {
+    float: right;
+    margin-top: -56px;
+  }
+</style>

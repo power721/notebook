@@ -12,6 +12,14 @@
     </router-link>
 
     <div class="ui raised segment" :class="{loading: loading}">
+      <Dropdown icon="bars" position="top right" :pointing="true">
+        <a class="item" :class="{active:sort==='createdTime,desc'}" @click="sorted('createdTime,desc')">创建时间(最新)</a>
+        <a class="item" :class="{active:sort==='createdTime,asc'}" @click="sorted('createdTime,asc')">创建时间(最早)</a>
+        <a class="item" :class="{active:sort==='updatedTime,desc'}" @click="sorted('updatedTime,desc')">更新时间(最新)</a>
+        <a class="item" :class="{active:sort==='updatedTime,asc'}" @click="sorted('updatedTime,asc')">更新时间(最早)</a>
+        <a class="item" :class="{active:sort==='content.title,desc'}" @click="sorted('content.title,desc')">标题(降序)</a>
+        <a class="item" :class="{active:sort==='content.title,asc'}" @click="sorted('content.title,asc')">标题(升序)</a>
+      </Dropdown>
       <div class="ui divided items">
         <div class="item" v-for="note in notes" :key="note.id">
           <div class="content">
@@ -42,10 +50,12 @@
   import {Pageable} from '@/components/Pageable'
   import Pagination from '@/components/Pagination.vue'
   import {goTop} from '@/utils/utils'
+  import Dropdown from '@/components/Dropdown.vue'
 
   @Component<Pageable>({
     components: {
-      Pagination
+      Pagination,
+      Dropdown
     },
     watch: {
       '$route'(to) {
@@ -66,7 +76,7 @@
 
     load() {
       this.loading = true
-      axios.get(`/notes?page=${this.page - 1}&size=${this.size}&sort=id,desc`).then(({data}) => {
+      axios.get(`/notes?${this.query}`).then(({data}) => {
         this.notes = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements

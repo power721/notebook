@@ -28,6 +28,12 @@
   float: right;
 }
 
+.top.right.dropdown {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

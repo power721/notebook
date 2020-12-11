@@ -6,4 +6,5 @@ export class Notebook {
   description: string = ''
   owner: User = new User()
   createdTime: string = ''
+  updatedTime: string = ''
 }

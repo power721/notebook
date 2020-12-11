@@ -108,9 +108,4 @@
 </script>
 
 <style scoped>
-  .top.right.dropdown {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-  }
 </style>

@@ -10,7 +10,8 @@ data class NotebookVo(
         val name: String,
         val description: String,
         val owner: UserVo2,
-        val createdTime: Instant
+        val createdTime: Instant,
+        val updatedTime: Instant?
 )
 
 data class NotebookVo2(
@@ -18,5 +19,5 @@ data class NotebookVo2(
         val name: String
 )
 
-fun Notebook.toVo() = NotebookVo(IdUtils.encode(id!! + NOTEBOOK_OFFSET), name, description, owner.toVo2(), createdTime)
+fun Notebook.toVo() = NotebookVo(IdUtils.encode(id!! + NOTEBOOK_OFFSET), name, description, owner.toVo2(), createdTime, updatedTime)
 fun Notebook.toVo2() = NotebookVo2(IdUtils.encode(id!! + NOTEBOOK_OFFSET), name)

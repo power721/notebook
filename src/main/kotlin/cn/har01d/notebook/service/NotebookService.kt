@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.Instant
 import javax.transaction.Transactional
 
 @Service
@@ -80,6 +81,7 @@ class NotebookService(
         }
         notebook.name = dto.name
         notebook.description = dto.description
+        notebook.updatedTime = Instant.now()
         return notebookRepository.save(notebook)
     }
 

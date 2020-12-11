@@ -11,6 +11,7 @@ class Notebook(
         @Column(nullable = false) var name: String,
         @Column(nullable = false) var description: String,
         @ManyToOne val owner: User,
+        var updatedTime: Instant? = null,
         @Column(nullable = false) val createdTime: Instant = Instant.now(),
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Int? = null
 )

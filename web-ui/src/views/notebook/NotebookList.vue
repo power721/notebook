@@ -12,18 +12,31 @@
       <i class="add icon"></i>
     </a>
 
-    <div class="ui divided items raised segment">
-      <div class="item" v-for="notebook in notebooks" :key="notebook.id">
-        <div class="content">
-          <router-link class="header" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>
-          <div class="meta">
-            <a>@{{notebook.owner.username}}</a>
-          </div>
-          <div class="description">
-            <p>{{notebook.description}}</p>
-          </div>
-          <div class="extra">
-            创建于{{notebook.createdTime | fromNow}}({{notebook.createdTime | datetime}})
+    <div class="ui raised segment">
+      <Dropdown icon="bars" position="top right" :pointing="true">
+        <a class="item" :class="{active:sort==='createdTime,desc'}" @click="sorted('createdTime,desc')">创建时间(最新)</a>
+        <a class="item" :class="{active:sort==='createdTime,asc'}" @click="sorted('createdTime,asc')">创建时间(最早)</a>
+        <a class="item" :class="{active:sort==='updatedTime,desc'}" @click="sorted('updatedTime,desc')">更新时间(最新)</a>
+        <a class="item" :class="{active:sort==='updatedTime,asc'}" @click="sorted('updatedTime,asc')">更新时间(最早)</a>
+        <a class="item" :class="{active:sort==='name,desc'}" @click="sorted('name,desc')">标题(降序)</a>
+        <a class="item" :class="{active:sort==='name,asc'}" @click="sorted('name,asc')">标题(升序)</a>
+      </Dropdown>
+      <div class="ui divided items">
+        <div class="item" v-for="notebook in notebooks" :key="notebook.id">
+          <div class="content">
+            <router-link class="header" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>
+            <div class="meta">
+              <a>@{{notebook.owner.username}}</a>
+            </div>
+            <div class="description">
+              <p>{{notebook.description}}</p>
+            </div>
+            <div class="extra" v-if="notebook.updatedTime">
+              编辑于{{notebook.updatedTime | fromNow}}({{notebook.updatedTime | datetime}})
+            </div>
+            <div class="extra" v-else>
+              创建于{{notebook.createdTime | fromNow}}({{notebook.createdTime | datetime}})
+            </div>
           </div>
         </div>
       </div>
@@ -57,11 +70,13 @@
   import Pagination from '@/components/Pagination.vue'
   import Modal from '@/components/Modal.vue'
   import {goTop} from '@/utils/utils'
+  import Dropdown from '@/components/Dropdown.vue'
 
   @Component<Pageable>({
     components: {
       Modal,
-      Pagination
+      Pagination,
+      Dropdown
     },
     watch: {
       '$route'(to) {
@@ -86,7 +101,7 @@
     }
 
     load() {
-      axios.get(`/notebooks?page=${this.page - 1}&size=${this.size}&sort=id,desc`).then(({data}) => {
+      axios.get(`/notebooks?${this.query}`).then(({data}) => {
         this.notebooks = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
