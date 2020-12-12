@@ -19,7 +19,7 @@
           创建于{{note.createdTime | fromNow}}
         </span>
         <span :data-tooltip="note.updatedTime | datetime" v-if="note.updatedTime">
-          编辑于{{note.updatedTime | fromNow}}
+          更新于{{note.updatedTime | fromNow}}
         </span>
         <router-link class="ui teal label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
         <span :data-tooltip="note.views+'阅读'" v-if="note.access!=='PRIVATE'">

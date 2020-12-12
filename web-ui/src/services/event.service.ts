@@ -1,9 +1,9 @@
 class Handler {
   id: number
   event: string
-  handler: (event: Event) => any
+  handler: (event: Event) => void
 
-  constructor(id: number, event: string, handler: (event: Event) => any) {
+  constructor(id: number, event: string, handler: (event: Event) => void) {
     this.id = id
     this.event = event
     this.handler = handler
@@ -13,7 +13,7 @@ class Handler {
 class EventService {
   map: Map<string, Handler[]> = new Map<string, Handler[]>()
 
-  on(event: string, handler: (event: Event) => any): number {
+  on(event: string, handler: (event: Event) => void): number {
     const handlers = this.map.get(event) || []
     const id = new Date().getTime()
     handlers.push(new Handler(id, event, handler))

@@ -28,7 +28,10 @@
             <div class="description">
               <p>{{notebook.description}}</p>
             </div>
-            <div class="extra">
+            <div class="extra" v-if="notebook.updatedTime">
+              更新于{{notebook.updatedTime | fromNow}}({{notebook.updatedTime | datetime}})
+            </div>
+            <div class="extra" v-else>
               创建于{{notebook.createdTime | fromNow}}({{notebook.createdTime | datetime}})
             </div>
           </div>

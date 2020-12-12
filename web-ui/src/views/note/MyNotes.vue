@@ -28,7 +28,7 @@
               <router-link :to="'/notebooks/'+note.notebook.id">@{{note.notebook.name}}</router-link>
             </div>
             <div class="extra" v-if="note.updatedTime">
-              编辑于{{note.updatedTime | fromNow}}({{note.updatedTime | datetime}})
+              更新于{{note.updatedTime | fromNow}}({{note.updatedTime | datetime}})
             </div>
             <div class="extra" v-else>
               创建于{{note.createdTime | fromNow}}({{note.createdTime | datetime}})

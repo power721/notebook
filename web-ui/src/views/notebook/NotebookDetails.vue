@@ -21,8 +21,8 @@
         <span :data-tooltip="notebook.createdTime | datetime">
           创建于{{notebook.createdTime | fromNow}}
         </span>
-        <span :data-tooltip="notebook.updatedTime | datetime">
-          编辑于{{notebook.updatedTime | fromNow}}
+        <span :data-tooltip="notebook.updatedTime | datetime" v-if="notebook.updatedTime">
+          更新于{{notebook.updatedTime | fromNow}}
         </span>
         <a href="javascript:void(0)" data-tooltip="删除笔记本" @click="confirm=true" v-if="author">
           <i class="delete red icon"></i>
@@ -59,7 +59,7 @@
               <a>@{{note.author.username}}</a>
             </div>
             <div class="extra" v-if="note.updatedTime">
-              编辑于{{note.updatedTime | fromNow}}({{note.updatedTime | datetime}})
+              更新于{{note.updatedTime | fromNow}}({{note.updatedTime | datetime}})
             </div>
             <div class="extra" v-else>
               创建于{{note.createdTime | fromNow}}({{note.createdTime | datetime}})

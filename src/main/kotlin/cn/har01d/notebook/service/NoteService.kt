@@ -77,6 +77,8 @@ class NoteService(
         val note = noteRepository.save(Note(user, notebook, category, access = dto.access ?: Access.PUBLIC, rid = rid))
         val content = contentRepository.save(NoteContent(dto.title, dto.content, note, dto.markdown))
         note.content = content
+        notebook.updatedTime = Instant.now()
+        notebookRepository.save(notebook)
         return noteRepository.save(note)
     }
 
@@ -112,6 +114,8 @@ class NoteService(
             note.content = contentRepository.save(NoteContent(dto.title, dto.content, note, dto.markdown, content.version + 1))
         }
         note.updatedTime = Instant.now()
+        note.notebook.updatedTime = Instant.now()
+        notebookRepository.save(note.notebook)
         return noteRepository.save(note)
     }
 
