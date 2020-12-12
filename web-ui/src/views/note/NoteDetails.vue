@@ -22,7 +22,9 @@
           编辑于{{note.updatedTime | fromNow}}
         </span>
         <router-link class="ui teal label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
-        <template v-if="note.access!=='PRIVATE'">{{note.views}} <i class="eye icon"></i></template>
+        <span :data-tooltip="note.views+'阅读'" v-if="note.access!=='PRIVATE'">
+          {{note.views}} <i class="eye icon"></i>
+        </span>
         <Dropdown icon="bars" position="top right" :pointing="true" v-if="author">
           <router-link class="item" :to="'/notes/'+note.id+'/edit'">编辑笔记</router-link>
           <router-link class="item" :to="'/notes/'+note.id+'/history'">历史记录</router-link>

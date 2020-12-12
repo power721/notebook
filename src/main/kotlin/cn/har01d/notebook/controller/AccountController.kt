@@ -1,6 +1,7 @@
 package cn.har01d.notebook.controller
 
 import cn.har01d.notebook.dto.AccountDto
+import cn.har01d.notebook.dto.UserDto
 import cn.har01d.notebook.service.UserService
 import cn.har01d.notebook.vo.toVo
 import org.springframework.web.bind.annotation.*
@@ -13,4 +14,7 @@ class AccountController(val userService: UserService) {
 
     @GetMapping("/info")
     fun info() = userService.requireCurrentUser().toVo()
+
+    @PostMapping("/info")
+    fun update(@RequestBody dto: UserDto) = userService.update(dto).toVo()
 }

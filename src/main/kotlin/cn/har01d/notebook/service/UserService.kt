@@ -1,8 +1,10 @@
 package cn.har01d.notebook.service
 
+import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppUnauthorizedException
 import cn.har01d.notebook.dto.AccountDto
+import cn.har01d.notebook.dto.UserDto
 import cn.har01d.notebook.entity.Notebook
 import cn.har01d.notebook.entity.NotebookRepository
 import cn.har01d.notebook.entity.User
@@ -56,5 +58,20 @@ class UserService(
         val notebook = Notebook("我的笔记本", "我的第一个笔记本", user)
         notebookRepository.save(notebook)
         return user
+    }
+
+    fun update(dto: UserDto): User {
+        val user = requireCurrentUser()
+        if (dto.email.isNotEmpty()) {
+            val exist = repository.findByEmail(dto.email)
+            if (exist != null && exist.id != user.id) {
+                throw AppException("邮箱已被注册")
+            }
+            user.email = dto.email
+        }
+        if (dto.password.isNotEmpty()) {
+            user.password = passwordEncoder.encode(dto.password)
+        }
+        return repository.save(user)
     }
 }

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {Account} from '@/models/Account'
+import {Account, AccountDto} from '@/models/Account'
 import store from '@/store'
 
 class AccountService {
@@ -29,6 +29,13 @@ class AccountService {
         this.clean()
       })
     }
+  }
+
+  update(account: AccountDto) {
+    return axios.post('/accounts/info', account).then(({data}) => {
+      Object.assign(this.account, data)
+      store.commit('login', data)
+    })
   }
 
   signup(username: string, password: string) {

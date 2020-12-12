@@ -13,6 +13,7 @@ import MyNotes from '@/views/note/MyNotes.vue'
 import CategoryList from '@/views/category/CategoryList.vue'
 import CategoryDetails from '@/views/category/CategoryDetails.vue'
 import About from '@/views/About.vue'
+import UserInfo from '@/views/user/UserInfo.vue'
 
 Vue.use(VueRouter)
 
@@ -84,6 +85,11 @@ const routes: Array<RouteConfig> = [
     path: '/login',
     component: Login,
     meta: {guest: true}
+  },
+  {
+    path: '/info',
+    component: UserInfo,
+    meta: {auth: true}
   },
   {
     path: '/about',
