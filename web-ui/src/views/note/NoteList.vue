@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <Pagination v-model="page" :totalPages="totalPages" @change="go"></Pagination>
+    <Pagination v-model="page" :pages="totalPages" :total="totalElements" @change="go"></Pagination>
   </div>
 </template>
 

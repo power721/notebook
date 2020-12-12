@@ -27,7 +27,7 @@ import { Role } from '@/models/Account'
       </div>
     </div>
 
-    <Pagination v-model="page" :totalPages="totalPages" @change="go"></Pagination>
+    <Pagination v-model="page" :pages="totalPages" :total="totalElements" @change="go"></Pagination>
 
     <Modal v-model="modal" title="创建分类" size="large">
       <form class="ui form">
