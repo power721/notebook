@@ -11,8 +11,12 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
+  import configService from '@/services/config.service'
 
   @Component
   export default class About extends Vue {
+    mounted() {
+      configService.setTitle('关于')
+    }
   }
 </script>

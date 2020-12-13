@@ -1,5 +1,6 @@
 package cn.har01d.notebook.service
 
+import cn.har01d.notebook.core.Const
 import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppUnauthorizedException
@@ -42,7 +43,7 @@ class UserService(
     }
 
     fun signup(dto: AccountDto): User {
-        val disabled = configService.get("disable_signup", false)
+        val disabled = configService.get(Const.DISABLE_SIGNUP, false)
         if (disabled) {
             throw AppForbiddenException("禁止用户注册")
         }

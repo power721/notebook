@@ -67,6 +67,7 @@
   import {ResponseError} from '@/models/ResponseError'
   import accountService from '@/services/account.service'
   import Modal from '@/components/Modal.vue'
+  import configService from '@/services/config.service'
 
   @Component({
     components: {
@@ -89,7 +90,7 @@
     load() {
       axios.get(`/notes/${this.id}`).then(({data}) => {
         this.note = data
-        document.title = this.note.title + ' - 编辑历史'
+        configService.setTitle(this.note.title + ' - 编辑历史')
         this.author = accountService.account.id === this.note.author.id
       })
       axios.get(`/notes/${this.id}/history`).then(({data}) => {

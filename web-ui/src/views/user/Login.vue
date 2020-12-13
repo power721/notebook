@@ -43,6 +43,7 @@
   import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
   import accountService from '@/services/account.service'
+  import configService from '@/services/config.service'
 
   @Component
   export default class Login extends Vue {
@@ -56,7 +57,7 @@
     }
 
     mounted() {
-      document.title = '用户登录'
+      configService.setTitle('用户登录')
       this.load()
     }
 

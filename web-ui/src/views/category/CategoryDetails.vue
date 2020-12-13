@@ -94,6 +94,7 @@
   import {Category} from '@/models/Category'
   import {goTop} from '@/utils/utils'
   import Dropdown from '@/components/Dropdown.vue'
+  import configService from '@/services/config.service'
 
   @Component<Pageable>({
     components: {
@@ -133,7 +134,7 @@
     loadCategory() {
       axios.get(`/categories/${this.id}`).then(({data}) => {
         this.category = data
-        document.title = this.category.name + ' - 分类'
+        configService.setTitle(this.category.name + ' - 分类')
       })
     }
 

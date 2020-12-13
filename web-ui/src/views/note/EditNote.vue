@@ -98,6 +98,7 @@
   import {Notebook} from '@/models/Notebook'
   import {Category} from '@/models/Category'
   import accountService from '@/services/account.service'
+  import configService from '@/services/config.service'
 
   @Component({
     components: {
@@ -152,7 +153,7 @@
     }
 
     mounted() {
-      document.title = '创建笔记'
+      configService.setTitle('创建笔记')
       this.id = this.$route.params.id
       this.notebook.id = this.$route.query.notebook as string
       if (this.notebook.id) {
@@ -209,7 +210,7 @@
           this.$toasted.error('用户无权操作')
           this.$router.push('/')
         }
-        document.title = this.note.title + ' - 编辑'
+        configService.setTitle(this.note.title + ' - 编辑')
       })
     }
 

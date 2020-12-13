@@ -67,6 +67,7 @@
   import Pagination from '@/components/Pagination.vue'
   import Modal from '@/components/Modal.vue'
   import Dropdown from '@/components/Dropdown.vue'
+  import configService from '@/services/config.service'
 
   @Component<Pageable>({
     components: {
@@ -91,7 +92,7 @@
     }
 
     mounted() {
-      document.title = '我的笔记本'
+      configService.setTitle('我的笔记本')
       this.page = +this.$route.query.page || 1
       this.load()
     }

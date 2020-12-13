@@ -1,5 +1,7 @@
 package cn.har01d.notebook.service
 
+import cn.har01d.notebook.core.Const
+import cn.har01d.notebook.core.SiteConfig
 import cn.har01d.notebook.entity.Config
 import cn.har01d.notebook.entity.ConfigRepository
 import cn.har01d.notebook.entity.ConfigType
@@ -9,6 +11,13 @@ import org.springframework.stereotype.Service
 @Service
 class ConfigService(private val repository: ConfigRepository) {
     fun findAll(): List<Config> = repository.findAll()
+
+    fun getSiteConfig(): SiteConfig {
+        return SiteConfig(
+                get(Const.SITE_NAME, "Notebook"),
+                get(Const.DISABLE_SIGNUP, false)
+        )
+    }
 
     fun get(name: String) = repository.findByIdOrNull(name)
 

@@ -10,6 +10,9 @@ class ConfigController(private val service: ConfigService) {
     @GetMapping
     fun findAll(): List<Config> = service.findAll()
 
+    @GetMapping("/site")
+    fun getSiteConfig() = service.getSiteConfig()
+
     @GetMapping("/{name}")
     fun get(@PathVariable name: String) = service.get(name)
 

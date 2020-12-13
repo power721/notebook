@@ -41,6 +41,7 @@
   import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
   import accountService from '@/services/account.service'
+  import configService from '@/services/config.service'
 
   @Component
   export default class Signup extends Vue {
@@ -53,7 +54,7 @@
     }
 
     mounted() {
-      document.title = '用户注册'
+      configService.setTitle('用户注册')
       this.load()
     }
 

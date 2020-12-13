@@ -63,6 +63,7 @@
   import accountService from '@/services/account.service'
   import Dropdown from '@/components/Dropdown.vue'
   import Modal from '@/components/Modal.vue'
+  import configService from '@/services/config.service'
 
   @Component({
     components: {
@@ -86,7 +87,7 @@
     load() {
       axios.get(`/notes/${this.id}?view=true`).then(({data}) => {
         this.note = data
-        document.title = this.note.title
+        configService.setTitle(this.note.title)
         const now = new Date().getTime()
         const diff = now - new Date(this.note.createdTime).getTime()
         this.old = diff > 1000 * 3600 * 24 * 360

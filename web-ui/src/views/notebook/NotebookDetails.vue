@@ -115,6 +115,7 @@
   import {Pageable} from '@/components/Pageable'
   import {goTop} from '@/utils/utils'
   import accountService from '@/services/account.service'
+  import configService from '@/services/config.service'
 
   @Component<Pageable>({
     components: {
@@ -150,7 +151,7 @@
       axios.get(`/notebooks/${this.id}`).then(({data}) => {
         this.notebook = data
         this.author = accountService.account.id === this.notebook.owner.id
-        document.title = this.notebook.name + ' - 笔记本'
+        configService.setTitle(this.notebook.name + ' - 笔记本')
       })
     }
 

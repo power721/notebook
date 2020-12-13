@@ -1,7 +1,6 @@
-
 import Vue from 'vue'
 import axios from 'axios'
-import {Select, Option, Radio, RadioGroup} from 'element-ui'
+import {Option, Radio, RadioGroup, Select} from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import Toasted from 'vue-toasted'
 import App from './App.vue'
@@ -37,6 +36,7 @@ import 'tinymce/skins/ui/oxide/skin.min.css'
 import 'tinymce/skins/content/default/content.min.css'
 
 import 'semantic-ui-css/semantic.min.css'
+import configService from '@/services/config.service'
 
 Vue.config.productionTip = false
 
@@ -81,6 +81,7 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(data)
 })
 
+configService.getSiteConfig()
 auth.getInfo()
 
 router.beforeEach((to, from, next) => {

@@ -55,6 +55,7 @@ import { Role } from '@/models/Account'
   import Modal from '@/components/Modal.vue'
   import {Category} from '@/models/Category'
   import {goTop} from '@/utils/utils'
+  import configService from '@/services/config.service'
 
   @Component<Pageable>({
     components: {
@@ -78,7 +79,7 @@ import { Role } from '@/models/Account'
     }
 
     mounted() {
-      document.title = '分类'
+      configService.setTitle('分类')
       this.page = +this.$route.query.page || 1
       this.load()
     }

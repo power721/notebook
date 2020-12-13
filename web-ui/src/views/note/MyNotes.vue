@@ -50,6 +50,7 @@
   import Pagination from '@/components/Pagination.vue'
   import {goTop} from '@/utils/utils'
   import Dropdown from '@/components/Dropdown.vue'
+  import configService from '@/services/config.service'
 
   @Component<Pageable>({
     components: {
@@ -67,7 +68,7 @@
     notes: Note[] = []
 
     mounted() {
-      document.title = '我的笔记'
+      configService.setTitle('我的笔记')
       this.page = +this.$route.query.page || 1
       this.load()
     }

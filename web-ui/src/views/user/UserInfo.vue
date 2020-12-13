@@ -51,6 +51,7 @@
   import {Component, Vue} from 'vue-property-decorator'
   import accountService from '@/services/account.service'
   import {Account} from '@/models/Account'
+  import configService from '@/services/config.service'
 
   @Component
   export default class UserInfo extends Vue {
@@ -68,7 +69,7 @@
     }
 
     mounted() {
-      document.title = '用户设置'
+      configService.setTitle('用户设置')
     }
 
     submit() {
