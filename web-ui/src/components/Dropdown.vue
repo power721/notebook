@@ -1,7 +1,7 @@
 <template>
   <div class="ui active dropdown" :class="[{visible: show, pointing: pointing, inline: inline}, position]" tabindex="0"
        @click.stop="show=true">
-    <i class="icon" :class="iconClass" @click.stop="show=!show"></i>
+    <i class="icon" :class="[icon]" @click.stop="show=!show"></i>
     <div class="menu transition" :class="{visible: show}" tabindex="-1" @click.stop="show=!show">
       <slot></slot>
     </div>
@@ -20,12 +20,6 @@
     @Prop({default: 'dropdown'}) private icon!: string
     private handler: number = 0
     private show: boolean = false
-
-    get iconClass() {
-      return {
-        [this.icon]: true
-      }
-    }
 
     mounted() {
       this.handler = eventService.on('click', () => {

@@ -36,7 +36,6 @@ import 'tinymce/skins/ui/oxide/skin.min.css'
 import 'tinymce/skins/content/default/content.min.css'
 
 import 'semantic-ui-css/semantic.min.css'
-import configService from '@/services/config.service'
 
 Vue.config.productionTip = false
 
@@ -81,7 +80,6 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(data)
 })
 
-configService.getSiteConfig()
 auth.getInfo()
 
 router.beforeEach((to, from, next) => {

@@ -117,7 +117,7 @@
       initialEditType: 'wysiwyg'
     }
     config = {
-      height: 550,
+      height: 500,
       branding: false,
       plugins: [
         'autolink link media table advlist lists hr',
@@ -248,5 +248,7 @@
 </script>
 
 <style scoped>
-
+  .ui.form {
+    padding-bottom: 33px;
+  }
 </style>

@@ -5,8 +5,9 @@ export class ConfigService {
   siteConfig: SiteConfig = new SiteConfig()
 
   getSiteConfig() {
-    axios.get('/config/site').then(({data}) => {
+    return axios.get('/config/site').then(({data}) => {
       this.siteConfig = data
+      return data
     })
   }
 
