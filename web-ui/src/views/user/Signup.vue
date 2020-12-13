@@ -38,7 +38,6 @@
 </template>
 
 <script lang="ts">
-  import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
   import accountService from '@/services/account.service'
   import configService from '@/services/config.service'
@@ -55,16 +54,14 @@
 
     mounted() {
       configService.setTitle('用户注册')
-      this.load()
+      this.check()
     }
 
-    load() {
-      axios.get('/config/disable_signup').then(({data}) => {
-        if (data && data.value === 'true') {
-          this.$toasted.error('禁止用户注册')
-          setTimeout(() => this.$router.push('/'), 100)
-        }
-      })
+    check() {
+      if (configService.siteConfig.disableSignup) {
+        this.$toasted.error('禁止用户注册')
+        setTimeout(() => this.$router.push('/'), 100)
+      }
     }
 
     submit() {

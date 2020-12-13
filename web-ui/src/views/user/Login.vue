@@ -40,7 +40,6 @@
 </template>
 
 <script lang="ts">
-  import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
   import accountService from '@/services/account.service'
   import configService from '@/services/config.service'
@@ -49,7 +48,6 @@
   export default class Login extends Vue {
     error: string = ''
     success: boolean = false
-    disableSignup: boolean = false
     account = {
       username: '',
       password: '',
@@ -58,15 +56,10 @@
 
     mounted() {
       configService.setTitle('用户登录')
-      this.load()
     }
 
-    load() {
-      axios.get('/config/disable_signup').then(({data}) => {
-        if (data) {
-          this.disableSignup = data.value === 'true'
-        }
-      })
+    get disableSignup() {
+      return configService.siteConfig.disableSignup
     }
 
     submit() {
