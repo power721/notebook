@@ -15,6 +15,8 @@ class ConfigService(private val repository: ConfigRepository) {
     fun getSiteConfig(): SiteConfig {
         return SiteConfig(
                 get(Const.SITE_NAME, "Notebook"),
+                get(Const.ICP_BEIAN, ""),
+                get(Const.GOV_BEIAN, ""),
                 get(Const.ENABLE_COMMENT, true),
                 get(Const.ENABLE_SIGNUP, true),
         )
