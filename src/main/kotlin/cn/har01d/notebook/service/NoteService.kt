@@ -119,6 +119,29 @@ class NoteService(
         return noteRepository.save(note)
     }
 
+    fun move(id: String, notebookId: String): Note {
+        val user = userService.requireCurrentUser()
+        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        if (note.author.id != user.id) {
+            throw AppForbiddenException("用户无权操作")
+        }
+
+        val notebook = getNotebook(notebookId)
+        if (notebook.owner.id != user.id) {
+            throw AppForbiddenException("用户无权操作")
+        }
+
+        if (notebook.id == note.notebook.id) {
+            return note
+        }
+
+        note.notebook = notebook
+        note.updatedTime = Instant.now()
+        note.notebook.updatedTime = Instant.now()
+        notebookRepository.save(note.notebook)
+        return noteRepository.save(note)
+    }
+
     fun getNoteHistory(id: String): List<NoteContent> {
         val user = userService.requireCurrentUser()
         val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")

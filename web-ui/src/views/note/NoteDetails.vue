@@ -29,7 +29,7 @@
           <router-link class="item" :to="'/notes/'+note.id+'/edit'">编辑笔记</router-link>
           <router-link class="item" :to="'/notes/'+note.id+'/history'">历史记录</router-link>
           <a class="item" @click="confirm=true">删除笔记</a>
-          <a class="item" @click="modal=true">移动笔记</a>
+          <a class="item" @click="showMove">移动笔记</a>
         </Dropdown>
       </div>
     </div>
@@ -53,6 +53,28 @@
         <button @click="deleteNote" class="ui negative button">删除</button>
       </template>
     </Modal>
+
+    <Modal v-model="modal" title="移动笔记">
+      <form class="ui form">
+        <div class="required field">
+          <label>笔记本</label>
+          <el-select v-model="notebookId"
+                     filterable
+                     placeholder="请选择">
+            <el-option
+              v-for="item in notebooks"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
+      </form>
+      <template slot="actions">
+        <button @click="modal=false" class="ui cancel button">取消</button>
+        <button @click="moveNote" class="ui positive button" :disabled="!notebookId">移动</button>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -64,6 +86,7 @@
   import Dropdown from '@/components/Dropdown.vue'
   import Modal from '@/components/Modal.vue'
   import configService from '@/services/config.service'
+  import {Notebook} from '@/models/Notebook'
 
   @Component({
     components: {
@@ -73,11 +96,13 @@
   })
   export default class NoteDetails extends Vue {
     id: string = ''
+    notebookId: string = ''
     old: boolean = false
     author: boolean = false
     modal: boolean = false
     confirm: boolean = false
     note: Note = new Note()
+    notebooks: Notebook[] = []
 
     mounted() {
       this.id = this.$route.params.id
@@ -100,10 +125,25 @@
       })
     }
 
+    showMove() {
+      axios.get('/users/-/notebooks').then(({data}) => {
+        this.modal = true
+        this.notebooks = data.content
+      })
+    }
+
+    moveNote() {
+      axios.post(`/notes/${this.id}/move?notebookId=${this.notebookId}`).then(({data}) => {
+        this.modal = false
+        this.$toasted.success('移动笔记成功')
+        this.note = data
+      })
+    }
+
     deleteNote() {
       axios.delete(`/notes/${this.id}`).then(() => {
         this.confirm = false
-        this.$toasted.success('删除成功')
+        this.$toasted.success('删除笔记成功')
         this.$router.push('/notebooks/' + this.note.notebook.id)
       })
     }
