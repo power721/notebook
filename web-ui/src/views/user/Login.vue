@@ -31,7 +31,7 @@
           </form>
         </div>
       </div>
-      <div class="extra content" v-if="!disableSignup">
+      <div class="extra content" v-if="enableSignup">
         没有帐号？
         <router-link to="/signup">注册</router-link>
       </div>
@@ -58,8 +58,8 @@
       configService.setTitle('用户登录')
     }
 
-    get disableSignup() {
-      return configService.siteConfig.disableSignup
+    get enableSignup() {
+      return configService.siteConfig.enableSignup
     }
 
     submit() {

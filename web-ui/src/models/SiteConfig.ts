@@ -1,4 +1,5 @@
 export class SiteConfig {
   siteName: string = 'Notebook'
-  disableSignup: boolean = false
+  enableComment: boolean = true
+  enableSignup: boolean = true
 }

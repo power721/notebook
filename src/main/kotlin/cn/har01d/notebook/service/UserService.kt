@@ -43,8 +43,8 @@ class UserService(
     }
 
     fun signup(dto: AccountDto): User {
-        val disabled = configService.get(Const.DISABLE_SIGNUP, false)
-        if (disabled) {
+        val enabled = configService.get(Const.ENABLE_SIGNUP, true)
+        if (!enabled) {
             throw AppForbiddenException("禁止用户注册")
         }
         return createUser(dto)
