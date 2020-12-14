@@ -1,6 +1,7 @@
 package cn.har01d.notebook.service
 
 import cn.har01d.notebook.core.Const
+import cn.har01d.notebook.core.Role
 import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppUnauthorizedException
@@ -55,6 +56,9 @@ class UserService(
             throw AppForbiddenException("用户名已经存在")
         }
         val user = User(dto.username, passwordEncoder.encode(dto.password))
+        if (repository.count() == 0L) {
+            user.role = Role.ROLE_ADMIN
+        }
         repository.save(user)
         val notebook = Notebook("我的笔记本", "我的第一个笔记本", user)
         notebookRepository.save(notebook)
