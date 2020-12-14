@@ -2,6 +2,7 @@ package cn.har01d.notebook.core
 
 data class SiteConfig(
         val siteName: String,
+        val brandColor: String,
         val icpBeian: String,
         val govBeian: String,
         val enableComment: Boolean,

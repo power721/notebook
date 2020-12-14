@@ -2,7 +2,7 @@
   <div id="app" :class="{inverted:inverted}">
     <div class="ui menu" :class="{inverted:inverted}">
       <div class="ui container">
-        <h3 class="ui teal header item">{{siteConfig.siteName}}</h3>
+        <h3 class="ui header item" :class="[siteConfig.brandColor]">{{siteConfig.siteName}}</h3>
         <router-link class="item" to="/" exact><i class="home icon"></i>首页</router-link>
         <router-link class="item" to="/notebooks"><i class="book icon"></i>笔记本</router-link>
         <router-link class="item" to="/categories"><i class="idea icon"></i>分类</router-link>

@@ -15,6 +15,7 @@ class ConfigService(private val repository: ConfigRepository) {
     fun getSiteConfig(): SiteConfig {
         return SiteConfig(
                 get(Const.SITE_NAME, "Notebook"),
+                get(Const.BRAND_COLOR, "teal"),
                 get(Const.ICP_BEIAN, ""),
                 get(Const.GOV_BEIAN, ""),
                 get(Const.ENABLE_COMMENT, true),
@@ -24,6 +25,7 @@ class ConfigService(private val repository: ConfigRepository) {
 
     fun updateSiteConfig(dto: SiteConfig): SiteConfig {
         save(Const.SITE_NAME, dto.siteName)
+        save(Const.BRAND_COLOR, dto.brandColor)
         save(Const.ICP_BEIAN, dto.icpBeian)
         save(Const.GOV_BEIAN, dto.govBeian)
         save(Const.ENABLE_COMMENT, dto.enableComment)
