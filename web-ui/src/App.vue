@@ -83,6 +83,7 @@
     siteConfig: SiteConfig = new SiteConfig()
 
     mounted() {
+      configService.setTitle('配置管理')
       this.inverted = localStorage.getItem('invertedMode') === 'true'
       configService.getSiteConfig().then((data) => {
         this.siteConfig = data

@@ -22,6 +22,15 @@ class ConfigService(private val repository: ConfigRepository) {
         )
     }
 
+    fun updateSiteConfig(dto: SiteConfig): SiteConfig {
+        save(Const.SITE_NAME, dto.siteName)
+        save(Const.ICP_BEIAN, dto.icpBeian)
+        save(Const.GOV_BEIAN, dto.govBeian)
+        save(Const.ENABLE_COMMENT, dto.enableComment)
+        save(Const.ENABLE_SIGNUP, dto.enableSignup)
+        return getSiteConfig()
+    }
+
     fun get(name: String) = repository.findByIdOrNull(name)
 
     fun get(name: String, default: String): String {

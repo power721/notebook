@@ -11,6 +11,13 @@ export class ConfigService {
     })
   }
 
+  updateSiteConfig(siteConfig: SiteConfig) {
+    return axios.put('/config/site', siteConfig).then(({data}) => {
+      this.siteConfig = data
+      return data
+    })
+  }
+
   setTitle(title: string) {
     document.title = title + ' - ' + this.siteConfig.siteName
   }

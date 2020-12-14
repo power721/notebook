@@ -16,12 +16,8 @@
         <i class="right chevron icon divider"></i>
       </template>
       <template v-if="id">
-        <!--        <div class="section">笔记本</div>-->
-        <!--        <i class="right chevron icon divider"></i>-->
         <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
         <i class="right chevron icon divider"></i>
-        <!--        <div class="section">笔记</div>-->
-        <!--        <i class="right chevron icon divider"></i>-->
         <router-link class="section" :to="'/notes/'+id">{{note.title}}</router-link>
         <i class="right chevron icon divider"></i>
         <div class="active section">编辑笔记</div>
@@ -153,7 +149,6 @@
     }
 
     mounted() {
-      configService.setTitle('创建笔记')
       this.id = this.$route.params.id
       this.notebook.id = this.$route.query.notebook as string
       if (this.notebook.id) {
@@ -165,7 +160,10 @@
       }
       this.load()
       if (this.id) {
+        configService.setTitle('编辑笔记')
         this.loadNote()
+      } else {
+        configService.setTitle('创建笔记')
       }
     }
 

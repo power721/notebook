@@ -14,6 +14,7 @@ import CategoryList from '@/views/category/CategoryList.vue'
 import CategoryDetails from '@/views/category/CategoryDetails.vue'
 import About from '@/views/About.vue'
 import UserInfo from '@/views/user/UserInfo.vue'
+import Admin from '@/views/admin/Admin.vue'
 
 Vue.use(VueRouter)
 
@@ -89,6 +90,11 @@ const routes: Array<RouteConfig> = [
   {
     path: '/info',
     component: UserInfo,
+    meta: {auth: true}
+  },
+  {
+    path: '/admin',
+    component: Admin,
     meta: {auth: true}
   },
   {
