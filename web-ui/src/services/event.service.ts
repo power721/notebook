@@ -29,8 +29,8 @@ class EventService {
     }
   }
 
-  onclick(event: MouseEvent) {
-    const handlers = this.map.get('click') || []
+  handle(name: string, event: Event) {
+    const handlers = this.map.get(name) || []
     handlers.forEach(handler => {
       handler.handler(event)
     })
@@ -40,7 +40,11 @@ class EventService {
 const eventService = new EventService()
 
 document.onclick = (event) => {
-  eventService.onclick(event)
+  eventService.handle('click', event)
+}
+
+document.onscroll = (event) => {
+  eventService.handle('scroll', event)
 }
 
 export default eventService

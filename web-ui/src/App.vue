@@ -27,7 +27,7 @@
           <div class="three wide column">
             <h4 class="ui header" :class="{inverted:inverted}">关于</h4>
             <div class="ui link list" :class="{inverted:inverted}">
-              <router-link to="/about" class="item">关于我们</router-link>
+              <router-link to="/about" class="item">关于</router-link>
               <a href="https://gitee.com/power/notebook" class="item" target="_blank">代码</a>
             </div>
           </div>
@@ -53,7 +53,8 @@
       </div>
       <Popup id="config" position="top right">
         <template slot="trigger">
-          <div class="ui circular icon button" :class="{inverted: inverted}">
+          <div class="ui circular icon button" data-tooltip="页面设置" data-position="left center"
+               :class="{inverted: inverted}">
             <i class="ui cog icon"></i>
           </div>
         </template>
@@ -62,6 +63,7 @@
           <label>夜间模式</label>
         </div>
       </Popup>
+      <FloatingActions></FloatingActions>
     </div>
   </div>
 </template>
@@ -72,10 +74,12 @@
   import store from '@/store'
   import {SiteConfig} from '@/models/SiteConfig'
   import Popup from '@/components/Popup.vue'
+  import FloatingActions from '@/views/FloatingActions.vue'
 
   @Component({
     components: {
-      Popup
+      Popup,
+      FloatingActions
     }
   })
   export default class App extends Vue {
