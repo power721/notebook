@@ -22,3 +22,21 @@ spring:
     url: jdbc:mysql://localhost:3306/notebook?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
     username: username
     password: password
+
+---
+spring:
+  profiles:
+    active: production
+
+server:
+  address: 127.0.0.1
+  port: 6666
+  compression:
+    enabled: true
+    min-response-size: 524288
+
+logging:
+  file:
+    name: /opt/notebook/log/notebook.log
+  level:
+    ROOT: INFO

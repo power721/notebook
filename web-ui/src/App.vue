@@ -102,7 +102,6 @@
     }
 
     mounted() {
-      configService.setTitle('配置管理')
       this.inverted = localStorage.getItem('invertedMode') === 'true'
       store.dispatch('getSiteConfig')
     }
