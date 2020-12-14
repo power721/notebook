@@ -35,7 +35,7 @@
     <form class="ui form">
       <div class="required field">
         <label>标题</label>
-        <input type="text" name="title" v-model="note.title" placeholder="标题">
+        <input type="text" name="title" autocomplete="off" v-model="note.title" placeholder="标题">
       </div>
       <div class="fields">
         <div class="required field">

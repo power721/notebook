@@ -1,5 +1,9 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
+    'revision': 'd0289dc0a46fc5b15b3363ffa78cf6c7',
+    'url': '/beian.png'
+  },
+  {
     'revision': '13db00b7a34fee4d819ab7f9838cc428',
     'url': '/fonts/brand-icons.13db00b7.eot'
   },
@@ -72,12 +76,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     'url': '/img/outline-icons.82f60bd0.svg'
   },
   {
-    'revision': 'dd4706e72e38b511c877d2ff0128c8d2',
+    'revision': '684471cadbd19886edbcfce398a9b1dd',
     'url': '/index.html'
   },
   {
-    'revision': 'f1662f2b933bc6ce5d89',
-    'url': '/js/app.8abbfaa2.js'
+    'revision': '07a9e12cbf09d74c9e4b',
+    'url': '/js/app.e53d172c.js'
   },
   {
     'revision': '995c842888aaf199de18',
