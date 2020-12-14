@@ -56,8 +56,6 @@
 
 <style scoped>
   .login {
-    margin-top: 6px;
-    margin-bottom: 6px;
     margin-right: 12px;
   }
 </style>

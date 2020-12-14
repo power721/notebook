@@ -41,13 +41,13 @@
 
     mounted() {
       configService.getSiteConfig().then((data) => {
-        this.siteConfig = data
+        Object.assign(this.siteConfig, data)
       })
     }
 
     save() {
       configService.updateSiteConfig(this.siteConfig).then((data) => {
-        this.siteConfig = data
+        Object.assign(this.siteConfig, data)
       })
     }
   }

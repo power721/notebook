@@ -2,18 +2,19 @@
   <div id="app" :class="{inverted:inverted}">
     <div class="ui menu" :class="{inverted:inverted}">
       <div class="ui container">
-        <router-link class="item" to="/" exact>首页</router-link>
-        <router-link class="item" to="/notebooks">笔记本</router-link>
-        <router-link class="item" to="/categories">分类</router-link>
-        <router-link class="item" to="/about">关于</router-link>
-        <div class="right menu item">
-          <!--        <div class="item">-->
-          <!--          <div class="ui transparent icon input">-->
-          <!--            <input type="text" placeholder="Search...">-->
-          <!--            <i class="search link icon"></i>-->
-          <!--          </div>-->
-          <!--        </div>-->
-          <UserAccount></UserAccount>
+        <h3 class="ui teal header item">{{siteConfig.siteName}}</h3>
+        <router-link class="item" to="/" exact><i class="home icon"></i>首页</router-link>
+        <router-link class="item" to="/notebooks"><i class="book icon"></i>笔记本</router-link>
+        <router-link class="item" to="/categories"><i class="idea icon"></i>分类</router-link>
+        <router-link class="item" to="/about"><i class="info icon"></i>关于</router-link>
+        <div class="right menu">
+          <!--<div class="item">
+            <div class="ui transparent icon input">
+              <input type="text" placeholder="Search...">
+              <i class="search link icon"></i>
+            </div>
+          </div>-->
+          <UserAccount class="item"></UserAccount>
         </div>
       </div>
     </div>
@@ -38,7 +39,7 @@
               <router-link to="/categories" class="item">分类</router-link>
             </div>
           </div>
-          <div class="seven wide column" v-if="siteConfig.icpBeian">
+          <div class="six wide column" v-if="siteConfig.icpBeian">
             <h4 class="ui header" :class="{inverted:inverted}">备案</h4>
             <div class="ui link list" :class="{inverted:inverted}">
               <a href="http://beian.miit.gov.cn/" class="item" target="_blank">{{siteConfig.icpBeian}}</a>
