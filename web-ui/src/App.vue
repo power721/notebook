@@ -69,6 +69,7 @@
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
   import configService from '@/services/config.service'
+  import store from '@/store'
   import {SiteConfig} from '@/models/SiteConfig'
   import Popup from '@/components/Popup.vue'
 
@@ -80,14 +81,15 @@
   export default class App extends Vue {
     inverted: boolean = false
     show: boolean = false
-    siteConfig: SiteConfig = new SiteConfig()
+
+    get siteConfig(): SiteConfig {
+      return store.state.siteConfig
+    }
 
     mounted() {
       configService.setTitle('配置管理')
       this.inverted = localStorage.getItem('invertedMode') === 'true'
-      configService.getSiteConfig().then((data) => {
-        this.siteConfig = data
-      })
+      store.dispatch('getSiteConfig')
     }
 
     save() {
