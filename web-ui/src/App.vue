@@ -1,6 +1,6 @@
 <template>
   <div id="app" :class="{inverted:inverted}">
-    <div class="ui menu" :class="{inverted:inverted}">
+    <div class="ui stackable menu" :class="{inverted:inverted}">
       <div class="ui container">
         <h3 class="ui header item" :class="[siteConfig.brandColor]">{{siteConfig.siteName}}</h3>
         <router-link class="item" to="/" exact><i class="home icon"></i>首页</router-link>
@@ -18,6 +18,7 @@
         </div>
       </div>
     </div>
+
     <div id="main" class="ui center aligned container" :class="{inverted:inverted}">
       <router-view/>
     </div>
@@ -155,5 +156,12 @@
     position: absolute;
     bottom: 24px;
     right: 24px;
+  }
+
+  @media only screen and (max-width: 767px) {
+    #config .ui.popup {
+      top: auto;
+      bottom: 60px;
+    }
   }
 </style>

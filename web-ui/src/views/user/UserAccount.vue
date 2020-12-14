@@ -3,7 +3,7 @@
     <div class="ui dropdown active" :class="{visible: show}" v-if="account.id">
       <div class="text" @click.stop="show=!show">{{account.username}}</div>
       <i class="dropdown icon" @click.stop="show=!show"></i>
-      <div class="menu transition" :class="{visible: show}">
+      <div id="user-menu" class="menu transition" :class="{visible: show}">
         <router-link class="item" to="/notes/-/new">创建笔记</router-link>
         <router-link class="item" to="/my-notebooks">我的笔记本</router-link>
         <router-link class="item" to="/my-notes">我的笔记</router-link>
@@ -59,5 +59,11 @@
 <style scoped>
   .login {
     margin-right: 12px;
+  }
+
+  @media only screen and (max-width: 767px) {
+    #user-menu {
+      right: -36px;
+    }
   }
 </style>
