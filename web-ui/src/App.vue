@@ -25,6 +25,13 @@
     <div class="ui vertical footer raised segment" :class="{inverted:inverted}">
       <div class="ui left aligned container">
         <div class="ui stackable divided equal height stackable grid" :class="{inverted:inverted}">
+          <div class="three wide column" v-if="siteConfig.qrCode">
+            <div class="ui inverted link list">
+              <div class="item">
+                <img :src="siteConfig.qrCode" class="ui rounded image" alt="" style="width: 72px">
+              </div>
+            </div>
+          </div>
           <div class="three wide column">
             <h4 class="ui header" :class="{inverted:inverted}">关于</h4>
             <div class="ui link list" :class="{inverted:inverted}">
@@ -52,6 +59,7 @@
           </div>
         </div>
       </div>
+
       <Popup id="config" position="top right">
         <template slot="trigger">
           <div class="ui circular icon button" data-tooltip="页面设置" data-position="left center"
@@ -64,7 +72,9 @@
           <label>夜间模式</label>
         </div>
       </Popup>
+
       <FloatingActions></FloatingActions>
+
     </div>
   </div>
 </template>

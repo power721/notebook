@@ -8,15 +8,15 @@
       <div class="required field">
         <label>品牌颜色</label>
         <el-select v-model="siteConfig.brandColor">
-          <el-option
-            v-for="item in colors"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
+          <el-option v-for="item in colors" :key="item.id" :label="item.name" :value="item.id">
             <span style="float: left">{{ item.name }}</span>
             <span style="float: right;height: 24px;margin-top: 4px" class="ui label" :class="[item.id]"></span>
           </el-option>
         </el-select>
+      </div>
+      <div class="field">
+        <label>二维码</label>
+        <input type="text" v-model="siteConfig.qrCode" name="qrCode">
       </div>
       <div class="field">
         <label>ICP备案</label>
