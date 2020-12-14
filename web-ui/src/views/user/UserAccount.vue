@@ -39,10 +39,12 @@
       this.handler = eventService.on('click', () => {
         this.show = false
       })
+      console.log('UserAccount mounted', this.handler)
     }
 
     destroyed() {
       eventService.off('click', this.handler)
+      console.log('UserAccount destroyed', this.handler)
     }
 
     logout() {
