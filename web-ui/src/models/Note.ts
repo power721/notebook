@@ -18,7 +18,7 @@ export class Note {
   categoryId: string = ''
   category: Category = new Category()
   markdown: boolean = false
-  access: string = 'PUBLIC'
+  access: string = Access[Access.PUBLIC]
   version: number = 0
   views: number = 0
   createdTime: string = ''

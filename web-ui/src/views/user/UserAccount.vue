@@ -19,7 +19,7 @@
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
   import accountService from '@/services/account.service'
-  import {Account} from '@/models/Account'
+  import {Account, Role} from '@/models/Account'
   import eventService from '@/services/event.service'
 
   @Component
@@ -28,7 +28,7 @@
     show: boolean = false
 
     get admin(): boolean {
-      return this.$store.state.user.role === 'ROLE_ADMIN'
+      return this.$store.state.user.role === Role[Role.ROLE_ADMIN]
     }
 
     get account(): Account {
@@ -56,7 +56,8 @@
 
 <style scoped>
   .login {
-    margin-top: 12px;
+    margin-top: 6px;
+    margin-bottom: 6px;
     margin-right: 12px;
   }
 </style>

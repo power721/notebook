@@ -56,6 +56,7 @@ import { Role } from '@/models/Account'
   import {Category} from '@/models/Category'
   import {goTop} from '@/utils/utils'
   import configService from '@/services/config.service'
+  import {Role} from '@/models/Account'
 
   @Component<Pageable>({
     components: {
@@ -75,7 +76,7 @@ import { Role } from '@/models/Account'
     categories: Category[] = []
 
     get admin(): boolean {
-      return this.$store.state.user.role == 'ROLE_ADMIN'
+      return this.$store.state.user.role == Role[Role.ROLE_ADMIN]
     }
 
     mounted() {

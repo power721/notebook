@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{inverted:inverted}">
     <div class="ui menu" :class="{inverted:inverted}">
       <div class="ui container">
         <router-link class="item" to="/" exact>首页</router-link>
