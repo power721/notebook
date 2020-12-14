@@ -25,7 +25,7 @@
         </a>
 
       </div>
-      <div class="ui info message">
+      <div class="ui info message" v-if="category.description">
         {{category.description}}
       </div>
     </div>
@@ -66,7 +66,7 @@
 
     <Pagination v-model="page" :pages="totalPages" :total="totalElements" @change="go"></Pagination>
 
-    <Modal v-model="modal" title="更新分类" size="large">
+    <Modal v-model="modal" title="更新分类" size="large" :closable="false">
       <form class="ui form">
         <div class="required field">
           <label>标题</label>

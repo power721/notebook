@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <div class="ui dropdown active" :class="{visible: show}" v-if="account.id">
+    <div class="ui pointing dropdown active" :class="{visible: show}" v-if="account.id">
       <div class="text" @click.stop="show=!show">{{account.username}}</div>
       <i class="dropdown icon" @click.stop="show=!show"></i>
       <div id="user-menu" class="menu transition" :class="{visible: show}">
@@ -59,6 +59,14 @@
 <style scoped>
   .login {
     margin-right: 12px;
+  }
+
+  .ui.dropdown>.dropdown.icon {
+    margin-left: 6px;
+  }
+
+  #user-menu {
+    margin-top: 6px;
   }
 
   @media only screen and (max-width: 767px) {

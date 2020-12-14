@@ -27,7 +27,7 @@
         </span>
         <Dropdown icon="bars" position="top right" :pointing="true" v-if="author">
           <router-link class="item" :to="'/notes/'+note.id+'/edit'">编辑笔记</router-link>
-          <router-link class="item" :to="'/notes/'+note.id+'/history'">历史记录</router-link>
+          <router-link class="item" :to="'/notes/'+note.id+'/history'" v-if="note.version>1">历史记录</router-link>
           <a class="item" @click="confirm=true">删除笔记</a>
           <a class="item" @click="showMove">移动笔记</a>
         </Dropdown>

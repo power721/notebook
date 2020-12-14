@@ -108,6 +108,13 @@
     }
 
     save() {
+      // document.querySelectorAll('.segment').forEach(e => {
+      //   if (this.inverted) {
+      //     e.classList.add('inverted')
+      //   } else {
+      //     e.classList.remove('inverted')
+      //   }
+      // })
       localStorage.setItem('invertedMode', this.inverted + '')
     }
   }
@@ -136,6 +143,11 @@
     color: #2c3e50;
     min-height: 100vh;
   }
+
+  /*.inverted {*/
+  /*  background: #1b1c1d;*/
+  /*  color: rgba(255,255,255,.9);*/
+  /*}*/
 
   #main {
     margin-bottom: 12px;

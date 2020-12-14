@@ -1,7 +1,7 @@
 <template>
   <div class="ui dimmer modals page" :class="{active: show, visible: show}" @click="onDimmer">
     <div :class="sizeClass" class="ui visible active modal" v-show="show">
-      <i @click="close" class="close icon"></i>
+      <i @click="close" class="close icon" v-if="closable"></i>
       <div class="header">
         <slot name="title">
           {{ title }}
@@ -41,6 +41,7 @@
   })
   export default class Modal extends Super {
     @Prop() private open!: boolean
+    @Prop({default: true}) private closable!: boolean
     @Prop() private title!: string
     @Prop() private size!: string
     @Prop({default: '确认'}) private okText!: string
@@ -58,7 +59,7 @@
     }
 
     onDimmer(event: Event) {
-      if (this.show && event.target === event.currentTarget) {
+      if (this.closable && this.show && event.target === event.currentTarget) {
         this.close()
       }
     }
