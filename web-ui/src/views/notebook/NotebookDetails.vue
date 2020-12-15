@@ -57,6 +57,7 @@
             <router-link class="header" :to="'/notes/'+note.id">{{note.title}}</router-link>
             <div class="meta">
               <a>@{{note.author.username}}</a>
+              <router-link class="ui small label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
             </div>
             <div class="extra" v-if="note.updatedTime">
               更新于{{note.updatedTime | fromNow}}({{note.updatedTime | datetime}})
@@ -141,6 +142,7 @@
     notes: Note[] = []
 
     mounted() {
+      this.sort = configService.getNotesSortOrder()
       this.id = this.$route.params.id
       this.page = +this.$route.query.page || 1
       this.loadNotebook()
@@ -162,6 +164,12 @@
         this.totalElements = data.totalElements
         goTop()
       })
+    }
+
+    sorted(sort: string) {
+      configService.saveNotesSortOrder(sort)
+      this.sort = sort
+      this.load()
     }
 
     go(page: number) {

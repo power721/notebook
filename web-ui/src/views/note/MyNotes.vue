@@ -69,6 +69,7 @@
 
     mounted() {
       configService.setTitle('我的笔记')
+      this.sort = configService.getNotesSortOrder()
       this.page = +this.$route.query.page || 1
       this.load()
     }
@@ -80,6 +81,12 @@
         this.totalElements = data.totalElements
         goTop()
       })
+    }
+
+    sorted(sort: string) {
+      configService.saveNotesSortOrder(sort)
+      this.sort = sort
+      this.load()
     }
 
     go(page: number) {

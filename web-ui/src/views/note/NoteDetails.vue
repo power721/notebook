@@ -21,7 +21,7 @@
         <span :data-tooltip="note.updatedTime | datetime" v-if="note.updatedTime">
           更新于{{note.updatedTime | fromNow}}
         </span>
-        <router-link class="ui teal label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
+        <router-link class="ui teal small label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
         <span :data-tooltip="note.views+'阅读'" v-if="note.access!=='PRIVATE'">
           {{note.views}} <i class="eye icon"></i>
         </span>

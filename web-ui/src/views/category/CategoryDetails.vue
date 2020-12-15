@@ -127,6 +127,7 @@
     }
 
     mounted() {
+      this.sort = configService.getNotesSortOrder()
       this.id = this.$route.params.id
       this.page = +this.$route.query.page || 1
       this.loadCategory()
@@ -147,6 +148,12 @@
         this.totalElements = data.totalElements
         goTop()
       })
+    }
+
+    sorted(sort: string) {
+      configService.saveNotesSortOrder(sort)
+      this.sort = sort
+      this.load()
     }
 
     go(page: number) {

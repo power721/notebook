@@ -24,6 +24,23 @@ export class ConfigService {
   setTitle(title: string) {
     document.title = title + ' - ' + this.siteConfig.siteName
   }
+
+  getNotesSortOrder(): string {
+    return localStorage.getItem('notes_sort_order') || 'id,desc'
+  }
+
+  saveNotesSortOrder(order: string) {
+    localStorage.setItem('notes_sort_order', order)
+  }
+
+  getNotebooksSortOrder(): string {
+    return localStorage.getItem('notebooks_sort_order') || 'id,desc'
+  }
+
+  saveNotebooksSortOrder(order: string) {
+    localStorage.setItem('notebooks_sort_order', order)
+  }
+
 }
 
 const configService = new ConfigService()

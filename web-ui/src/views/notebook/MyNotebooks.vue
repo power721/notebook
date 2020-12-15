@@ -93,6 +93,7 @@
 
     mounted() {
       configService.setTitle('我的笔记本')
+      this.sort = configService.getNotebooksSortOrder()
       this.page = +this.$route.query.page || 1
       this.load()
     }
@@ -103,6 +104,12 @@
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
       })
+    }
+
+    sorted(sort: string) {
+      configService.saveNotebooksSortOrder(sort)
+      this.sort = sort
+      this.load()
     }
 
     go(page: number) {
