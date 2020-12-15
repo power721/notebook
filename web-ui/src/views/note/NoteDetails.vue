@@ -43,7 +43,7 @@
         </template>
         <template v-else>本文编写于 {{note.createdTime | fromNow}}，其中某些信息可能已经过时。</template>
       </div>
-      <div v-html="note.content"></div>
+      <div class="content" v-html="note.content"></div>
     </div>
 
     <Modal v-model="confirm" :title="note.title">

@@ -35,6 +35,8 @@ import 'tinymce/plugins/wordcount'
 import 'tinymce/skins/ui/oxide/skin.min.css'
 import 'tinymce/skins/content/default/content.min.css'
 
+import '@/assets/langs/zh_CN'
+
 import 'semantic-ui-css/semantic.min.css'
 
 Vue.config.productionTip = false

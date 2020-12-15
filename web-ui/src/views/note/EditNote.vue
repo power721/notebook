@@ -119,6 +119,7 @@
     config = {
       height: 500,
       branding: false,
+      language: 'zh_CN',
       plugins: [
         'autolink link media table advlist lists hr',
         'code codesample image preview fullscreen',
