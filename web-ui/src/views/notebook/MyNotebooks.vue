@@ -112,7 +112,7 @@
     submit() {
       axios.post(`/notebooks`, this.notebook).then(({data}) => {
         this.notebook = new Notebook()
-        this.notebooks.push(data)
+        this.notebooks.splice(0, 0, data)
         this.modal = false
       })
     }

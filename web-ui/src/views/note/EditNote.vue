@@ -18,7 +18,7 @@
       <template v-if="id">
         <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
         <i class="right chevron icon divider"></i>
-        <router-link class="section" :to="'/notes/'+id">{{note.title}}</router-link>
+        <router-link class="section" :to="'/notes/'+id">{{title}}</router-link>
         <i class="right chevron icon divider"></i>
         <div class="active section">编辑笔记</div>
       </template>
@@ -39,9 +39,8 @@
           <el-select v-model="note.notebookId"
                      filterable
                      remote
-                     :remote-method="search"
-                     :loading="loading"
-                     placeholder="请选择">
+                     :remote-method="searchNotebooks"
+                     :loading="loading">
             <el-option
               v-for="item in notebooks"
               :key="item.id"
@@ -52,7 +51,11 @@
         </div>
         <div class="required field">
           <label>分类</label>
-          <el-select v-model="note.categoryId" filterable placeholder="请选择">
+          <el-select v-model="note.categoryId"
+                     filterable
+                     remote
+                     :remote-method="searchCategories"
+                     :loading="loading">
             <el-option
               v-for="item in categories"
               :key="item.id"
@@ -103,6 +106,7 @@
   })
   export default class EditNote extends Vue {
     id: string = ''
+    title: string = ''
     loading: boolean = false
     notebook: Notebook = new Notebook()
     category: Category = new Category()
@@ -188,7 +192,7 @@
       })
     }
 
-    search(query: string) {
+    searchNotebooks(query: string) {
       this.loading = true
       axios.get('/users/-/notebooks?q=' + query).then(({data}) => {
         this.notebooks = data.content
@@ -198,10 +202,21 @@
       })
     }
 
+    searchCategories(query: string) {
+      this.loading = true
+      axios.get('/categories?q=' + query).then(({data}) => {
+        this.categories = data.content
+        this.loading = false
+      }, () => {
+        this.loading = false
+      })
+    }
+
     loadNote() {
       axios.get(`/notes/${this.id}`).then(({data}) => {
-        this.options.initialEditType = data.markdown ? 'markdown' : 'wysiwyg'
-        this.note = data
+        //this.options.initialEditType = data.markdown ? 'markdown' : 'wysiwyg'
+        Object.assign(this.note, data)
+        this.title = this.note.title
         this.note.notebookId = this.note.notebook.id
         this.note.categoryId = this.note.category.id
         if (accountService.account.id !== this.note.author.id) {

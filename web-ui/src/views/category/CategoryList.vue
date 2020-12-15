@@ -101,7 +101,7 @@ import { Role } from '@/models/Account'
     submit() {
       axios.post(`/categories`, this.category).then(({data}) => {
         this.category = new Category()
-        this.categories.push(data)
+        this.categories.splice(0, 0, data)
         this.modal = false
       })
     }

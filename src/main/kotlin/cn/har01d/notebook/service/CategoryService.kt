@@ -18,10 +18,17 @@ import org.springframework.stereotype.Service
 class CategoryService(
         private val repository: CategoryRepository,
         private val noteRepository: NoteRepository,
-        private val userService: UserService
+        private val userService: UserService,
+        private val configService: ConfigService
 ) {
 
-    fun list(pageable: Pageable) = repository.findAll(pageable)
+    fun list(q: String?, pageable: Pageable): Page<Category> {
+        return if (q != null) {
+            repository.findByNameContains(q, pageable)
+        } else {
+            repository.findAll(pageable)
+        }
+    }
 
     fun get(id: String): Category {
         return repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("分类不存在")
@@ -40,6 +47,12 @@ class CategoryService(
         if (repository.existsByName(dto.name)) {
             throw AppException("分类已经存在")
         }
+
+        val limit = configService.get("categories_limit", 20)
+        if (repository.count() >= limit) {
+            throw AppException("分类数量不能超过$limit")
+        }
+
         val category = Category(dto.name, dto.description)
         return repository.save(category)
     }

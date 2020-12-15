@@ -55,6 +55,9 @@ class NoteService(
 
     fun updateViews(note: Note) {
         // TODO: check IP
+        if (note.access == Access.PRIVATE) {
+            return
+        }
         note.views = note.views + 1
         noteRepository.save(note)
     }

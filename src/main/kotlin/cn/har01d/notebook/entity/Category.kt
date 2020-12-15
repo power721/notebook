@@ -1,5 +1,7 @@
 package cn.har01d.notebook.entity
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import java.time.Instant
 import javax.persistence.*
@@ -15,4 +17,5 @@ class Category(
 interface CategoryRepository : JpaRepository<Category, Int> {
     fun existsByName(name: String): Boolean
     fun findByName(name: String): Category?
+    fun findByNameContains(text: String, pageable: Pageable): Page<Category>
 }

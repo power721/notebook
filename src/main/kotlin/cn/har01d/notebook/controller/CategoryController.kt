@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class CategoryController(private val service: CategoryService) {
     @GetMapping
-    fun list(pageable: Pageable) = service.list(pageable).map { it.toVo() }
+    fun list(q: String?, pageable: Pageable) = service.list(q, pageable).map { it.toVo() }
 
     @GetMapping("{id}")
     fun get(@PathVariable id: String) = service.get(id).toVo()
