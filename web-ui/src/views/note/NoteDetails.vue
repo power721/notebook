@@ -18,7 +18,7 @@
         <span :data-tooltip="note.createdTime | datetime">
           创建于{{note.createdTime | fromNow}}
         </span>
-        <span :data-tooltip="note.updatedTime | datetime" v-if="note.updatedTime">
+        <span :data-tooltip="note.updatedTime | datetime" v-if="note.version>1">
           更新于{{note.updatedTime | fromNow}}
         </span>
         <router-link class="ui teal small label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>

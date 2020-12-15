@@ -59,7 +59,7 @@
               <a>@{{note.author.username}}</a>
               <router-link class="ui small label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
             </div>
-            <div class="extra" v-if="note.updatedTime">
+            <div class="extra" v-if="note.version>1">
               更新于{{note.updatedTime | fromNow}}({{note.updatedTime | datetime}})
             </div>
             <div class="extra" v-else>

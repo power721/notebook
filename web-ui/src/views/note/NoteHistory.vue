@@ -22,7 +22,7 @@
         <span :data-tooltip="note.createdTime | datetime">
           创建于{{note.createdTime | fromNow}}
         </span>
-        <span :data-tooltip="note.updatedTime | datetime" v-if="note.updatedTime">
+        <span :data-tooltip="note.updatedTime | datetime" v-if="note.version>1">
           更新于{{note.updatedTime | fromNow}}
         </span>
         <router-link data-tooltip="编辑笔记" v-if="author" :to="'/notes/'+note.id+'/edit'">

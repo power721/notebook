@@ -53,7 +53,7 @@
             <div class="meta">
               <a>@{{note.author.username}}</a>
             </div>
-            <div class="extra" v-if="note.updatedTime">
+            <div class="extra" v-if="note.version>1">
               更新于{{note.updatedTime | fromNow}}({{note.updatedTime | datetime}})
             </div>
             <div class="extra" v-else>
