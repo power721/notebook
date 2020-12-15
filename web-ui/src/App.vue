@@ -82,8 +82,6 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
-  import configService from '@/services/config.service'
-  import store from '@/store'
   import {SiteConfig} from '@/models/SiteConfig'
   import Popup from '@/components/Popup.vue'
   import FloatingActions from '@/views/FloatingActions.vue'
@@ -99,12 +97,12 @@
     show: boolean = false
 
     get siteConfig(): SiteConfig {
-      return store.state.siteConfig
+      return this.$store.state.siteConfig
     }
 
-    mounted() {
+    created() {
       this.inverted = localStorage.getItem('invertedMode') === 'true'
-      store.dispatch('getSiteConfig')
+      this.$store.dispatch('getSiteConfig')
     }
 
     save() {

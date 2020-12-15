@@ -14,7 +14,7 @@ class EventService {
   map: Map<string, Handler[]> = new Map<string, Handler[]>()
 
   on(event: string | string[], handler: (event: Event) => void): number {
-    const id = new Date().getTime()
+    const id = Math.random()
     if (Array.isArray(event)) {
       for (const e of event) {
         this.register(e, id, handler)
@@ -29,7 +29,6 @@ class EventService {
     const handlers = this.map.get(event) || []
     handlers.push(new Handler(id, event, handler))
     this.map.set(event, handlers)
-    console.log('on', event, id)
   }
 
   off(event: string | string[], id: number) {
@@ -46,7 +45,6 @@ class EventService {
     const handlers = this.map.get(event) || []
     const index = handlers.findIndex(e => e.id === id)
     if (index > -1) {
-      console.log('off', event, id)
       handlers.splice(index, 1)
     }
   }
