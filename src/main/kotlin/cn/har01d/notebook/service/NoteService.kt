@@ -26,9 +26,9 @@ class NoteService(
     fun list(pageable: Pageable): Page<Note> {
         val user = userService.getCurrentUser()
         return if (user == null) {
-            noteRepository.findByAccess(Access.PUBLIC, pageable)
+            noteRepository.findPublic(pageable)
         } else {
-            noteRepository.findByAccessOrAuthor(Access.PUBLIC, user, pageable)
+            noteRepository.findPublicOrOwn(user, pageable)
         }
     }
 
@@ -39,16 +39,24 @@ class NoteService(
 
     fun getUserNotes(userId: Int, pageable: Pageable): Page<Note> {
         val user = userService.requireUser(userId)
-        return noteRepository.findByAccessOrAuthor(Access.PUBLIC, user, pageable)
+        return noteRepository.findPublicAndAuthor(user, pageable)
     }
 
     fun get(id: String): Note {
-        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        val note = getNote(id)
         if (note.access == Access.PRIVATE) {
             val user = userService.getCurrentUser()
             if (user == null || note.author.id != user.id) {
                 throw AppForbiddenException("用户无权操作")
             }
+        }
+        return note
+    }
+
+    fun getNote(id: String): Note {
+        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        if (note.deleted) {
+            throw AppNotFoundException("笔记不存在")
         }
         return note
     }
@@ -91,7 +99,7 @@ class NoteService(
         }
         val user = userService.requireCurrentUser()
 
-        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        val note = getNote(id)
         if (note.author.id != user.id) {
             throw AppForbiddenException("用户无权操作")
         }
@@ -124,7 +132,7 @@ class NoteService(
 
     fun move(id: String, notebookId: String): Note {
         val user = userService.requireCurrentUser()
-        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        val note = getNote(id)
         if (note.author.id != user.id) {
             throw AppForbiddenException("用户无权操作")
         }
@@ -165,7 +173,7 @@ class NoteService(
 
     fun revertNoteContent(id: String, version: Int): Note {
         val user = userService.requireCurrentUser()
-        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        val note = getNote(id)
         if (note.author.id != user.id) {
             throw AppForbiddenException("用户无权操作")
         }
@@ -182,8 +190,14 @@ class NoteService(
         if (note.author.id != user.id) {
             throw AppForbiddenException("用户无权操作")
         }
-        contentRepository.deleteAllByNote(note)
-        noteRepository.delete(note)
+
+        if (note.deleted) {
+            contentRepository.deleteAllByNote(note)
+            noteRepository.delete(note)
+        } else {
+            note.deleted = true
+            noteRepository.save(note)
+        }
     }
 
     private fun getNotebook(id: String) = notebookRepository.findByIdOrNull(IdUtils.decode(id) - NOTEBOOK_OFFSET)

@@ -110,7 +110,7 @@ class NotebookService(
         return if (user != null && notebook.owner.id == user.id) {
             noteRepository.findByNotebook(notebook, pageable)
         } else {
-            noteRepository.findByNotebookAndAccess(notebook, Access.PUBLIC, pageable)
+            noteRepository.findByNotebookAndPublic(notebook, pageable)
         }
     }
 

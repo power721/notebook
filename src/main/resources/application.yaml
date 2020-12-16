@@ -17,6 +17,7 @@ spring:
       # possible values: validate | update | create | create-drop
       ddl-auto: update
       use-new-id-generator-mappings: true
+    open-in-view: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://localhost:3306/notebook?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
@@ -25,7 +26,9 @@ spring:
 
 ---
 spring:
-  profiles: production
+  config:
+    activate:
+      on-profile: production
 
 server:
   address: 127.0.0.1
@@ -35,7 +38,5 @@ server:
     min-response-size: 524288
 
 logging:
-  file:
-    name: /opt/notebook/log/notebook.log
   level:
     ROOT: INFO

@@ -51,7 +51,8 @@
           <div class="content">
             <router-link class="header" :to="'/notes/'+note.id">{{note.title}}</router-link>
             <div class="meta">
-              <a>@{{note.author.username}}</a>
+              <a>@{{note.author.username}}</a>发布于
+              <router-link :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
             </div>
             <div class="extra" v-if="note.version>1">
               更新于{{note.updatedTime | fromNow}}({{note.updatedTime | datetime}})

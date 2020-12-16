@@ -1,6 +1,5 @@
 package cn.har01d.notebook.service
 
-import cn.har01d.notebook.core.Access
 import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppNotFoundException
 import cn.har01d.notebook.dto.CategoryDto
@@ -38,9 +37,9 @@ class CategoryService(
         val user = userService.getCurrentUser()
         val category = repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("笔记本不存在")
         if (user != null) {
-            return noteRepository.findByCategoryAndAccessOrAuthor(category, Access.PUBLIC, user, pageable)
+            return noteRepository.findByCategoryAndPublicOrOwn(category, user, pageable)
         }
-        return noteRepository.findByCategoryAndAccess(category, Access.PUBLIC, pageable)
+        return noteRepository.findByCategoryAndPublic(category, pageable)
     }
 
     fun create(dto: CategoryDto): Category {

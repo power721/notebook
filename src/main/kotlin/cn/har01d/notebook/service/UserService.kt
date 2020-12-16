@@ -74,8 +74,11 @@ class UserService(
             }
             user.email = dto.email
         }
-        if (dto.password.isNotEmpty()) {
-            user.password = passwordEncoder.encode(dto.password)
+        if (dto.newPassword.isNotEmpty()) {
+            if (!passwordEncoder.matches(dto.password, user.password)) {
+                throw AppException("原密码不正确")
+            }
+            user.password = passwordEncoder.encode(dto.newPassword)
         }
         return repository.save(user)
     }

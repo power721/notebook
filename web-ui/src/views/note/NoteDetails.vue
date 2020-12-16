@@ -117,6 +117,8 @@
         const diff = now - new Date(this.note.createdTime).getTime()
         this.old = diff > 1000 * 3600 * 24 * 360
         this.author = accountService.account.id === this.note.author.id
+      }, () => {
+        this.$router.push('/')
       }).then(() => {
         setTimeout(() => {
           document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))

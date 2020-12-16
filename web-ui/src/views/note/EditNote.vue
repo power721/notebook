@@ -126,6 +126,7 @@
         'insertdatetime toc paste wordcount help'
       ],
       images_upload_url: '/images',
+      default_link_target: '_blank',
       codesample_global_prismjs: true,
       codesample_languages: [
         {text: 'Java', value: 'java'},

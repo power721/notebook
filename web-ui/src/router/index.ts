@@ -42,12 +42,14 @@ const routes: Array<RouteConfig> = [
   {
     path: '/my-notebooks',
     name: 'MyNotebooks',
-    component: MyNotebooks
+    component: MyNotebooks,
+    meta: {auth: true}
   },
   {
     path: '/my-notes',
     name: 'MyNotes',
-    component: MyNotes
+    component: MyNotes,
+    meta: {auth: true}
   },
   {
     path: '/notebooks/:id',

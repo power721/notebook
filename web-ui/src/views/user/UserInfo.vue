@@ -24,8 +24,12 @@
                 <input type="email" name="email" v-model="account.email" placeholder="邮箱">
               </div>
               <div class="field">
-                <label>账号密码</label>
+                <label>原密码</label>
                 <input type="password" name="password" v-model="account.password" placeholder="账号密码">
+              </div>
+              <div class="field">
+                <label>新密码</label>
+                <input type="password" name="newPassword" v-model="account.newPassword" placeholder="新密码">
               </div>
               <div class="field">
                 <label>确认密码</label>
@@ -37,7 +41,6 @@
               <div class="ui error message">
                 <p>{{error}}</p>
               </div>
-              <button class="ui button" @click="cancel">取消</button>
               <button class="ui primary button" :disabled="success" @click.prevent="submit">更新</button>
             </form>
           </div>
@@ -58,9 +61,10 @@
     error: string = ''
     success: boolean = false
     account = {
-      email: this.user.email,
+      email: this.user.email || '',
       username: this.user.username,
       password: '',
+      newPassword: '',
       confirm: ''
     }
 
@@ -74,12 +78,12 @@
 
     submit() {
       this.error = ''
-      if (this.account.password) {
-        if (this.account.password.length < 8) {
+      if (this.account.newPassword) {
+        if (this.account.newPassword.length < 8) {
           this.error = '密码长度至少8位'
           return
         }
-        if (this.account.password !== this.account.confirm) {
+        if (this.account.newPassword !== this.account.confirm) {
           this.error = '密码不匹配'
           return
         }
@@ -88,20 +92,18 @@
       const account = {
         email: this.account.email,
         password: this.account.password,
+        newPassword: this.account.newPassword,
       }
       accountService.update(account).then(() => {
         this.success = true
         this.account.password = ''
+        this.account.newPassword = ''
         this.account.confirm = ''
         this.$toasted.success('更新成功')
         setTimeout(() => this.success = false, 2000)
       }, (error) => {
         this.error = error.message
       })
-    }
-
-    cancel() {
-      this.$router.push('/')
     }
   }
 </script>
