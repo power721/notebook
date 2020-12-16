@@ -23,6 +23,9 @@ class UserController(
     @GetMapping("/-/notes")
     fun getMyNotes(pageable: Pageable) = noteService.getMyNotes(pageable).map { it.toVo2() }
 
+    @GetMapping("/-/trash")
+    fun getTrashNotes(pageable: Pageable) = noteService.getTrashNotes(pageable).map { it.toVo2() }
+
     @GetMapping("/{id}/notebooks")
     fun getUserNotebooks(@PathVariable id: Int, pageable: Pageable) = notebookService.getUserNotebooks(id, pageable).map { it.toVo() }
 

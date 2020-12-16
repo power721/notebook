@@ -3,12 +3,9 @@
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
-<!--      <div class="section">笔记本</div>-->
-<!--      <i class="right chevron icon divider"></i>-->
-      <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
+      <router-link class="section" to="/trash-notes" v-if="note.deleted">回收站</router-link>
+      <router-link class="section" :to="'/notebooks/'+note.notebook.id" v-else>{{note.notebook.name}}</router-link>
       <i class="right chevron icon divider"></i>
-<!--      <div class="section">笔记</div>-->
-<!--      <i class="right chevron icon divider"></i>-->
       <router-link class="section" :to="'/notes/'+id">{{note.title}}</router-link>
       <i class="right chevron icon divider"></i>
       <div class="active section">编辑历史</div>
@@ -16,7 +13,10 @@
     <div class="ui divider"></div>
 
     <div class="ui center aligned raised segment">
-      <router-link :to="'/notes/'+id" class="ui large header">{{note.title}}</router-link>
+      <router-link :to="'/notes/'+id" class="ui large header" v-if="note.deleted">
+        <del>{{note.title}}</del>
+      </router-link>
+      <router-link :to="'/notes/'+id" class="ui large header" v-else>{{note.title}}</router-link>
       <div class="metadata">
         <a>@{{note.author.username}}</a>
         <span :data-tooltip="note.createdTime | datetime">
@@ -25,7 +25,7 @@
         <span :data-tooltip="note.updatedTime | datetime" v-if="note.version>1">
           更新于{{note.updatedTime | fromNow}}
         </span>
-        <router-link data-tooltip="编辑笔记" v-if="author" :to="'/notes/'+note.id+'/edit'">
+        <router-link data-tooltip="编辑笔记" v-if="author&&!note.deleted" :to="'/notes/'+note.id+'/edit'">
           <i class="edit icon"></i>
         </router-link>
       </div>
@@ -52,7 +52,7 @@
       <div v-html="history.content"></div>
       <template slot="actions">
         <button @click="modal=false" class="ui cancel button">取消</button>
-        <button @click="revert" class="ui negative button" data-tooltip="恢复到此版本" v-if="note.version!==history.version">
+        <button @click="revert" class="ui negative button" data-tooltip="恢复到此版本" v-if="note.version!==history.version&&!note.deleted">
           恢复
         </button>
       </template>

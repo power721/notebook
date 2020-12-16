@@ -15,6 +15,7 @@ data class NoteVO(
         val access: Access,
         val version: Int,
         val views: Int,
+        val deleted: Boolean,
         val createdTime: Instant,
         val updatedTime: Instant?
 )
@@ -30,7 +31,7 @@ data class NoteVO2(
         val updatedTime: Instant?
 )
 
-fun Note.toVo() = NoteVO(rid, content!!.title, content!!.content, author.toVo2(), notebook.toVo2(), category.toVo2(), content!!.markdown, access, content!!.version, views, createdTime, updatedTime)
+fun Note.toVo() = NoteVO(rid, content!!.title, content!!.content, author.toVo2(), notebook.toVo2(), category.toVo2(), content!!.markdown, access, content!!.version, views, deleted, createdTime, updatedTime)
 fun Note.toVo2() = NoteVO2(rid, content!!.title, author.toVo2(), notebook.toVo2(), category.toVo2(), content!!.version, createdTime, updatedTime)
 
 fun String.truncate(limit: Int = 100) = if (length > limit) substring(0, limit) + "..." else this

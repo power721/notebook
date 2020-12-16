@@ -36,6 +36,9 @@ class NoteController(private val service: NoteService) {
     @PostMapping("{id}/move")
     fun move(@PathVariable id: String, notebookId: String) = service.move(id, notebookId).toVo()
 
+    @PostMapping("{id}/revert")
+    fun revert(@PathVariable id: String) = service.revert(id).toVo()
+
     @PutMapping("{id}")
     fun update(@PathVariable id: String, @RequestBody dto: NoteDto) = service.update(id, dto).toVo()
 }

@@ -37,13 +37,25 @@ class NoteService(
         return noteRepository.findByAuthor(user, pageable)
     }
 
+    fun getTrashNotes(pageable: Pageable): Page<Note> {
+        val user = userService.requireCurrentUser()
+        return noteRepository.findByAuthorAndDeleted(user, pageable)
+    }
+
     fun getUserNotes(userId: Int, pageable: Pageable): Page<Note> {
         val user = userService.requireUser(userId)
         return noteRepository.findPublicAndAuthor(user, pageable)
     }
 
     fun get(id: String): Note {
-        val note = getNote(id)
+        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        if (note.deleted) {
+            val user = userService.getCurrentUser()
+            if (user == null || note.author.id != user.id) {
+                throw AppNotFoundException("笔记不存在")
+            }
+        }
+
         if (note.access == Access.PRIVATE) {
             val user = userService.getCurrentUser()
             if (user == null || note.author.id != user.id) {
@@ -63,7 +75,7 @@ class NoteService(
 
     fun updateViews(note: Note) {
         // TODO: check IP
-        if (note.access == Access.PRIVATE) {
+        if (note.access == Access.PRIVATE || note.deleted) {
             return
         }
         note.views = note.views + 1
@@ -205,4 +217,15 @@ class NoteService(
 
     private fun getCategory(id: String) = categoryRepository.findByIdOrNull(IdUtils.decode(id) - CATEGORY_OFFSET)
             ?: throw AppNotFoundException("分类不存在")
+
+    fun revert(id: String): Note {
+        val user = userService.requireCurrentUser()
+        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        if (note.author.id != user.id) {
+            throw AppForbiddenException("用户无权操作")
+        }
+
+        note.deleted = false
+        return noteRepository.save(note)
+    }
 }

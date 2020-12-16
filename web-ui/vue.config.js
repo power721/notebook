@@ -12,6 +12,11 @@ module.exports = {
         ws: true,
         changeOrigin: true
       },
+      '/users': {
+        target: API,
+        ws: true,
+        changeOrigin: true
+      },
       '/notes': {
         target: API,
         ws: true,

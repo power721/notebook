@@ -3,15 +3,20 @@
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
-      <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
+      <router-link class="section" to="/trash-notes" v-if="note.deleted">回收站</router-link>
+      <router-link class="section" :to="'/notebooks/'+note.notebook.id" v-else>{{note.notebook.name}}</router-link>
       <i class="right chevron icon divider"></i>
       <div class="active section">{{note.title}}</div>
     </div>
     <div class="ui divider"></div>
 
     <div class="ui center aligned raised segment">
-      <h1 class="ui header">
-        {{note.title}}<span class="ui label" v-if="note.access!=='PUBLIC'">{{note.access}}</span>
+      <h1 class="ui header" v-if="note.deleted">
+        <del>{{note.title}}</del>
+      </h1>
+      <h1 class="ui header" v-else>
+        {{note.title}}
+        <span class="ui label" v-if="note.access!=='PUBLIC'">{{note.access}}</span>
       </h1>
       <div class="metadata">
         <a>@{{note.author.username}}</a>
@@ -26,10 +31,11 @@
           {{note.views}} <i class="eye icon"></i>
         </span>
         <Dropdown icon="bars" position="top right" :pointing="true" v-if="author">
-          <router-link class="item" :to="'/notes/'+note.id+'/edit'">编辑笔记</router-link>
+          <router-link class="item" :to="'/notes/'+note.id+'/edit'" v-if="!note.deleted">编辑笔记</router-link>
           <router-link class="item" :to="'/notes/'+note.id+'/history'" v-if="note.version>1">历史记录</router-link>
           <a class="item" @click="confirm=true">删除笔记</a>
-          <a class="item" @click="showMove">移动笔记</a>
+          <a class="item" @click="showMove" v-if="!note.deleted">移动笔记</a>
+          <a class="item" @click="revert=true" v-if="note.deleted">恢复笔记</a>
         </Dropdown>
       </div>
     </div>
@@ -47,10 +53,19 @@
     </div>
 
     <Modal v-model="confirm" :title="note.title">
-      <p>是否删除此笔记？</p>
+      <p class="ui error message" v-if="note.deleted">是否永久删除此笔记？</p>
+      <p class="ui warning message" v-else>是否删除此笔记？</p>
       <template slot="actions">
         <button @click="confirm=false" class="ui cancel button">取消</button>
         <button @click="deleteNote" class="ui negative button">删除</button>
+      </template>
+    </Modal>
+
+    <Modal v-model="revert" :title="note.title">
+      <p class="ui success message">是否恢复此笔记？</p>
+      <template slot="actions">
+        <button @click="revert=false" class="ui cancel button">取消</button>
+        <button @click="revertNote" class="ui positive button">恢复</button>
       </template>
     </Modal>
 
@@ -101,6 +116,7 @@
     author: boolean = false
     modal: boolean = false
     confirm: boolean = false
+    revert: boolean = false
     note: Note = new Note()
     notebooks: Notebook[] = []
 
@@ -123,6 +139,7 @@
         setTimeout(() => {
           document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
         }, 0)
+        // eslint-disable-next-line
         setTimeout(() => (window as any).Prism.highlightAll(), 0)
       })
     }
@@ -131,6 +148,14 @@
       axios.get('/users/-/notebooks').then(({data}) => {
         this.modal = true
         this.notebooks = data.content
+      })
+    }
+
+    revertNote() {
+      axios.post(`/notes/${this.id}/revert`).then(({data}) => {
+        this.$toasted.success('恢复笔记成功')
+        this.revert = false
+        this.note = data
       })
     }
 
