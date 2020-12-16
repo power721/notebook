@@ -133,6 +133,11 @@
     margin-top: 12px;
   }
 
+  img.emoji {
+    height: 1.25em;
+    width: 1.25em;
+  }
+
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

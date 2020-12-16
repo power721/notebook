@@ -27,7 +27,9 @@
         <span :data-tooltip="note.updatedTime | datetime" v-if="note.version>1">
           更新于{{note.updatedTime | fromNow}}
         </span>
-        <router-link class="ui teal small label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
+        <router-link class="ui teal small label" :to="'/categories/'+note.category.id">
+          {{note.category.name}}
+        </router-link>
         <span :data-tooltip="note.views+'阅读'" v-if="note.access!=='PRIVATE'">
           {{note.views}} <i class="eye icon"></i>
         </span>
@@ -50,7 +52,7 @@
         </template>
         <template v-else>本文编写于 {{note.createdTime | fromNow}}，其中某些信息可能已经过时。</template>
       </div>
-      <div class="content" v-html="note.content"></div>
+      <div class="article content" v-html="note.content"></div>
     </div>
 
     <Modal v-model="confirm" :title="note.title">
@@ -139,9 +141,11 @@
       }).then(() => {
         setTimeout(() => {
           document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
+          document.querySelectorAll('.article').forEach(node => {
+            (window as any).twemoji.parse(node, {'size': 72})
+          });
+          (window as any).Prism.highlightAll()
         }, 0)
-        // eslint-disable-next-line
-        setTimeout(() => (window as any).Prism.highlightAll(), 0)
       })
     }
 
