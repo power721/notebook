@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="{inverted:inverted}">
+  <div id="app" :class="{inverted:inverted}" :data-font-size="fontSize">
     <div class="ui stackable menu" :class="{inverted:inverted}">
       <div class="ui container">
         <h3 class="ui header item" :class="[siteConfig.brandColor]">{{siteConfig.siteName}}</h3>
@@ -68,9 +68,16 @@
             <i class="ui cog icon"></i>
           </div>
         </template>
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="inverted" v-model="inverted" @change="save">
-          <label>夜间模式</label>
+        <div>
+          <div class="font">
+            <button class="ui icon tiny basic button" data-tooltip="减小字体" @click="decFontSize"><i class="font icon"></i>-</button>
+            <span class="size" data-tooltip="笔记内容字体大小">{{fontSize}}</span>
+            <button class="ui icon tiny basic button" data-tooltip="增大字体" @click="incFontSize"><i class="font icon"></i>+</button>
+          </div>
+          <div class="ui toggle checkbox">
+            <input type="checkbox" name="inverted" v-model="inverted" @change="save">
+            <label>夜间模式</label>
+          </div>
         </div>
       </Popup>
 
@@ -95,6 +102,7 @@
   export default class App extends Vue {
     inverted: boolean = false
     show: boolean = false
+    fontSize: number = 16
 
     get siteConfig(): SiteConfig {
       return this.$store.state.siteConfig
@@ -102,6 +110,7 @@
 
     created() {
       this.inverted = localStorage.getItem('invertedMode') === 'true'
+      this.fontSize = +(localStorage.getItem('fontSize') || '16')
       this.$store.dispatch('getSiteConfig')
     }
 
@@ -114,6 +123,24 @@
       //   }
       // })
       localStorage.setItem('invertedMode', this.inverted + '')
+    }
+
+    incFontSize() {
+      if (this.fontSize >= 22) {
+        this.$toasted.error('字体已经是最大了')
+      } else {
+        this.fontSize += 2
+        localStorage.setItem('fontSize', this.fontSize + '')
+      }
+    }
+
+    decFontSize() {
+      if (this.fontSize <= 12) {
+        this.$toasted.error('字体已经是最小了')
+      } else {
+        this.fontSize -= 2
+        localStorage.setItem('fontSize', this.fontSize + '')
+      }
     }
   }
 </script>
@@ -147,6 +174,42 @@
     min-height: 100vh;
   }
 
+  #app[data-font-size='12'] .ui.segment .article.content {
+    font-size: 12px;
+  }
+
+  #app[data-font-size='14'] .ui.segment .article.content {
+    font-size: 14px;
+  }
+
+  #app[data-font-size='16'] .ui.segment .article.content {
+    font-size: 16px;
+  }
+
+  #app[data-font-size='18'] .ui.segment .article.content {
+    font-size: 18px;
+  }
+
+  #app[data-font-size='20'] .ui.segment .article.content {
+    font-size: 20px;
+  }
+
+  #app[data-font-size='22'] .ui.segment .article.content {
+    font-size: 22px;
+  }
+
+  .font {
+    margin-bottom: 6px;
+  }
+
+  .font .ui.icon.button {
+    margin: 0;
+  }
+
+  .font .size {
+    margin: 0 6px;
+  }
+
   /*.inverted {*/
   /*  background: #1b1c1d;*/
   /*  color: rgba(255,255,255,.9);*/
@@ -163,7 +226,7 @@
   }
 
   #config .ui.popup {
-    margin-top: -16px;
+    margin-top: -52px;
     margin-right: 24px;
   }
 
