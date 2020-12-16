@@ -4,7 +4,8 @@
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
       <router-link class="section" to="/trash-notes" v-if="note.deleted">回收站</router-link>
-      <router-link class="section" :to="'/notebooks/'+note.notebook.id" v-else>{{note.notebook.name}}</router-link>
+      <i class="right chevron icon divider" v-if="note.deleted"></i>
+      <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
       <i class="right chevron icon divider"></i>
       <div class="active section">{{note.title}}</div>
     </div>

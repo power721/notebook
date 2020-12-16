@@ -5,10 +5,7 @@ import cn.har01d.notebook.service.NotebookService
 import cn.har01d.notebook.vo.toVo
 import cn.har01d.notebook.vo.toVo2
 import org.springframework.data.domain.Pageable
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RequestMapping("/users")
 @RestController
@@ -25,6 +22,9 @@ class UserController(
 
     @GetMapping("/-/trash")
     fun getTrashNotes(pageable: Pageable) = noteService.getTrashNotes(pageable).map { it.toVo2() }
+
+    @DeleteMapping("/-/trash")
+    fun cleanTrash() = noteService.cleanTrash()
 
     @GetMapping("/{id}/notebooks")
     fun getUserNotebooks(@PathVariable id: Int, pageable: Pageable) = notebookService.getUserNotebooks(id, pageable).map { it.toVo() }

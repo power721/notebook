@@ -228,4 +228,10 @@ class NoteService(
         note.deleted = false
         return noteRepository.save(note)
     }
+
+    @Transactional
+    fun cleanTrash() {
+        val user = userService.requireCurrentUser()
+        noteRepository.deleteAllByAuthorAndDeletedTrue(user);
+    }
 }

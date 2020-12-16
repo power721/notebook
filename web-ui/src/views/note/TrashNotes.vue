@@ -7,6 +7,10 @@
     </div>
     <div class="ui divider"></div>
 
+    <a href="javascript:void(0)" class="ui trash icon button" data-tooltip="清空回收站" @click="confirm=true">
+      <i class="trash icon"></i>
+    </a>
+
     <div class="ui raised segment">
       <Dropdown icon="bars" position="top right" :pointing="true">
         <a class="item" :class="{active:sort==='createdTime,desc'}" @click="sorted('createdTime,desc')">创建时间(最新)</a>
@@ -16,6 +20,9 @@
         <a class="item" :class="{active:sort==='content.title,desc'}" @click="sorted('content.title,desc')">标题(降序)</a>
         <a class="item" :class="{active:sort==='content.title,asc'}" @click="sorted('content.title,asc')">标题(升序)</a>
       </Dropdown>
+      <div class="ui info message" v-if="notes.length===0">
+        没有删除的笔记。
+      </div>
       <div class="ui divided items">
         <div class="item" v-for="note in notes" :key="note.id">
           <div class="content">
@@ -35,6 +42,18 @@
     </div>
 
     <Pagination v-model="page" :pages="totalPages" :total="totalElements" @change="go"></Pagination>
+
+    <Modal v-model="confirm" title="清空回收站">
+      <p class="ui error message">
+        是否清空回收站？<br>
+        {{totalElements}}条笔记将会被永久删除。
+      </p>
+      <template slot="actions">
+        <button @click="confirm=false" class="ui cancel button">取消</button>
+        <button @click="cleanTrash" class="ui negative button">清空</button>
+      </template>
+    </Modal>
+
   </div>
 </template>
 
@@ -47,11 +66,13 @@
   import {goTop} from '@/utils/utils'
   import Dropdown from '@/components/Dropdown.vue'
   import configService from '@/services/config.service'
+  import Modal from '@/components/Modal.vue'
 
   @Component<Pageable>({
     components: {
       Pagination,
-      Dropdown
+      Dropdown,
+      Modal
     },
     watch: {
       '$route'(to) {
@@ -62,6 +83,7 @@
   })
   export default class TrashNotes extends Pageable {
     notes: Note[] = []
+    confirm: boolean = false
 
     mounted() {
       configService.setTitle('回收站')
@@ -88,8 +110,19 @@
     go(page: number) {
       this.$router.push('/trash-notes?page=' + page)
     }
+
+    cleanTrash() {
+      axios.delete(`/users/-/trash`).then(() => {
+        this.confirm = false
+        this.load()
+      })
+    }
   }
 </script>
 
 <style scoped>
+  .trash.button {
+    float: right;
+    margin-top: -56px;
+  }
 </style>

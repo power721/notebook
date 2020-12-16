@@ -46,6 +46,8 @@ interface NoteRepository : JpaRepository<Note, Int> {
     @Query("SELECT n from Note n where n.author=?1 and n.deleted=true")
     fun findByAuthorAndDeleted(user: User, pageable: Pageable): Page<Note>
 
+    fun deleteAllByAuthorAndDeletedTrue(user: User)
+
     @Query("SELECT n from Note n where n.notebook=?1 and n.deleted=false")
     fun findByNotebook(notebook: Notebook, pageable: Pageable): Page<Note>
 
