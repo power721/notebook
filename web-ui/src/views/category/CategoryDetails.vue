@@ -157,7 +157,7 @@
     }
 
     go(page: number) {
-      this.$router.push(`/categories/${this.id}?page=${page}`)
+      this.$router.push(this.$route.path + '?page=' + page)
     }
 
     edit() {

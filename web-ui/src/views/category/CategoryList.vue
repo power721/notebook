@@ -95,7 +95,7 @@ import { Role } from '@/models/Account'
     }
 
     go(page: number) {
-      this.$router.push('/categories?page=' + page)
+      this.$router.push(this.$route.path + '?page=' + page)
     }
 
     submit() {

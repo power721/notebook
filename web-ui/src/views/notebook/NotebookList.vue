@@ -118,7 +118,7 @@
     }
 
     go(page: number) {
-      this.$router.push('/notebooks?page=' + page)
+      this.$router.push(this.$route.path + '?page=' + page)
     }
 
     submit() {

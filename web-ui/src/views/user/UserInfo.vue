@@ -4,6 +4,8 @@
       <div class="ui breadcrumb">
         <router-link class="section" :exact="true" to="/">首页</router-link>
         <i class="right chevron icon divider"></i>
+        <div class="section">用户中心</div>
+        <i class="right chevron icon divider"></i>
         <div class="active section">用户设置</div>
       </div>
     </div>

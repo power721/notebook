@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {Account, AccountDto} from '@/models/Account'
+import {Account, AccountDto, Role} from '@/models/Account'
 import store from '@/store'
 
 class AccountService {
@@ -10,7 +10,7 @@ class AccountService {
   }
 
   isAdmin() {
-    return this.account.role === 'ROLE_ADMIN'
+    return this.account.role === Role[Role.ROLE_ADMIN]
   }
 
   getToken() {

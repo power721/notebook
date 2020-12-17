@@ -6,7 +6,22 @@ APPNAME=notebook
 sudo useradd -r -m ${USERNAME}
 sudo mkdir -p /opt/${APPNAME}/config
 sudo mkdir -p /opt/${APPNAME}/log
-[[ -f /opt/${APPNAME}/config/application-production.yaml ]] || sudo touch /opt/${APPNAME}/config/application-production.yaml
+if [[ ! -f /opt/${APPNAME}/config/application-production.yaml ]]; then
+cat <<EOT > /opt/${APPNAME}/config/application-production.yaml
+cn:
+  har01d:
+    auth:
+      jwt:
+        secretKey: "ThisIsMyJWTSecretKeyAtLeast256bit!"
+spring:
+  datasource:
+    username: ${USERNAME}
+    password: password
+logging:
+  file:
+    name: /opt/notebook/log/notebook.log
+EOT
+fi
 sudo chown -R ${USERNAME}:${USERNAME} /opt/${APPNAME}/
 
 cat <<EOT > ${APPNAME}.service

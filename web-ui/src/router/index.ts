@@ -1,22 +1,23 @@
 import Vue from 'vue'
 import VueRouter, {RouteConfig} from 'vue-router'
-import Signup from '@/views/user/Signup.vue'
-import Login from '@/views/user/Login.vue'
 import NoteList from '@/views/note/NoteList.vue'
 import NoteDetails from '@/views/note/NoteDetails.vue'
 import EditNote from '@/views/note/EditNote.vue'
 import NoteHistory from '@/views/note/NoteHistory.vue'
 import NotebookDetails from '@/views/notebook/NotebookDetails.vue'
 import NotebookList from '@/views/notebook/NotebookList.vue'
-import MyNotebooks from '@/views/notebook/MyNotebooks.vue'
-import MyNotes from '@/views/note/MyNotes.vue'
 import CategoryList from '@/views/category/CategoryList.vue'
 import CategoryDetails from '@/views/category/CategoryDetails.vue'
 import About from '@/views/About.vue'
-import UserInfo from '@/views/user/UserInfo.vue'
 import Admin from '@/views/admin/Admin.vue'
-import TrashNotes from '@/views/note/TrashNotes.vue'
+import Signup from '@/views/user/Signup.vue'
+import Login from '@/views/user/Login.vue'
+import UserHome from '@/views/user/UserHome.vue'
+import MyNotes from '@/views/user/MyNotes.vue'
+import MyNotebooks from '@/views/user/MyNotebooks.vue'
+import TrashNotes from '@/views/user/TrashNotes.vue'
 import UserNotes from '@/views/user/UserNotes.vue'
+import UserInfo from '@/views/user/UserInfo.vue'
 
 Vue.use(VueRouter)
 
@@ -40,30 +41,6 @@ const routes: Array<RouteConfig> = [
     path: '/notebooks',
     name: 'NotebookList',
     component: NotebookList
-  },
-  {
-    path: '/my-notebooks',
-    name: 'MyNotebooks',
-    component: MyNotebooks,
-    meta: {auth: true}
-  },
-  {
-    path: '/my-notes',
-    name: 'MyNotes',
-    component: MyNotes,
-    meta: {auth: true}
-  },
-  {
-    path: '/users/:id',
-    name: 'UserNotes',
-    component: UserNotes,
-    meta: {auth: true}
-  },
-  {
-    path: '/trash-notes',
-    name: 'TrashNotes',
-    component: TrashNotes,
-    meta: {auth: true}
   },
   {
     path: '/notebooks/:id',
@@ -104,14 +81,48 @@ const routes: Array<RouteConfig> = [
     meta: {guest: true}
   },
   {
-    path: '/info',
-    component: UserInfo,
+    path: '/user',
+    name: 'UserHome',
+    component: UserHome,
+    redirect: '/user/notes',
+    meta: {auth: true},
+    children: [
+      {
+        path: 'notes',
+        name: 'MyNotes',
+        component: MyNotes,
+        meta: {auth: true}
+      },
+      {
+        path: 'notebooks',
+        name: 'MyNotebooks',
+        component: MyNotebooks,
+        meta: {auth: true}
+      },
+      {
+        path: 'trash',
+        name: 'TrashNotes',
+        component: TrashNotes,
+        meta: {auth: true}
+      },
+      {
+        path: 'info',
+        name: 'UserInfo',
+        component: UserInfo,
+        meta: {auth: true}
+      },
+    ]
+  },
+  {
+    path: '/users/:id',
+    name: 'UserNotes',
+    component: UserNotes,
     meta: {auth: true}
   },
   {
     path: '/admin',
     component: Admin,
-    meta: {auth: true}
+    meta: {admin: true}
   },
   {
     path: '/about',
@@ -122,7 +133,7 @@ const routes: Array<RouteConfig> = [
 
 const router = new VueRouter({
   routes,
-  linkExactActiveClass: 'active'
+  linkActiveClass: 'active'
 })
 
 export default router

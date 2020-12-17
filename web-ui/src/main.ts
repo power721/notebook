@@ -9,7 +9,7 @@ import router from './router'
 import store from './store'
 import auth from './services/account.service'
 import {date, datetime, duration, fromNow, time} from './filters'
-import UserAccount from '@/views/user/UserAccount.vue'
+import UserMenu from '@/views/user/UserMenu.vue'
 
 import 'tinymce/tinymce'
 import 'tinymce/icons/default'
@@ -52,7 +52,7 @@ Vue.component(Option.name, Option)
 Vue.component(Radio.name, Radio)
 Vue.component(RadioGroup.name, RadioGroup)
 
-Vue.component('UserAccount', UserAccount)
+Vue.component('UserMenu', UserMenu)
 
 Vue.use(Toasted, {
   theme: 'outline',

@@ -14,7 +14,7 @@
               <i class="search link icon"></i>
             </div>
           </div>-->
-          <UserAccount class="item"></UserAccount>
+          <UserMenu class="item"></UserMenu>
         </div>
       </div>
     </div>

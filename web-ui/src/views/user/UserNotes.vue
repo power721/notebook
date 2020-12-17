@@ -117,7 +117,7 @@
     }
 
     go(page: number) {
-      this.$router.push(`/users/${this.id}?page=${page}`)
+      this.$router.push(this.$route.path + '?page=' + page)
     }
   }
 </script>

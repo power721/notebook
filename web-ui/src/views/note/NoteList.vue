@@ -94,7 +94,7 @@
     }
 
     go(page: number) {
-      this.$router.push('/?page=' + page)
+      this.$router.push(this.$route.path + '?page=' + page)
     }
   }
 </script>
