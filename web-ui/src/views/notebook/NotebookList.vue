@@ -26,7 +26,7 @@
           <div class="content">
             <router-link class="header" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>
             <div class="meta">
-              <a>@{{notebook.owner.username}}</a>
+              <router-link :to="'/users/'+notebook.owner.id">@{{notebook.owner.username}}</router-link>
             </div>
             <div class="description">
               <p>{{notebook.description}}</p>

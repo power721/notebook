@@ -16,6 +16,7 @@ import About from '@/views/About.vue'
 import UserInfo from '@/views/user/UserInfo.vue'
 import Admin from '@/views/admin/Admin.vue'
 import TrashNotes from '@/views/note/TrashNotes.vue'
+import UserNotes from '@/views/user/UserNotes.vue'
 
 Vue.use(VueRouter)
 
@@ -50,6 +51,12 @@ const routes: Array<RouteConfig> = [
     path: '/my-notes',
     name: 'MyNotes',
     component: MyNotes,
+    meta: {auth: true}
+  },
+  {
+    path: '/users/:id',
+    name: 'UserNotes',
+    component: UserNotes,
     meta: {auth: true}
   },
   {

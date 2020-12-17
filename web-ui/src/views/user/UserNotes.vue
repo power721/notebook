@@ -3,16 +3,26 @@
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
-      <div class="active section">笔记</div>
+      <span class="section">用户</span>
+      <i class="right chevron icon divider"></i>
+      <div class="active section">{{user.username}}</div>
     </div>
     <div class="ui divider"></div>
 
-    <router-link class="ui add icon primary button" data-tooltip="创建笔记" to="/notes/-/new">
-      <i class="edit icon"></i>
-    </router-link>
+    <div class="ui center aligned raised segment">
+      <h2 class="ui header">"{{user.username}}"发布的笔记</h2>
+      <div class="metadata">
+        <span :data-tooltip="user.createdTime | datetime">
+          加入于{{user.createdTime | fromNow}}
+        </span>
+      </div>
+    </div>
 
-    <div class="ui raised segment" :class="{loading: loading}">
-      <Dropdown icon="bars" position="top right" :pointing="true">
+    <div class="ui left aligned raised segment">
+      <div class="ui warning message" v-if="notes.length===0">
+        还没有笔记。
+      </div>
+      <Dropdown icon="bars" position="top right" :pointing="true" v-else>
         <a class="item" :class="{active:sort==='createdTime,desc'}" @click="sorted('createdTime,desc')">创建时间(最新)</a>
         <a class="item" :class="{active:sort==='createdTime,asc'}" @click="sorted('createdTime,asc')">创建时间(最早)</a>
         <a class="item" :class="{active:sort==='updatedTime,desc'}" @click="sorted('updatedTime,desc')">更新时间(最新)</a>
@@ -25,7 +35,7 @@
           <div class="content">
             <router-link class="header" :to="'/notes/'+note.id">{{note.title}}</router-link>
             <div class="meta">
-              <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>发布于
+              发布于
               <router-link :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
             </div>
             <div class="extra" v-if="note.version>1">
@@ -47,11 +57,12 @@
   import axios from 'axios'
   import {Component} from 'vue-property-decorator'
   import {Note} from '@/models/Note'
-  import {Pageable} from '@/components/Pageable'
+  import {User} from '@/models/User'
   import Pagination from '@/components/Pagination.vue'
-  import {goTop} from '@/utils/utils'
+  import {Pageable} from '@/components/Pageable'
   import Dropdown from '@/components/Dropdown.vue'
   import configService from '@/services/config.service'
+  import {goTop} from '@/utils/utils'
 
   @Component<Pageable>({
     components: {
@@ -65,24 +76,36 @@
       }
     }
   })
-  export default class NoteList extends Pageable {
-    loading: boolean = false
+  export default class UserNotes extends Pageable {
+    id: string = ''
+    user: User = new User()
     notes: Note[] = []
 
+    get authenticated(): boolean {
+      return this.$store.state.authenticated
+    }
+
     mounted() {
-      configService.setTitle('笔记')
+      configService.setTitle('用户发布的笔记')
       this.sort = configService.getNotesSortOrder()
+      this.id = this.$route.params.id
       this.page = +this.$route.query.page || 1
+      this.loadUser()
       this.load()
     }
 
+    loadUser() {
+      axios.get(`/users/${this.id}`).then(({data}) => {
+        this.user = data
+        configService.setTitle(this.user.username + '发布的笔记')
+      })
+    }
+
     load() {
-      this.loading = true
-      axios.get(`/notes?${this.query}`).then(({data}) => {
+      axios.get(`/users/${this.id}/notes?${this.query}`).then(({data}) => {
         this.notes = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
-        this.loading = false
         goTop()
       })
     }
@@ -94,14 +117,10 @@
     }
 
     go(page: number) {
-      this.$router.push('/?page=' + page)
+      this.$router.push(`/users/${this.id}?page=${page}`)
     }
   }
 </script>
 
 <style scoped>
-  .add.button {
-    float: right;
-    margin-top: -56px;
-  }
 </style>

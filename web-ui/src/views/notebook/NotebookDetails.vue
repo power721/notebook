@@ -17,7 +17,7 @@
     <div class="ui center aligned raised segment">
       <h1 class="ui header">{{notebook.name}}</h1>
       <div class="metadata">
-        <a>@{{notebook.owner.username}}</a>
+        <router-link :to="'/users/'+notebook.owner.id">@{{notebook.owner.username}}</router-link>
         <span :data-tooltip="notebook.createdTime | datetime">
           创建于{{notebook.createdTime | fromNow}}
         </span>
@@ -56,7 +56,7 @@
           <div class="content">
             <router-link class="header" :to="'/notes/'+note.id">{{note.title}}</router-link>
             <div class="meta">
-              <a>@{{note.author.username}}</a>
+              <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>
               <router-link class="ui small label" :to="'/categories/'+note.category.id">{{note.category.name}}</router-link>
             </div>
             <div class="extra" v-if="note.version>1">

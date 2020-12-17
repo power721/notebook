@@ -11,6 +11,7 @@ import cn.har01d.notebook.entity.Notebook
 import cn.har01d.notebook.entity.NotebookRepository
 import cn.har01d.notebook.entity.User
 import cn.har01d.notebook.entity.UserRepository
+import cn.har01d.notebook.service.IdUtils.USER_OFFSET
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -35,8 +36,8 @@ class UserService(
         return repository.findByIdOrNull(id)
     }
 
-    fun requireUser(id: Int): User {
-        return repository.findByIdOrNull(id) ?: throw AppUnauthorizedException("用户不存在")
+    fun requireUser(id: String): User {
+        return repository.findByIdOrNull(IdUtils.decode(id) - USER_OFFSET) ?: throw AppUnauthorizedException("用户不存在")
     }
 
     fun requireCurrentUser(): User {

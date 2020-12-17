@@ -23,7 +23,6 @@
         <a href="javascript:void(0)" data-tooltip="编辑分类" @click="edit" v-if="admin">
           <i class="edit icon"></i>
         </a>
-
       </div>
       <div class="ui info message" v-if="category.description">
         {{category.description}}
@@ -51,7 +50,7 @@
           <div class="content">
             <router-link class="header" :to="'/notes/'+note.id">{{note.title}}</router-link>
             <div class="meta">
-              <a>@{{note.author.username}}</a>发布于
+              <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>发布于
               <router-link :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
             </div>
             <div class="extra" v-if="note.version>1">

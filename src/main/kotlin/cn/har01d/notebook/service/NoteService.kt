@@ -42,7 +42,7 @@ class NoteService(
         return noteRepository.findByAuthorAndDeleted(user, pageable)
     }
 
-    fun getUserNotes(userId: Int, pageable: Pageable): Page<Note> {
+    fun getUserNotes(userId: String, pageable: Pageable): Page<Note> {
         val user = userService.requireUser(userId)
         return noteRepository.findPublicAndAuthor(user, pageable)
     }

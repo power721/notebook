@@ -20,7 +20,7 @@
         <span class="ui label" v-if="note.access!=='PUBLIC'">{{note.access}}</span>
       </h1>
       <div class="metadata">
-        <a>@{{note.author.username}}</a>
+        <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>
         <span :data-tooltip="note.createdTime | datetime">
           创建于{{note.createdTime | fromNow}}
         </span>

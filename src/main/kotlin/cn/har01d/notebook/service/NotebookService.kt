@@ -41,7 +41,7 @@ class NotebookService(
         }
     }
 
-    fun getUserNotebooks(userId: Int, pageable: Pageable): Page<Notebook> {
+    fun getUserNotebooks(userId: String, pageable: Pageable): Page<Notebook> {
         val user = userService.requireUser(userId)
         return notebookRepository.findByOwner(user, pageable)
     }
