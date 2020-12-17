@@ -27,6 +27,14 @@ class Note(
 
 interface NoteRepository : JpaRepository<Note, Int> {
     fun countByNotebook(notebook: Notebook): Long
+    fun countByDeleted(deleted: Boolean): Long
+
+    @Query("SELECT count(n) from Note n where n.access=?1 and n.deleted=false")
+    fun countByAccess(access: Access): Long
+
+    @Query("SELECT sum(n.views) from Note n")
+    fun views(): Long
+
     fun deleteAllByNotebook(notebook: Notebook)
     fun findByRid(rid: String): Note?
     fun existsByRid(rid: String): Boolean

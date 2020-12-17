@@ -10,4 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 class AdminController(private val service: AdminService) {
     @GetMapping("/info")
     fun getSystemInfo() = service.getSystemInfo()
+
+    @GetMapping("/stats")
+    fun getSystemStats() = service.getSystemStats()
 }
