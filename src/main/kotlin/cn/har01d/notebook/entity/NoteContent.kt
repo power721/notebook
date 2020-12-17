@@ -2,6 +2,7 @@ package cn.har01d.notebook.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 import java.time.Instant
 import javax.persistence.*
 
@@ -20,4 +21,8 @@ interface NoteContentRepository : JpaRepository<NoteContent, Int> {
     fun deleteAllByNote(note: Note)
     fun findByNoteOrderByIdDesc(note: Note): List<NoteContent>
     fun findByNoteAndVersion(note: Note, version: Int): NoteContent?
+    fun deleteByNoteAndVersion(note: Note, version: Int)
+
+    @Query("select max(c.version) from NoteContent c where c.note=?1")
+    fun version(note: Note): Int
 }

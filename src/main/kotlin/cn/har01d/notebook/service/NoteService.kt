@@ -134,7 +134,8 @@ class NoteService(
 
         val content = note.content!!
         if (content.title != dto.title || content.content != dto.content) {
-            note.content = contentRepository.save(NoteContent(dto.title, dto.content, note, dto.markdown, content.version + 1))
+            val version = contentRepository.version(note) + 1
+            note.content = contentRepository.save(NoteContent(dto.title, dto.content, note, dto.markdown, version))
         }
         note.updatedTime = Instant.now()
         note.notebook.updatedTime = Instant.now()
@@ -193,6 +194,16 @@ class NoteService(
         note.content = content
         note.updatedTime = Instant.now()
         return noteRepository.save(note)
+    }
+
+    @Transactional
+    fun deleteNoteContent(id: String, version: Int) {
+        val user = userService.requireCurrentUser()
+        val note = getNote(id)
+        if (note.author.id != user.id) {
+            throw AppForbiddenException("用户无权操作")
+        }
+        contentRepository.deleteByNoteAndVersion(note, version)
     }
 
     @Transactional

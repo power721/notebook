@@ -50,10 +50,13 @@
       <template slot="title">
         版本{{history.version}}： {{history.title}}
       </template>
-      <div v-html="history.content"></div>
+      <div class="article content" v-html="history.content"></div>
       <template slot="actions">
         <button @click="modal=false" class="ui cancel button">取消</button>
-        <button @click="revert" class="ui negative button" data-tooltip="恢复到此版本" v-if="note.version!==history.version&&!note.deleted">
+        <button @click="deleteVersion" class="ui negative button" data-tooltip="删除此版本" v-if="note.version!==history.version">
+          删除
+        </button>
+        <button @click="revert" class="ui primary button" data-tooltip="恢复到此版本" v-if="note.version!==history.version&&!note.deleted">
           恢复
         </button>
       </template>
@@ -106,23 +109,27 @@
     show(history: NoteHistory) {
       if (history.content) {
         this.history = history
+        this.parse()
         this.modal = true
-        setTimeout(() => {
-          document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
-        }, 0)
-        setTimeout(() => (window as any).Prism.highlightAll(), 0)
       } else {
         axios.get(`/notes/${this.id}/content/${history.version}`).then(({data}) => {
           history.content = data.content
           this.history = data
-          this.modal = true
         }).then(() => {
-          setTimeout(() => {
-            document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
-          }, 0)
-          setTimeout(() => (window as any).Prism.highlightAll(), 0)
+          this.parse()
+          this.modal = true
         })
       }
+    }
+
+    private parse() {
+      setTimeout(() => {
+        document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
+        document.querySelectorAll('.article').forEach(node => {
+          (window as any).twemoji.parse(node, {'size': 72})
+        });
+        (window as any).Prism.highlightAll()
+      }, 0)
     }
 
     revert() {
@@ -130,6 +137,17 @@
         axios.post(`/notes/${this.id}/content/${this.history.version}`).then(({data}) => {
           this.note = data
           this.modal = false
+        })
+      }
+    }
+
+    deleteVersion() {
+      if (this.note.version != this.history.version) {
+        axios.delete(`/notes/${this.id}/content/${this.history.version}`).then(() => {
+          this.modal = false
+          this.$toasted.success(`版本${this.history.version}删除成功`)
+          const index = this.list.findIndex(e => e.version === this.history.version)
+          this.list.splice(index, 1)
         })
       }
     }
