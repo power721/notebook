@@ -7,6 +7,11 @@ module.exports = {
   outputDir: path.resolve(__dirname, '../src/main/resources/static'),
   devServer: {
     proxy: {
+      '/admin': {
+        target: API,
+        ws: true,
+        changeOrigin: true
+      },
       '/accounts': {
         target: API,
         ws: true,

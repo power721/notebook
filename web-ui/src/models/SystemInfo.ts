@@ -1,0 +1,19 @@
+export class SystemInfo {
+  hostName: string = ''
+  ip: string = ''
+  javaVendor: string = ''
+  javaVersion: string = ''
+  javaHome: string = ''
+  jvmName: string = ''
+  jvmCpus: number = 0
+  jvmFreeMemory: number = 0
+  jvmTotalMemory: number = 0
+  osArch: string = ''
+  osName: string = ''
+  osVersion: string = ''
+  userHome: string = ''
+  userName: string = ''
+  timezone: string = ''
+  workDir: string = ''
+  pid: string = ''
+}

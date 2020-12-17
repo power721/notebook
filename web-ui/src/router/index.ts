@@ -9,7 +9,6 @@ import NotebookList from '@/views/notebook/NotebookList.vue'
 import CategoryList from '@/views/category/CategoryList.vue'
 import CategoryDetails from '@/views/category/CategoryDetails.vue'
 import About from '@/views/About.vue'
-import Admin from '@/views/admin/Admin.vue'
 import Signup from '@/views/user/Signup.vue'
 import Login from '@/views/user/Login.vue'
 import UserHome from '@/views/user/UserHome.vue'
@@ -18,6 +17,11 @@ import MyNotebooks from '@/views/user/MyNotebooks.vue'
 import TrashNotes from '@/views/user/TrashNotes.vue'
 import UserNotes from '@/views/user/UserNotes.vue'
 import UserInfo from '@/views/user/UserInfo.vue'
+import AdminHome from '@/views/admin/AdminHome.vue'
+import AdminAudit from '@/views/admin/AdminAudit.vue'
+import AdminConfig from '@/views/admin/AdminConfig.vue'
+import AdminStats from '@/views/admin/AdminStats.vue'
+import AdminInfo from '@/views/admin/AdminInfo.vue'
 
 Vue.use(VueRouter)
 
@@ -121,8 +125,36 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/admin',
-    component: Admin,
-    meta: {admin: true}
+    name: 'AdminHome',
+    component: AdminHome,
+    redirect: '/admin/info',
+    meta: {admin: true},
+    children: [
+      {
+        path: 'info',
+        name: 'AdminInfo',
+        component: AdminInfo,
+        meta: {admin: true},
+      },
+      {
+        path: 'audit',
+        name: 'AdminAudit',
+        component: AdminAudit,
+        meta: {admin: true},
+      },
+      {
+        path: 'stats',
+        name: 'AdminStats',
+        component: AdminStats,
+        meta: {admin: true},
+      },
+      {
+        path: 'config',
+        name: 'AdminConfig',
+        component: AdminConfig,
+        meta: {admin: true},
+      },
+    ]
   },
   {
     path: '/about',

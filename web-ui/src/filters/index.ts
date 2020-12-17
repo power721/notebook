@@ -90,3 +90,43 @@ export function fromNow(value: number | string) {
     }
   }
 }
+
+const KB = 1024;
+const MB = 1024 * KB;
+const GB = 1024 * MB;
+const TB = 1024 * GB;
+const PB = 1024 * TB;
+const EB = 1024 * PB;
+const ZB = 1024 * EB;
+
+export type ByteUnit = '' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB' | 'EB';
+export { KB, MB, GB, TB, PB, EB, ZB };
+
+export function number2string(num: number, fractionDigits: number = 2): string {
+  let str = num.toFixed(fractionDigits);
+  while (str.endsWith('0')) {
+    str = str.substr(0, str.length - 1);
+  }
+  if (str.endsWith('.')) {
+    str = str.substr(0, str.length - 1);
+  }
+  return str;
+}
+
+export function byte2string(bytes: number, unit: ByteUnit = ''): string {
+  if (bytes >= EB || unit === 'EB') {
+    return number2string(bytes / EB) + ' EB';
+  } else if (bytes >= PB || unit === 'PB') {
+    return number2string(bytes / PB) + ' PB';
+  } else if (bytes >= TB || unit === 'TB') {
+    return number2string(bytes / TB) + ' TB';
+  } else if (bytes >= GB || unit === 'GB') {
+    return number2string(bytes / GB) + ' GB';
+  } else if (bytes >= MB || unit === 'MB') {
+    return number2string(bytes / MB) + ' MB';
+  } else if (bytes >= KB || unit === 'KB') {
+    return number2string(bytes / KB) + ' KB';
+  } else {
+    return bytes + ' bytes';
+  }
+}
