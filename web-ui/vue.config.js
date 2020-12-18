@@ -37,6 +37,11 @@ module.exports = {
         ws: true,
         changeOrigin: true
       },
+      '/tags': {
+        target: API,
+        ws: true,
+        changeOrigin: true
+      },
       '/images': {
         target: API,
         ws: true,

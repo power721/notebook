@@ -1,10 +1,7 @@
 package cn.har01d.notebook.service
 
 import cn.har01d.notebook.core.Access
-import cn.har01d.notebook.entity.CategoryRepository
-import cn.har01d.notebook.entity.NoteRepository
-import cn.har01d.notebook.entity.NotebookRepository
-import cn.har01d.notebook.entity.UserRepository
+import cn.har01d.notebook.entity.*
 import cn.har01d.notebook.vo.NoteStats
 import cn.har01d.notebook.vo.SystemInfo
 import cn.har01d.notebook.vo.SystemStats
@@ -19,7 +16,8 @@ class AdminService(
         private val userRepository: UserRepository,
         private val noteRepository: NoteRepository,
         private val notebookRepository: NotebookRepository,
-        private val categoryRepository: CategoryRepository
+        private val categoryRepository: CategoryRepository,
+        private val tagRepository: TagRepository,
 ) {
     fun getSystemInfo(): SystemInfo {
         val runtime = Runtime.getRuntime()
@@ -63,6 +61,7 @@ class AdminService(
                 notebookRepository.count(),
                 categoryRepository.count(),
                 0, // TODO:
+                tagRepository.count(),
         )
     }
 }

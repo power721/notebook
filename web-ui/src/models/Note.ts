@@ -8,6 +8,11 @@ export enum Access {
   PRIVATE
 }
 
+export class Tag {
+  id: number = 0
+  name: string = ''
+}
+
 export class Note {
   id: string = ''
   title: string = ''
@@ -17,6 +22,7 @@ export class Note {
   notebook: Notebook = new Notebook()
   categoryId: string = ''
   category: Category = new Category()
+  tags: Tag[] = []
   markdown: boolean = false
   access: string = Access[Access.PUBLIC]
   version: number = 0

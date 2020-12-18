@@ -5,6 +5,7 @@ import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppNotFoundException
 import cn.har01d.notebook.dto.NoteDto
+import cn.har01d.notebook.dto.TagDto
 import cn.har01d.notebook.entity.*
 import cn.har01d.notebook.service.IdUtils.CATEGORY_OFFSET
 import cn.har01d.notebook.service.IdUtils.NOTEBOOK_OFFSET
@@ -21,6 +22,7 @@ class NoteService(
         private val notebookRepository: NotebookRepository,
         private val contentRepository: NoteContentRepository,
         private val categoryRepository: CategoryRepository,
+        private val tagRepository: TagRepository,
         private val userService: UserService
 ) {
     fun list(pageable: Pageable): Page<Note> {
@@ -97,7 +99,8 @@ class NoteService(
             rid = IdUtils.generate()
         }
 
-        val note = noteRepository.save(Note(user, notebook, category, access = dto.access ?: Access.PUBLIC, rid = rid))
+        val note = noteRepository.save(Note(user, notebook, category, getTags(dto.tags), access = dto.access
+                ?: Access.PUBLIC, rid = rid))
         val content = contentRepository.save(NoteContent(dto.title, dto.content, note, dto.markdown))
         note.content = content
         notebook.updatedTime = Instant.now()
@@ -114,6 +117,10 @@ class NoteService(
         val note = getNote(id)
         if (note.author.id != user.id) {
             throw AppForbiddenException("用户无权操作")
+        }
+
+        if (dto.tags != null) {
+            note.tags = getTags(dto.tags)
         }
 
         if (dto.notebookId != null) {
@@ -220,6 +227,15 @@ class NoteService(
         } else {
             note.deleted = true
             noteRepository.save(note)
+        }
+    }
+
+    private fun getTags(tags: List<TagDto>?): List<Tag> {
+        if (tags == null) {
+            return ArrayList()
+        }
+        return tags.map { tag ->
+            tagRepository.findByName(tag.name) ?: tagRepository.save(Tag(tag.name))
         }
     }
 

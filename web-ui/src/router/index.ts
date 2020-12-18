@@ -22,13 +22,14 @@ import AdminAudit from '@/views/admin/AdminAudit.vue'
 import AdminConfig from '@/views/admin/AdminConfig.vue'
 import AdminStats from '@/views/admin/AdminStats.vue'
 import AdminInfo from '@/views/admin/AdminInfo.vue'
+import TagNotes from '@/views/tag/TagNotes.vue'
 
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'NoteList',
+    name: 'Home',
     component: NoteList
   },
   {
@@ -50,6 +51,11 @@ const routes: Array<RouteConfig> = [
     path: '/notebooks/:id',
     name: 'NotebookDetails',
     component: NotebookDetails
+  },
+  {
+    path: '/notes',
+    name: 'NoteList',
+    component: NoteList
   },
   {
     path: '/notes/:id',
@@ -122,6 +128,11 @@ const routes: Array<RouteConfig> = [
     name: 'UserNotes',
     component: UserNotes,
     meta: {auth: true}
+  },
+  {
+    path: '/tags/:tag',
+    name: 'TagNotes',
+    component: TagNotes,
   },
   {
     path: '/admin',

@@ -35,7 +35,7 @@ class CategoryService(
 
     fun getNotes(id: String, pageable: Pageable): Page<Note> {
         val user = userService.getCurrentUser()
-        val category = repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("笔记本不存在")
+        val category = repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("分类不存在")
         if (user != null) {
             return noteRepository.findByCategoryAndPublicOrOwn(category, user, pageable)
         }

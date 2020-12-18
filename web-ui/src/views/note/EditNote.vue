@@ -64,6 +64,27 @@
             </el-option>
           </el-select>
         </div>
+        <div class="field">
+          <label>标签</label>
+          <multiselect
+            v-model="note.tags"
+            :multiple="true"
+            :taggable="true"
+            :searchable="true"
+            :options="tags"
+            label="name"
+            track-by="name"
+            tag-placeholder="添加为标签"
+            placeholder="搜索或者添加标签"
+            deselectLabel=""
+            selectLabel=""
+            :max="5"
+            :limit="5"
+            @tag="addTag"
+            @keypress.enter="addTag"
+            @search-change="loadTags"
+          ></multiselect>
+        </div>
         <div class="required field">
           <label>访问权限</label>
           <el-radio-group v-model="note.access">
@@ -93,7 +114,9 @@
   import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
   import Editor from '@tinymce/tinymce-vue'
-  import {Note} from '@/models/Note'
+  import Multiselect from 'vue-multiselect'
+  import 'vue-multiselect/dist/vue-multiselect.min.css'
+  import {Note, Tag} from '@/models/Note'
   import {Notebook} from '@/models/Notebook'
   import {Category} from '@/models/Category'
   import accountService from '@/services/account.service'
@@ -101,7 +124,8 @@
 
   @Component({
     components: {
-      Editor
+      Editor,
+      Multiselect
     }
   })
   export default class EditNote extends Vue {
@@ -112,6 +136,7 @@
     category: Category = new Category()
     notebooks: Notebook[] = []
     categories: Category[] = []
+    tags: Tag[] = []
     note: Note = new Note()
     options = {
       initialEditType: 'wysiwyg'
@@ -191,6 +216,25 @@
         if (this.category.id) {
           this.category.name = this.categories.find(e => e.id === this.category.id)?.name || ''
         }
+      })
+      this.loadTags('')
+    }
+
+    addTag(name: string) {
+      const tag = {id: 0, name: name}
+      axios.post('/tags', tag).then(() => {
+        this.tags.push(tag)
+        this.note.tags.push(tag)
+      })
+    }
+
+    loadTags(query: string) {
+      this.loading = true
+      axios.get('/tags?q=' + query).then(({data}) => {
+        this.tags = data.content
+        this.loading = false
+      }, () => {
+        this.loading = false
       })
     }
 

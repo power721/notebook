@@ -5,6 +5,7 @@ import cn.har01d.notebook.service.NotebookService
 import cn.har01d.notebook.vo.toVo
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import javax.transaction.Transactional
 
 @RequestMapping("/notebooks")
 @RestController
@@ -15,6 +16,7 @@ class NotebookController(private val service: NotebookService) {
     @GetMapping("{id}")
     fun get(@PathVariable id: String) = service.get(id).toVo()
 
+    @Transactional
     @GetMapping("{id}/notes")
     fun getNotes(@PathVariable id: String, pageable: Pageable) = service.getNotes(id, pageable).map { it.toVo() }
 

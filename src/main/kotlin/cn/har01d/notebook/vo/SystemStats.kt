@@ -5,6 +5,7 @@ data class SystemStats(
         val note: NoteStats,
         val notebooks: Long,
         val categories: Long,
+        val comments: Long,
         val tags: Long,
 )
 

@@ -17,5 +17,6 @@ export class SystemStats {
   note: NoteStats = new NoteStats()
   notebooks: number = 0
   categories: number = 0
+  comments: number = 0
   tags: number = 0
 }

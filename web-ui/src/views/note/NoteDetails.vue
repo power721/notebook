@@ -53,6 +53,12 @@
         <template v-else>本文编写于 {{note.createdTime | fromNow}}，其中某些信息可能已经过时。</template>
       </div>
       <div class="article content" v-html="note.content"></div>
+      <div class="footer">
+        <div class="ui divider"></div>
+        <router-link :to="'/tags/'+tag.name" class="ui blue tag label" :key="tag.name" v-for="tag of note.tags">
+          {{tag.name}}
+        </router-link>
+      </div>
     </div>
 
     <Modal v-model="confirm" :title="note.title">
