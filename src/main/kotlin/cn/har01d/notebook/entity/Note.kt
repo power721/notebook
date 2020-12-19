@@ -12,10 +12,15 @@ import javax.persistence.*
 
 @Entity
 class Note(
+        @JoinColumn(foreignKey = ForeignKey(name = "FK_AUTHOR_ID"))
         @ManyToOne val author: User,
+        @JoinColumn(foreignKey = ForeignKey(name = "FK_NOTEBOOK_ID"))
         @ManyToOne var notebook: Notebook,
+        @JoinColumn(foreignKey = ForeignKey(name = "FK_CATEGORY_ID"))
         @ManyToOne var category: Category,
+        @JoinTable(joinColumns = [JoinColumn(name = "note_id")], inverseJoinColumns = [JoinColumn(name = "tag_id")], foreignKey = ForeignKey(name = "FK_NOTE_ID"), inverseForeignKey = ForeignKey(name = "FK_TAG_ID"))
         @ManyToMany var tags: List<Tag> = ArrayList(),
+        @JoinColumn(foreignKey = ForeignKey(name = "FK_CONTENT_ID"))
         @OneToOne var content: NoteContent? = null,
         @Enumerated(EnumType.STRING) @Column(length = 16, nullable = false) var access: Access = Access.PUBLIC,
         @JsonProperty("id") @Column(nullable = false, unique = true) var rid: String,

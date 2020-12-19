@@ -1,9 +1,9 @@
 package cn.har01d.notebook.service
 
 object IdUtils {
-    const val NOTEBOOK_OFFSET = 10000
+    const val CATEGORY_OFFSET = 10000
     const val USER_OFFSET = 20000
-    const val CATEGORY_OFFSET = 30000
+    const val NOTEBOOK_OFFSET = 40000
     private const val TOKEN = "p03uj8d6b2gzhln4eqkvxyairs5wft1o97cm"
     private const val TOKEN36 = "SNWZ9BL81RPU3XY7AOQCVHG4T5DJ2I0EK6FM"
     private const val TOKEN62 = "Ok4jShBpcvKY5gTQMVRsEHfGe3nDdb81IJwrqLFP0UC6xilazo2ZWut9yNmA7X"

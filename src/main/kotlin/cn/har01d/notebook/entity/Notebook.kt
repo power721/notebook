@@ -10,6 +10,7 @@ import javax.persistence.*
 class Notebook(
         @Column(nullable = false) var name: String,
         @Column(nullable = false) var description: String,
+        @JoinColumn(foreignKey = ForeignKey(name = "FK_OWNER_ID"))
         @ManyToOne val owner: User,
         var updatedTime: Instant? = null,
         @Column(nullable = false) val createdTime: Instant = Instant.now(),

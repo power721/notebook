@@ -13,7 +13,7 @@ enum class ConfigType {
 
 @Entity
 class Config(
-        @Id @Column(length = 32, nullable = false) val name: String,
+        @Id @Column(length = 32, nullable = false, unique = true) val name: String,
         @Column(columnDefinition = "TEXT", nullable = false) var value: String,
         @Enumerated(EnumType.STRING) @Column(length = 10, nullable = false) var type: ConfigType = ConfigType.STRING
 )

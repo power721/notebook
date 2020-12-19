@@ -9,7 +9,8 @@ import javax.persistence.*
 @Entity
 class NoteContent(
         @Column(nullable = false) var title: String,
-        @Column(columnDefinition = "TEXT", nullable = false) var content: String,
+        @Column(columnDefinition = "LONGTEXT NOT NULL") var content: String,
+        @JoinColumn(foreignKey = ForeignKey(name = "FK_CONTENT_NOTE_ID"))
         @JsonIgnore @OneToOne val note: Note,
         @Column(nullable = false) var markdown: Boolean = false,
         @Column(nullable = false) var version: Int = 1,
