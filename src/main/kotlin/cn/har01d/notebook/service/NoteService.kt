@@ -35,6 +35,15 @@ class NoteService(
         }
     }
 
+    fun search(q: String, pageable: Pageable): Page<Note> {
+        val user = userService.getCurrentUser()
+        return if (user == null) {
+            noteRepository.searchPublic(q, pageable)
+        } else {
+            noteRepository.searchPublicOrOwn(q, user, pageable)
+        }
+    }
+
     fun getMyNotes(pageable: Pageable): Page<Note> {
         val user = userService.requireCurrentUser()
         return noteRepository.findByAuthor(user, pageable)

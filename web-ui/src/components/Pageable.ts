@@ -7,9 +7,10 @@ export class Pageable extends Vue {
   totalElements: number = 0
   size: number = 10
   sort: string = 'id,desc'
+  q: string = ''
 
   get query(): string {
-    return `page=${this.page - 1}&size=${this.size}&sort=${this.sort}`
+    return `q=${this.q}&page=${this.page - 1}&size=${this.size}&sort=${this.sort}`
   }
 
   load() {

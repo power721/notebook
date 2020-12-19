@@ -8,12 +8,12 @@
         <router-link class="item" to="/categories"><i class="idea icon"></i>分类</router-link>
         <router-link class="item" to="/about"><i class="info icon"></i>关于</router-link>
         <div class="right menu">
-          <!--<div class="item">
-            <div class="ui transparent icon input">
-              <input type="text" placeholder="Search...">
-              <i class="search link icon"></i>
+          <div class="item">
+            <div class="ui icon input">
+              <input type="text" placeholder="搜索笔记" v-model="text" @keypress.enter="search">
+              <i class="search link icon" @click="search"></i>
             </div>
-          </div>-->
+          </div>
           <UserMenu class="item"></UserMenu>
         </div>
       </div>
@@ -100,6 +100,7 @@
     }
   })
   export default class App extends Vue {
+    text: string = ''
     inverted: boolean = false
     show: boolean = false
     fontSize: number = 16
@@ -112,6 +113,14 @@
       this.inverted = localStorage.getItem('invertedMode') === 'true'
       this.fontSize = +(localStorage.getItem('fontSize') || '16')
       this.$store.dispatch('getSiteConfig')
+    }
+
+    search() {
+      if (this.text) {
+        this.$router.push('/notes?q=' + this.text + '&t=' + new Date().getTime())
+      } else {
+        this.$router.push('/')
+      }
     }
 
     save() {

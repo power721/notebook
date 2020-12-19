@@ -51,6 +51,12 @@ interface NoteRepository : JpaRepository<Note, Int> {
     @Query("SELECT n from Note n where (n.access='PUBLIC' or n.author=?1) and n.deleted=false")
     fun findPublicOrOwn(user: User, pageable: Pageable): Page<Note>
 
+    @Query("SELECT n from Note n where n.content.title like %?1% and n.access='PUBLIC' and n.deleted=false")
+    fun searchPublic(text: String, pageable: Pageable): Page<Note>
+
+    @Query("SELECT n from Note n where n.content.title like %?1% and (n.access='PUBLIC' or n.author=?2) and n.deleted=false")
+    fun searchPublicOrOwn(text: String, user: User, pageable: Pageable): Page<Note>
+
     @Query("SELECT n from Note n where n.access='PUBLIC' and n.author=?1 and n.deleted=false")
     fun findPublicAndAuthor(user: User, pageable: Pageable): Page<Note>
 

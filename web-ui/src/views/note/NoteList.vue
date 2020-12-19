@@ -21,11 +21,15 @@
         <a class="item" :class="{active:sort==='content.title,asc'}" @click="sorted('content.title,asc')">标题(升序)</a>
       </Dropdown>
       <div class="ui divided items">
+        <div class="ui warning message" v-if="q&&notes.length===0">
+          没有找到包含“{{q}}”的笔记。
+        </div>
         <div class="item" v-for="note in notes" :key="note.id">
           <div class="content">
             <router-link class="header" :to="'/notes/'+note.id">{{note.title}}</router-link>
             <div class="meta">
-              <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>发布于
+              <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>
+              发布于
               <router-link :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
             </div>
             <div class="extra" v-if="note.version>1">
@@ -61,6 +65,7 @@
     watch: {
       '$route'(to) {
         this.page = +to.query.page || 1
+        this.q = to.query.q || ''
         this.load()
       }
     }
@@ -73,6 +78,7 @@
       configService.setTitle('笔记')
       this.sort = configService.getNotesSortOrder()
       this.page = +this.$route.query.page || 1
+      this.q = (this.$route.query.q || '') as string
       this.load()
     }
 
@@ -94,7 +100,7 @@
     }
 
     go(page: number) {
-      this.$router.push(this.$route.path + '?page=' + page)
+      this.$router.push(this.$route.path + '?q=' + this.q + '&page=' + page)
     }
   }
 </script>
