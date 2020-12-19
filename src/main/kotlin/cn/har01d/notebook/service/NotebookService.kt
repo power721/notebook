@@ -1,6 +1,5 @@
 package cn.har01d.notebook.service
 
-import cn.har01d.notebook.core.Access
 import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppNotFoundException
@@ -22,7 +21,8 @@ class NotebookService(
         private val notebookRepository: NotebookRepository,
         private val noteRepository: NoteRepository,
         private val userService: UserService,
-        private val configService: ConfigService
+        private val configService: ConfigService,
+        private val auditService: AuditService,
 ) {
     fun list(q: String?, pageable: Pageable): Page<Notebook> {
         return if (q != null) {
@@ -63,7 +63,7 @@ class NotebookService(
             throw AppException("笔记本数量不能超过$limit")
         }
         val notebook = Notebook(dto.name, dto.description, user)
-        return notebookRepository.save(notebook)
+        return notebookRepository.save(notebook).also { auditService.auditNotebookCreate(user, notebook) }
     }
 
     fun update(id: String, dto: NotebookDto): Notebook {
@@ -82,7 +82,7 @@ class NotebookService(
         notebook.name = dto.name
         notebook.description = dto.description
         notebook.updatedTime = Instant.now()
-        return notebookRepository.save(notebook)
+        return notebookRepository.save(notebook).also { auditService.auditNotebookUpdate(user, notebook) }
     }
 
     @Transactional
@@ -102,6 +102,7 @@ class NotebookService(
         }
 
         notebookRepository.delete(notebook)
+        auditService.auditNotebookDelete(user, notebook)
     }
 
     fun getNotes(id: String, pageable: Pageable): Page<Note> {

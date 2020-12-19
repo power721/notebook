@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 function toFix2(value: number) {
   const str = Math.floor(value) + ''
   if (str.length < 2) {
@@ -17,7 +19,7 @@ export function datetime(value: number | string) {
   const hour = dateObj.getHours()
   const minute = dateObj.getMinutes()
   const second = dateObj.getSeconds()
-  return year + '-' + toFix2(month) + '-' + toFix2(day) + ' ' + toFix2(hour) + ':' + toFix2(minute)// + ':' + toFix2(second)
+  return year + '-' + toFix2(month) + '-' + toFix2(day) + ' ' + toFix2(hour) + ':' + toFix2(minute) + ':' + toFix2(second)
 }
 
 export function date(value: number | string) {
@@ -130,3 +132,10 @@ export function byte2string(bytes: number, unit: ByteUnit = ''): string {
     return bytes + ' bytes';
   }
 }
+
+Vue.filter('datetime', datetime)
+Vue.filter('date', date)
+Vue.filter('time', time)
+Vue.filter('duration', duration)
+Vue.filter('fromNow', fromNow)
+Vue.filter('byte2string', byte2string)

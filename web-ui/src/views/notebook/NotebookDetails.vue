@@ -192,7 +192,7 @@
       axios.delete(`/notebooks/${this.id}?force=${this.force}`).then(() => {
         this.confirm = false
         this.$toasted.success('删除成功')
-        this.$router.push('/my-notebooks')
+        this.$router.push('/user/notebooks')
       })
     }
   }

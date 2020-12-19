@@ -6,6 +6,7 @@ data class SiteConfig(
         val qrCode: String,
         val icpBeian: String,
         val govBeian: String,
+        val enableAudit: Boolean,
         val enableComment: Boolean,
         val enableSignup: Boolean
 )

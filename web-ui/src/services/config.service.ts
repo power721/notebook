@@ -14,7 +14,7 @@ export class ConfigService {
   }
 
   updateSiteConfig(siteConfig: SiteConfig) {
-    return axios.put('/config/site', siteConfig).then(({data}) => {
+    return axios.put('/admin/config', siteConfig).then(({data}) => {
       this.siteConfig = data
       store.commit('config', data)
       return data

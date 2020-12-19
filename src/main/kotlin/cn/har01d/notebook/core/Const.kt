@@ -6,6 +6,7 @@ object Const {
     const val GOV_BEIAN = "gov_beian"  // 全国互联网安全管理服务平台 http://www.beian.gov.cn/
     const val BRAND_COLOR = "brand_color"  // 品牌颜色
     const val QR_CODE = "qr_code"  // 二维码
+    const val ENABLE_AUDIT = "enable_audit"  // 开启审计
     const val ENABLE_SIGNUP = "enable_signup"  // 允许用户注册
     const val ENABLE_COMMENT = "enable_comment"  // 允许评论
 }

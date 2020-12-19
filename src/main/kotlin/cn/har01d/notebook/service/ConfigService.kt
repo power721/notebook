@@ -19,6 +19,7 @@ class ConfigService(private val repository: ConfigRepository) {
                 get(Const.QR_CODE, ""),
                 get(Const.ICP_BEIAN, ""),
                 get(Const.GOV_BEIAN, ""),
+                get(Const.ENABLE_AUDIT, true),
                 get(Const.ENABLE_COMMENT, true),
                 get(Const.ENABLE_SIGNUP, true),
         )
@@ -30,6 +31,7 @@ class ConfigService(private val repository: ConfigRepository) {
         save(Const.QR_CODE, dto.qrCode)
         save(Const.ICP_BEIAN, dto.icpBeian)
         save(Const.GOV_BEIAN, dto.govBeian)
+        save(Const.ENABLE_AUDIT, dto.enableAudit)
         save(Const.ENABLE_COMMENT, dto.enableComment)
         save(Const.ENABLE_SIGNUP, dto.enableSignup)
         return getSiteConfig()

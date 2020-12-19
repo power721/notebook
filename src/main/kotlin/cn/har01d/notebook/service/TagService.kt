@@ -15,6 +15,7 @@ class TagService(
         private val repository: TagRepository,
         private val noteRepository: NoteRepository,
         private val userService: UserService,
+        private val auditService: AuditService,
 ) {
     fun list(q: String?, pageable: Pageable): Page<Tag> {
         return if (q != null) {
@@ -34,5 +35,5 @@ class TagService(
         }
     }
 
-    fun create(tag: TagDto) = repository.save(Tag(tag.name))
+    fun create(tag: TagDto) = repository.save(Tag(tag.name)).also { auditService.auditTagCreate(userService.requireCurrentUser(), it) }
 }

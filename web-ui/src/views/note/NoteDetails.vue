@@ -17,8 +17,9 @@
       </h1>
       <h1 class="ui header" v-else>
         {{note.title}}
-        <span class="ui label" v-if="note.access!=='PUBLIC'">{{note.access}}</span>
       </h1>
+      <a class="ui top left attached label" data-tooltip="知道ID可以访问" v-if="note.access==='SECRET'">秘密</a>
+      <a class="ui top left attached label" data-tooltip="只有你可以访问" v-if="note.access==='PRIVATE'">私有</a>
       <div class="metadata">
         <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>
         <span :data-tooltip="note.createdTime | datetime">
@@ -55,9 +56,11 @@
       <div class="article content" v-html="note.content"></div>
       <div class="footer">
         <div class="ui divider"></div>
-        <router-link :to="'/tags/'+tag.name" class="ui blue tag label" :key="tag.name" v-for="tag of note.tags">
-          {{tag.name}}
-        </router-link>
+        <div class="ui blue tag labels">
+          <router-link :to="'/tags/'+tag.name" class="ui label" :key="tag.name" v-for="tag of note.tags">
+            {{tag.name}}
+          </router-link>
+        </div>
       </div>
     </div>
 

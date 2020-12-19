@@ -5,10 +5,10 @@ import 'element-ui/lib/theme-chalk/index.css'
 import Toasted from 'vue-toasted'
 import App from './App.vue'
 import './registerServiceWorker'
+import './filters'
 import router from './router'
 import store from './store'
 import auth from './services/account.service'
-import {date, datetime, duration, fromNow, time, byte2string} from './filters'
 import UserMenu from '@/views/user/UserMenu.vue'
 
 import 'tinymce/tinymce'
@@ -40,13 +40,6 @@ import '@/assets/langs/zh_CN'
 import 'semantic-ui-css/semantic.min.css'
 
 Vue.config.productionTip = false
-
-Vue.filter('datetime', datetime)
-Vue.filter('date', date)
-Vue.filter('time', time)
-Vue.filter('duration', duration)
-Vue.filter('fromNow', fromNow)
-Vue.filter('byte2string', byte2string)
 
 Vue.component(Select.name, Select)
 Vue.component(Option.name, Option)

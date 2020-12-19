@@ -18,7 +18,8 @@ class CategoryService(
         private val repository: CategoryRepository,
         private val noteRepository: NoteRepository,
         private val userService: UserService,
-        private val configService: ConfigService
+        private val configService: ConfigService,
+        private val auditService: AuditService,
 ) {
 
     fun list(q: String?, pageable: Pageable): Page<Category> {
@@ -53,7 +54,7 @@ class CategoryService(
         }
 
         val category = Category(dto.name, dto.description)
-        return repository.save(category)
+        return repository.save(category).also { auditService.auditCategoryCreate(userService.requireCurrentUser(), it) }
     }
 
     fun update(id: String, dto: CategoryDto): Category {
@@ -64,12 +65,13 @@ class CategoryService(
         }
         category.name = dto.name
         category.description = dto.description
-        return repository.save(category)
+        return repository.save(category).also { auditService.auditCategoryUpdate(userService.requireCurrentUser(), it) }
     }
 
     fun delete(id: String) {
         val category = repository.findByIdOrNull(decode(id)) ?: return
         repository.delete(category)
+        auditService.auditCategoryDelete(userService.requireCurrentUser(), category)
     }
 
     private fun decode(id: String) = IdUtils.decode(id) - CATEGORY_OFFSET

@@ -22,7 +22,8 @@ class UserService(
         private val repository: UserRepository,
         private val passwordEncoder: PasswordEncoder,
         private val notebookRepository: NotebookRepository,
-        private val configService: ConfigService
+        private val configService: ConfigService,
+        private val auditService: AuditService,
 ) {
     fun getCurrentUser(): User? {
         val authentication = SecurityContextHolder.getContext().authentication
@@ -49,7 +50,7 @@ class UserService(
         if (!enabled) {
             throw AppForbiddenException("禁止用户注册")
         }
-        return createUser(dto)
+        return createUser(dto).also { auditService.auditSignUp(it) }
     }
 
     fun createUser(dto: AccountDto): User {
@@ -81,6 +82,6 @@ class UserService(
             }
             user.password = passwordEncoder.encode(dto.newPassword)
         }
-        return repository.save(user)
+        return repository.save(user).also { auditService.auditUserUpdate(it) }
     }
 }

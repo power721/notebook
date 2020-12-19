@@ -4,6 +4,7 @@ export class SiteConfig {
   qrCode: string = ''
   icpBeian: string = ''
   govBeian: string = ''
+  enableAudit: boolean = true
   enableComment: boolean = true
   enableSignup: boolean = true
 }

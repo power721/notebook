@@ -1,0 +1,21 @@
+package cn.har01d.notebook.core
+
+enum class ActionType {
+    CONFIG,
+    SIGN_UP,
+    LOGIN,
+    LOGOUT,
+    UPDATE_USER,
+    CREATE_CATEGORY,
+    UPDATE_CATEGORY,
+    DELETE_CATEGORY,
+    CREATE_NOTE,
+    UPDATE_NOTE,
+    DELETE_NOTE,
+    CREATE_NOTEBOOK,
+    UPDATE_NOTEBOOK,
+    DELETE_NOTEBOOK,
+    CREATE_TAG,
+    UPDATE_TAG,
+    DELETE_TAG,
+}
