@@ -232,7 +232,7 @@
 
     addTag(name: string) {
       const tag = {id: 0, name: name}
-      axios.post('/tags', tag).then(() => {
+      axios.post('/tags?size=10', tag).then(() => {
         this.tags.push(tag)
         this.note.tags.push(tag)
       })
@@ -240,7 +240,7 @@
 
     loadTags(query: string) {
       this.loading = true
-      axios.get('/tags?q=' + query).then(({data}) => {
+      axios.get('/tags?size=10&q=' + query).then(({data}) => {
         this.tags = data.content
         this.loading = false
       }, () => {

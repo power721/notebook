@@ -34,6 +34,9 @@
         <span :data-tooltip="note.views+'阅读'" v-if="note.access!=='PRIVATE'">
           {{note.views}} <i class="eye icon"></i>
         </span>
+        <router-link :to="'/notes/'+note.id+'/edit'" class="edit" data-tooltip="编辑笔记" v-if="author&&!note.deleted">
+          <i class="edit icon"></i>
+        </router-link>
         <Dropdown icon="bars" position="top right" :pointing="true" v-if="author">
           <router-link class="item" :to="'/notes/'+note.id+'/edit'" v-if="!note.deleted">编辑笔记</router-link>
           <router-link class="item" :to="'/notes/'+note.id+'/history'" v-if="note.version>1">历史记录</router-link>
@@ -192,4 +195,7 @@
 </script>
 
 <style scoped>
+  .edit {
+    margin-left: 3px;
+  }
 </style>

@@ -6,6 +6,7 @@
         <router-link class="item" to="/" exact><i class="home icon"></i>首页</router-link>
         <router-link class="item" to="/notebooks"><i class="book icon"></i>笔记本</router-link>
         <router-link class="item" to="/categories"><i class="idea icon"></i>分类</router-link>
+        <router-link class="item" to="/tags"><i class="tag icon"></i>标签</router-link>
         <router-link class="item" to="/about"><i class="info icon"></i>关于</router-link>
         <div class="right menu">
           <div class="item">

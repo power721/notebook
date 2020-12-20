@@ -23,6 +23,7 @@ import AdminConfig from '@/views/admin/AdminConfig.vue'
 import AdminStats from '@/views/admin/AdminStats.vue'
 import AdminInfo from '@/views/admin/AdminInfo.vue'
 import TagNotes from '@/views/tag/TagNotes.vue'
+import TagList from '@/views/tag/TagList.vue'
 
 Vue.use(VueRouter)
 
@@ -128,6 +129,11 @@ const routes: Array<RouteConfig> = [
     name: 'UserNotes',
     component: UserNotes,
     meta: {auth: true}
+  },
+  {
+    path: '/tags',
+    name: 'TagList',
+    component: TagList,
   },
   {
     path: '/tags/:tag',

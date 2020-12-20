@@ -3,7 +3,7 @@
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
-      <span class="section">标签</span>
+      <router-link to="/tags" class="section">标签</router-link>
       <i class="right chevron icon divider"></i>
       <div class="active section">{{tag}}</div>
     </div>
