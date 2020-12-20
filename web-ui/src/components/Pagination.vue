@@ -13,6 +13,10 @@
       <a class="item" @click="go(pages)" v-if="page+3<pages">{{pages}}</a>
       <a class="item" @click="go(page+1)" v-if="page<pages">下一页</a>
     </div>
+    <div class="ui action input" v-if="pages>9">
+      <input type="number" min="1" :max="pages" class="ui input" v-model="current">
+      <button class="ui button" @click="jump">跳转</button>
+    </div>
     <span class="total" v-if="total">共 {{total}} 条</span>
   </div>
 </template>
@@ -30,15 +34,39 @@
     @Prop() private page!: number
     @Prop() private pages!: number
     @Prop() private total!: number
+    current: number = this.page
 
     go(page: number) {
+      this.current = page
       this.$emit('change', page)
+    }
+
+    jump() {
+      if (this.current == this.page) {
+        return
+      }
+      if (this.current > this.pages) {
+        this.current = this.pages
+      }
+      this.$emit('change', this.current)
     }
   }
 </script>
 
 <style scoped>
   .ui.pagination.menu {
-    margin-right: 12px;
+    margin-right: 6px;
+  }
+
+  .ui.action.input {
+    margin-left: 0;
+    margin-right: 6px;
+  }
+
+  .ui.action.input input {
+    width: 5.25em;
+  }
+  .total {
+    font-size: 1.25em;
   }
 </style>
