@@ -49,8 +49,8 @@ class EventService {
     }
   }
 
-  handle(name: string, event: Event) {
-    const handlers = this.map.get(name) || []
+  handle(event: Event) {
+    const handlers = this.map.get(event.type) || []
     handlers.forEach(handler => {
       handler.handler(event)
     })
@@ -59,16 +59,11 @@ class EventService {
 
 const eventService = new EventService()
 
-document.onclick = (event) => {
-  eventService.handle('click', event)
-}
-
-document.ontouchend = (event) => {
-  eventService.handle('touchend', event)
-}
-
-document.onscroll = (event) => {
-  eventService.handle('scroll', event)
-}
+const events = ['click', 'touchend', 'scroll']
+events.forEach(type => {
+  document.addEventListener(type, (event) => {
+    eventService.handle(event)
+  }, false)
+})
 
 export default eventService

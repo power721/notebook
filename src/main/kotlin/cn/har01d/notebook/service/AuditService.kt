@@ -1,5 +1,6 @@
 package cn.har01d.notebook.service
 
+import cn.har01d.notebook.core.Access
 import cn.har01d.notebook.core.ActionType
 import cn.har01d.notebook.core.Const
 import cn.har01d.notebook.core.SiteConfig
@@ -117,7 +118,8 @@ class AuditService(private val auditRepository: AuditRepository, private val con
         if (disabled()) {
             return
         }
-        val audit = Audit(user, ActionType.CREATE_NOTE, "创建笔记：${note.content?.title}", note.id!!, getUserAgent(), getClientIp(), getReferer())
+        val op = if (note.access == Access.PRIVATE) "创建私有笔记：${note.content?.title}" else if (note.access == Access.SECRET) "创建秘密笔记：${note.content?.title}" else "创建公开笔记：${note.content?.title}"
+        val audit = Audit(user, ActionType.CREATE_NOTE, op, note.id!!, getUserAgent(), getClientIp(), getReferer())
         auditRepository.save(audit)
     }
 
@@ -165,7 +167,8 @@ class AuditService(private val auditRepository: AuditRepository, private val con
         if (disabled()) {
             return
         }
-        val audit = Audit(user, ActionType.CREATE_NOTEBOOK, "创建笔记本：${notebook.name}", notebook.id!!, getUserAgent(), getClientIp(), getReferer())
+        val op = if (notebook.access == Access.PRIVATE) "创建私有笔记本：${notebook.name}" else if (notebook.access == Access.SECRET) "创建秘密笔记本：${notebook.name}" else "创建公开笔记本：${notebook.name}"
+        val audit = Audit(user, ActionType.CREATE_NOTEBOOK, op, notebook.id!!, getUserAgent(), getClientIp(), getReferer())
         auditRepository.save(audit)
     }
 

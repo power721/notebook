@@ -16,6 +16,8 @@
 
     <div class="ui center aligned raised segment">
       <h1 class="ui header">{{notebook.name}}</h1>
+      <a class="ui top left attached label" data-tooltip="知道ID可以访问" v-if="notebook.access==='SECRET'">秘密</a>
+      <a class="ui top left attached label" data-tooltip="只有你可以访问" v-if="notebook.access==='PRIVATE'">私有</a>
       <div class="metadata">
         <router-link :to="'/users/'+notebook.owner.id">@{{notebook.owner.username}}</router-link>
         <span :data-tooltip="notebook.createdTime | datetime">
@@ -77,6 +79,14 @@
         <div class="required field">
           <label>标题</label>
           <input type="text" name="title" autocomplete="off" v-model="nb.name" placeholder="标题">
+        </div>
+        <div class="required field">
+          <label>访问权限</label>
+          <el-radio-group v-model="nb.access">
+            <el-radio label="PUBLIC" data-tooltip="所有人可以访问">公开</el-radio>
+            <el-radio label="SECRET" data-tooltip="知道ID可以访问">秘密</el-radio>
+            <el-radio label="PRIVATE" data-tooltip="只有你可以访问">私有</el-radio>
+          </el-radio-group>
         </div>
         <div class="field">
           <label>描述</label>
@@ -154,6 +164,8 @@
         this.notebook = data
         this.author = accountService.account.id === this.notebook.owner.id
         configService.setTitle(this.notebook.name + ' - 笔记本')
+      }, () => {
+        this.$router.push('/')
       })
     }
 

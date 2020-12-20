@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import java.time.Instant
 import javax.persistence.*
@@ -71,8 +72,8 @@ interface NoteRepository : JpaRepository<Note, Int> {
     @Query("SELECT n from Note n where n.notebook=?1 and n.deleted=false")
     fun findByNotebook(notebook: Notebook, pageable: Pageable): Page<Note>
 
-    @Query("SELECT n from Note n where n.notebook=?1 and n.access='PUBLIC' and n.deleted=false")
-    fun findByNotebookAndPublic(notebook: Notebook, pageable: Pageable): Page<Note>
+    @Query("SELECT n from Note n where n.notebook=?1 and n.access=?2 and n.deleted=false")
+    fun findByNotebookAndAccess(notebook: Notebook, access: Access, pageable: Pageable): Page<Note>
 
     @Query("SELECT n from Note n where n.category=?1 and n.access='PUBLIC' and n.deleted=false")
     fun findByCategoryAndPublic(category: Category, pageable: Pageable): Page<Note>
@@ -85,4 +86,12 @@ interface NoteRepository : JpaRepository<Note, Int> {
 
     @Query("SELECT n from Note n where ?1 MEMBER OF n.tags and (n.access='PUBLIC' or n.author=?2) and n.deleted=false")
     fun findByTagAndPublicOrOwn(tag: Tag, user: User, pageable: Pageable): Page<Note>
+
+    @Modifying
+    @Query("UPDATE Note n set n.access='SECRET' where n.access='PUBLIC' and n.notebook=?1")
+    fun updateSecretNotebook(notebook: Notebook)
+
+    @Modifying
+    @Query("UPDATE Note n set n.access='PRIVATE' where n.access<>'PRIVATE' and n.notebook=?1")
+    fun updatePrivateNotebook(notebook: Notebook)
 }

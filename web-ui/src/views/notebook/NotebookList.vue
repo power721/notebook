@@ -50,6 +50,14 @@
           <label>标题</label>
           <input type="text" name="title" autocomplete="off" v-model="notebook.name" placeholder="标题">
         </div>
+        <div class="required field">
+          <label>访问权限</label>
+          <el-radio-group v-model="notebook.access">
+            <el-radio label="PUBLIC" data-tooltip="所有人可以访问">公开</el-radio>
+            <el-radio label="SECRET" data-tooltip="知道ID可以访问">秘密</el-radio>
+            <el-radio label="PRIVATE" data-tooltip="只有你可以访问">私有</el-radio>
+          </el-radio-group>
+        </div>
         <div class="field">
           <label>描述</label>
           <textarea v-model="notebook.description"></textarea>

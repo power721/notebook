@@ -88,8 +88,8 @@
         <div class="required field">
           <label>访问权限</label>
           <el-radio-group v-model="note.access">
-            <el-radio label="PUBLIC" data-tooltip="所有人可以访问">公开</el-radio>
-            <el-radio label="SECRET" data-tooltip="知道ID可以访问">秘密</el-radio>
+            <el-radio label="PUBLIC" data-tooltip="所有人可以访问" v-if="notebook.access==='PUBLIC'">公开</el-radio>
+            <el-radio label="SECRET" data-tooltip="知道ID可以访问" v-if="notebook.access!=='PRIVATE'">秘密</el-radio>
             <el-radio label="PRIVATE" data-tooltip="只有你可以访问">私有</el-radio>
           </el-radio-group>
         </div>
@@ -184,6 +184,7 @@
       this.notebook.id = this.$route.query.notebook as string
       if (this.notebook.id) {
         this.note.notebookId = this.notebook.id
+        this.loadNotebook()
       }
       this.category.id = this.$route.query.category as string
       if (this.category.id) {
@@ -218,6 +219,15 @@
         }
       })
       this.loadTags('')
+    }
+
+    loadNotebook() {
+      axios.get(`/notebooks/${this.notebook.id}`).then(({data}) => {
+        this.notebook = data
+        this.note.access = this.notebook.access
+      }, () => {
+        this.$router.push('/')
+      })
     }
 
     addTag(name: string) {

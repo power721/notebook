@@ -109,8 +109,17 @@ class NoteService(
             rid = IdUtils.generate()
         }
 
+        if (dto.access != null) {
+            if (notebook.access == Access.SECRET && dto.access == Access.PUBLIC) {
+                throw AppException("访问权限不能为公开")
+            }
+            if (notebook.access == Access.PRIVATE && dto.access != Access.PRIVATE) {
+                throw AppException("访问权限只能为私有")
+            }
+        }
+
         val note = noteRepository.save(Note(user, notebook, category, getTags(dto.tags), access = dto.access
-                ?: Access.PUBLIC, rid = rid))
+                ?: notebook.access, rid = rid))
         val content = contentRepository.save(NoteContent(dto.title, dto.content, note, dto.markdown))
         note.content = content
         notebook.updatedTime = Instant.now()
@@ -146,6 +155,12 @@ class NoteService(
         }
 
         if (dto.access != null) {
+            if (note.notebook.access == Access.SECRET && dto.access == Access.PUBLIC) {
+                throw AppException("访问权限不能为公开")
+            }
+            if (note.notebook.access == Access.PRIVATE && dto.access != Access.PRIVATE) {
+                throw AppException("访问权限只能为私有")
+            }
             note.access = dto.access
         }
 

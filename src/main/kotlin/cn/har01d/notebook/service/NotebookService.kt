@@ -1,5 +1,6 @@
 package cn.har01d.notebook.service
 
+import cn.har01d.notebook.core.Access
 import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppNotFoundException
@@ -25,10 +26,18 @@ class NotebookService(
         private val auditService: AuditService,
 ) {
     fun list(q: String?, pageable: Pageable): Page<Notebook> {
+        val user = userService.getCurrentUser()
+        if (user != null) {
+            return if (q == null) {
+                notebookRepository.findPublicOrOwner(user, pageable)
+            } else {
+                notebookRepository.searchPublicOrOwner(q, user, pageable)
+            }
+        }
         return if (q != null) {
-            notebookRepository.findByNameContains(q, pageable)
+            notebookRepository.findByNameContainsAndAccess(q, Access.PUBLIC, pageable)
         } else {
-            notebookRepository.findAll(pageable)
+            notebookRepository.findByAccess(Access.PUBLIC, pageable)
         }
     }
 
@@ -43,11 +52,18 @@ class NotebookService(
 
     fun getUserNotebooks(userId: String, pageable: Pageable): Page<Notebook> {
         val user = userService.requireUser(userId)
-        return notebookRepository.findByOwner(user, pageable)
+        return notebookRepository.findByOwnerAndAccess(user, Access.PUBLIC, pageable)
     }
 
     fun get(id: String): Notebook {
-        return notebookRepository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("笔记本不存在")
+        val notebook = notebookRepository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("笔记本不存在")
+        if (notebook.access == Access.PRIVATE) {
+            val user = userService.getCurrentUser()
+            if (user == null || notebook.owner.id != user.id) {
+                throw AppForbiddenException("用户无权操作")
+            }
+        }
+        return notebook
     }
 
     fun create(dto: NotebookDto): Notebook {
@@ -62,10 +78,11 @@ class NotebookService(
         if (notebookRepository.countByOwner(user) >= limit) {
             throw AppException("笔记本数量不能超过$limit")
         }
-        val notebook = Notebook(dto.name, dto.description, user)
+        val notebook = Notebook(dto.name, dto.description, user, dto.access ?: Access.PUBLIC)
         return notebookRepository.save(notebook).also { auditService.auditNotebookCreate(user, notebook) }
     }
 
+    @Transactional
     fun update(id: String, dto: NotebookDto): Notebook {
         if (dto.name.isBlank()) {
             throw AppException("笔记本名字不能为空")
@@ -78,6 +95,15 @@ class NotebookService(
         val other = notebookRepository.findByOwnerAndName(user, dto.name)
         if (other != null && other.id != notebook.id) {
             throw AppException("笔记本名字已经存在")
+        }
+        if (dto.access != null && notebook.access != dto.access) {
+            if (notebook.access == Access.PUBLIC && dto.access == Access.SECRET) {
+                noteRepository.updateSecretNotebook(notebook)
+            }
+            if (notebook.access != Access.PRIVATE && dto.access == Access.PRIVATE) {
+                noteRepository.updatePrivateNotebook(notebook)
+            }
+            notebook.access = dto.access
         }
         notebook.name = dto.name
         notebook.description = dto.description
@@ -111,7 +137,11 @@ class NotebookService(
         return if (user != null && notebook.owner.id == user.id) {
             noteRepository.findByNotebook(notebook, pageable)
         } else {
-            noteRepository.findByNotebookAndPublic(notebook, pageable)
+            if (notebook.access == Access.PRIVATE) {
+                throw AppForbiddenException("用户无权操作")
+            } else {
+                noteRepository.findByNotebookAndAccess(notebook, notebook.access, pageable)
+            }
         }
     }
 

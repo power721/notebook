@@ -22,13 +22,13 @@
     private show: boolean = false
 
     mounted() {
-      this.handler = eventService.on('click', () => {
+      this.handler = eventService.on(['click', 'touchend'], () => {
         this.show = false
       })
     }
 
     destroyed() {
-      eventService.off('click', this.handler)
+      eventService.off(['click', 'touchend'], this.handler)
     }
   }
 </script>
