@@ -4,6 +4,7 @@ import {AppState} from '@/models/state'
 import {Account} from '@/models/Account'
 import {SiteConfig} from '@/models/SiteConfig'
 import configService from '@/services/config.service'
+import {Menu} from '@/models/Menu'
 
 Vue.use(Vuex)
 
@@ -12,6 +13,13 @@ export default new Vuex.Store({
     user: new Account(),
     authenticated: false,
     siteConfig: new SiteConfig(),
+    menus: [
+      new Menu(1, '笔记', '/notes', 'home'),
+      new Menu(2, '笔记本', '/notebooks', 'book'),
+      new Menu(3, '分类', '/categories', 'idea'),
+      new Menu(4, '标签', '/tags', 'tag'),
+      new Menu(5, '关于', '/about', 'info'),
+    ],
   } as AppState,
   mutations: {
     login(state: AppState, user: Account) {
@@ -28,10 +36,18 @@ export default new Vuex.Store({
     config(state: AppState, siteConfig: SiteConfig) {
       state.siteConfig = siteConfig
     },
+    menus(state: AppState, menus: Menu[]) {
+      if (menus.length) {
+        state.menus = menus
+      }
+    },
   },
   actions: {
     getSiteConfig() {
       configService.getSiteConfig()
+    },
+    getMenus() {
+      configService.getMenus()
     },
   },
   modules: {}

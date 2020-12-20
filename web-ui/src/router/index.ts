@@ -24,6 +24,7 @@ import AdminStats from '@/views/admin/AdminStats.vue'
 import AdminInfo from '@/views/admin/AdminInfo.vue'
 import TagNotes from '@/views/tag/TagNotes.vue'
 import TagList from '@/views/tag/TagList.vue'
+import AdminMenu from '@/views/admin/AdminMenu.vue'
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Home',
+    redirect: '/notes',
     component: NoteList
   },
   {
@@ -163,6 +165,12 @@ const routes: Array<RouteConfig> = [
         path: 'stats',
         name: 'AdminStats',
         component: AdminStats,
+        meta: {admin: true},
+      },
+      {
+        path: 'menu',
+        name: 'AdminMenu',
+        component: AdminMenu,
         meta: {admin: true},
       },
       {

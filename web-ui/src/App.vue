@@ -3,11 +3,22 @@
     <div class="ui stackable menu" :class="{inverted:inverted}">
       <div class="ui container">
         <h3 class="ui header item" :class="[siteConfig.brandColor]">{{siteConfig.siteName}}</h3>
-        <router-link class="item" to="/" exact><i class="home icon"></i>首页</router-link>
-        <router-link class="item" to="/notebooks"><i class="book icon"></i>笔记本</router-link>
-        <router-link class="item" to="/categories"><i class="idea icon"></i>分类</router-link>
-        <router-link class="item" to="/tags"><i class="tag icon"></i>标签</router-link>
-        <router-link class="item" to="/about"><i class="info icon"></i>关于</router-link>
+
+        <template v-for="menu of menus">
+          <template v-if="menu.children&&menu.children.length">
+            <div class="ui simple dropdown item" :key="menu.id" v-if="(menu.auth&&auth)||(menu.admin&&admin)||(!menu.auth&&!menu.admin)">
+              {{menu.title}}
+              <i class="dropdown icon"></i>
+              <div class="menu">
+                <AppMenu :menu="item" :key="item.id" v-for="item of menu.children"/>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <AppMenu :menu="menu" :key="menu.id" v-if="(menu.auth&&auth)||(menu.admin&&admin)||(!menu.auth&&!menu.admin)"/>
+          </template>
+        </template>
+
         <div class="right menu">
           <div class="item">
             <div class="ui icon input">
@@ -15,7 +26,7 @@
               <i class="search link icon" @click="search"></i>
             </div>
           </div>
-          <UserMenu class="item"></UserMenu>
+          <UserMenu class="item"/>
         </div>
       </div>
     </div>
@@ -42,10 +53,10 @@
             </div>
           </div>
           <div class="three wide column">
-            <h4 class="ui header" :class="{inverted:inverted}">服务</h4>
+            <h4 class="ui header" :class="{inverted:inverted}">内容</h4>
             <div class="ui link list" :class="{inverted:inverted}">
-              <router-link to="/notebooks" class="item">笔记本</router-link>
               <router-link to="/categories" class="item">分类</router-link>
+              <router-link to="/tags" class="item">标签</router-link>
             </div>
           </div>
           <div class="six wide column" v-if="siteConfig.icpBeian">
@@ -71,9 +82,11 @@
         </template>
         <div>
           <div class="font">
-            <button class="ui icon tiny basic button" data-tooltip="减小字体" @click="decFontSize"><i class="font icon"></i>-</button>
+            <button class="ui icon tiny basic button" data-tooltip="减小字体" @click="decFontSize"><i class="font icon"></i>-
+            </button>
             <span class="size" data-tooltip="笔记内容字体大小">{{fontSize}}</span>
-            <button class="ui icon tiny basic button" data-tooltip="增大字体" @click="incFontSize"><i class="font icon"></i>+</button>
+            <button class="ui icon tiny basic button" data-tooltip="增大字体" @click="incFontSize"><i class="font icon"></i>+
+            </button>
           </div>
           <div class="ui toggle checkbox">
             <input type="checkbox" name="inverted" v-model="inverted" @change="save">
@@ -82,7 +95,7 @@
         </div>
       </Popup>
 
-      <FloatingActions></FloatingActions>
+      <FloatingActions/>
 
     </div>
   </div>
@@ -93,10 +106,14 @@
   import {SiteConfig} from '@/models/SiteConfig'
   import Popup from '@/components/Popup.vue'
   import FloatingActions from '@/views/FloatingActions.vue'
+  import {Menu} from '@/models/Menu'
+  import AppMenu from '@/components/AppMenu.vue'
+  import {Role} from '@/models/Account'
 
   @Component({
     components: {
       Popup,
+      AppMenu,
       FloatingActions
     }
   })
@@ -106,6 +123,18 @@
     show: boolean = false
     fontSize: number = 16
 
+    get auth(): boolean {
+      return this.$store.state.authenticated
+    }
+
+    get admin(): boolean {
+      return this.$store.state.user.role == Role[Role.ROLE_ADMIN]
+    }
+
+    get menus(): Menu[] {
+      return this.$store.state.menus
+    }
+
     get siteConfig(): SiteConfig {
       return this.$store.state.siteConfig
     }
@@ -114,6 +143,7 @@
       this.inverted = localStorage.getItem('invertedMode') === 'true'
       this.fontSize = +(localStorage.getItem('fontSize') || '16')
       this.$store.dispatch('getSiteConfig')
+      this.$store.dispatch('getMenus')
     }
 
     search() {

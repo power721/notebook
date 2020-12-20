@@ -21,6 +21,12 @@ export class ConfigService {
     })
   }
 
+  getMenus() {
+    axios.get('/config/menus').then(({data}) => {
+      store.commit('menus', data)
+    })
+  }
+
   setTitle(title: string) {
     document.title = title + ' - ' + this.siteConfig.siteName
   }
