@@ -116,6 +116,7 @@
     cleanTrash() {
       axios.delete(`/users/-/trash`).then(() => {
         this.confirm = false
+        this.$toasted.success('清空回收站成功')
         this.load()
       })
     }

@@ -272,6 +272,7 @@ class NoteService(
     @Transactional
     fun cleanTrash() {
         val user = userService.requireCurrentUser()
+        contentRepository.deleteAllByNoteAuthorAndNoteDeletedTrue(user)
         noteRepository.deleteAllByAuthorAndDeletedTrue(user)
         auditService.auditCleanTrash(user)
     }

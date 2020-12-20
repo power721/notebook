@@ -1,5 +1,6 @@
 package cn.har01d.notebook.service
 
+import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppNotFoundException
 import cn.har01d.notebook.dto.TagDto
 import cn.har01d.notebook.entity.Note
@@ -8,6 +9,7 @@ import cn.har01d.notebook.entity.Tag
 import cn.har01d.notebook.entity.TagRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -36,4 +38,14 @@ class TagService(
     }
 
     fun create(tag: TagDto) = repository.save(Tag(tag.name)).also { auditService.auditTagCreate(userService.requireCurrentUser(), it) }
+
+    fun delete(name: String) {
+        val tag = repository.findByName(name) ?: return
+        val count = noteRepository.countByTagsContains(tag)
+        if (count == 0L) {
+            repository.delete(tag)
+        } else {
+            throw AppException("存在笔记包含此标签")
+        }
+    }
 }

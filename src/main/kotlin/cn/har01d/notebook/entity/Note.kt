@@ -35,6 +35,7 @@ class Note(
 interface NoteRepository : JpaRepository<Note, Int> {
     fun countByNotebook(notebook: Notebook): Long
     fun countByDeleted(deleted: Boolean): Long
+    fun countByTagsContains(tag: Tag): Long
 
     @Query("SELECT count(n) from Note n where n.access=?1 and n.deleted=false")
     fun countByAccess(access: Access): Long

@@ -19,4 +19,7 @@ class TagController(private val service: TagService) {
 
     @PostMapping
     fun create(@RequestBody tag: TagDto) = service.create(tag)
+
+    @DeleteMapping("/{tag}")
+    fun delete(@PathVariable tag: String) = service.delete(tag)
 }

@@ -99,9 +99,9 @@
       </template>
     </Modal>
 
-    <Modal v-model="confirm" :title="notebook.name">
+    <Modal v-model="confirm" title="删除笔记本">
       <div>
-        <p>是否删除此笔记本？</p>
+        <p class="ui error message">是否删除笔记本：{{notebook.name}}？</p>
         <div class="ui checkbox" v-if="totalElements">
           <input type="checkbox" name="force" v-model="force">
           <label>强制删除所有{{totalElements}}个笔记</label>

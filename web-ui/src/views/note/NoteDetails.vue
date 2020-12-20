@@ -67,17 +67,17 @@
       </div>
     </div>
 
-    <Modal v-model="confirm" :title="note.title">
-      <p class="ui error message" v-if="note.deleted">是否永久删除此笔记？</p>
-      <p class="ui warning message" v-else>是否删除此笔记？</p>
+    <Modal v-model="confirm" title="删除笔记">
+      <p class="ui error message" v-if="note.deleted">是否永久删除笔记：{{note.title}}？</p>
+      <p class="ui warning message" v-else>是否删除笔记：{{note.title}}？</p>
       <template slot="actions">
         <button @click="confirm=false" class="ui cancel button">取消</button>
         <button @click="deleteNote" class="ui negative button">删除</button>
       </template>
     </Modal>
 
-    <Modal v-model="revert" :title="note.title">
-      <p class="ui success message">是否恢复此笔记？</p>
+    <Modal v-model="revert" title="恢复笔记">
+      <p class="ui success message">是否恢复笔记：{{note.title}}？</p>
       <template slot="actions">
         <button @click="revert=false" class="ui cancel button">取消</button>
         <button @click="revertNote" class="ui positive button">恢复</button>

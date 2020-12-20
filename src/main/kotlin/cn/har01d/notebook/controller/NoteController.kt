@@ -32,15 +32,19 @@ class NoteController(private val service: NoteService) {
     @GetMapping("{id}/content/{version}")
     fun getNoteContent(@PathVariable id: String, @PathVariable version: Int) = service.getNoteContent(id, version)
 
+    @Transactional
     @PostMapping("{id}/content/{version}")
     fun revertNoteContent(@PathVariable id: String, @PathVariable version: Int) = service.revertNoteContent(id, version).toVo()
 
+    @Transactional
     @DeleteMapping("{id}/content/{version}")
     fun deleteNoteContent(@PathVariable id: String, @PathVariable version: Int) = service.deleteNoteContent(id, version)
 
+    @Transactional
     @PostMapping("{id}/move")
     fun move(@PathVariable id: String, notebookId: String) = service.move(id, notebookId).toVo()
 
+    @Transactional
     @PostMapping("{id}/revert")
     fun revert(@PathVariable id: String) = service.revert(id).toVo()
 

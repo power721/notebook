@@ -40,6 +40,7 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter(), WebMvcConfigure
                 .antMatchers(HttpMethod.POST, "/categories").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/categories/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/categories/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/tags/**").hasRole("ADMIN")
                 .antMatchers("/admin").hasRole("ADMIN")
                 .antMatchers("/config").hasRole("ADMIN")
                 .anyRequest().permitAll()
