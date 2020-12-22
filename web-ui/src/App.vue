@@ -6,7 +6,7 @@
 
         <template v-for="menu of menus">
           <template v-if="menu.children&&menu.children.length">
-            <div class="ui simple dropdown item" :key="menu.id" v-if="(menu.auth&&auth)||(menu.admin&&admin)||(!menu.auth&&!menu.admin)">
+            <div class="ui simple dropdown item" :key="menu.id" v-if="(menu.admin&&admin)||(menu.auth&&!menu.admin&&auth)||(!menu.auth&&!menu.admin)">
               {{menu.title}}
               <i class="dropdown icon"></i>
               <div class="menu">
@@ -15,7 +15,7 @@
             </div>
           </template>
           <template v-else>
-            <AppMenu :menu="menu" :key="menu.id" v-if="(menu.auth&&auth)||(menu.admin&&admin)||(!menu.auth&&!menu.admin)"/>
+            <AppMenu :menu="menu" :key="menu.id" v-if="(menu.admin&&admin)||(menu.auth&&!menu.admin&&auth)||(!menu.auth&&!menu.admin)"/>
           </template>
         </template>
 

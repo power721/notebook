@@ -15,7 +15,7 @@ class Audit(
         @Column(columnDefinition = "TEXT NOT NULL") val content: String,
         @Column(nullable = false) val target: Int,
         @Column(length = 1024) val userAgent: String? = null,
-        @Column(length = 16) val clientIp: String? = null,
+        @Column(length = 50) val clientIp: String? = null,
         @Column(length = 1024) val referer: String? = null,
         @Column(nullable = false) val createdTime: Instant = Instant.now(),
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Int? = null

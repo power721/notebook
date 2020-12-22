@@ -34,13 +34,13 @@
     }
 
     mounted() {
-      this.handler = eventService.on(['click', 'touchend'], () => {
+      this.handler = eventService.on('click', () => {
         this.show = false
       })
     }
 
     destroyed() {
-      eventService.off(['click', 'touchend'], this.handler)
+      eventService.off('click', this.handler)
     }
 
     logout() {

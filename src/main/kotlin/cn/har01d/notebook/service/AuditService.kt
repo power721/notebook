@@ -212,6 +212,30 @@ class AuditService(private val auditRepository: AuditRepository, private val con
         auditRepository.save(audit)
     }
 
+    fun auditMenuCreate(user: User, menu: Menu) {
+        if (disabled()) {
+            return
+        }
+        val audit = Audit(user, ActionType.CREATE_MENU, "创建菜单：${menu.uri}-${menu.title}", menu.id!!, getUserAgent(), getClientIp(), getReferer())
+        auditRepository.save(audit)
+    }
+
+    fun auditMenuUpdate(user: User, menu: Menu) {
+        if (disabled()) {
+            return
+        }
+        val audit = Audit(user, ActionType.UPDATE_MENU, "更新菜单：${menu.uri}-${menu.title}", menu.id!!, getUserAgent(), getClientIp(), getReferer())
+        auditRepository.save(audit)
+    }
+
+    fun auditMenuDelete(user: User, menu: Menu) {
+        if (disabled()) {
+            return
+        }
+        val audit = Audit(user, ActionType.DELETE_MENU, "删除菜单：${menu.uri}-${menu.title}", menu.id!!, getUserAgent(), getClientIp(), getReferer())
+        auditRepository.save(audit)
+    }
+
     private fun getClientIp(): String? {
         val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)!!.request
         val ip = request.getHeader("X-Forwarded-For")

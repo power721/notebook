@@ -12,7 +12,11 @@ import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
 @Service
-class MenuService(private val repository: MenuRepository) {
+class MenuService(
+        private val repository: MenuRepository,
+        private val userService: UserService,
+        private val auditService: AuditService,
+) {
     fun getMenus(): List<Menu> {
         val sort = Sort.by("order")
         val menus: List<Menu> = repository.findAll(sort)
@@ -41,7 +45,7 @@ class MenuService(private val repository: MenuRepository) {
     }
 
     fun addMenu(menu: Menu): Menu {
-        return repository.save(menu)
+        return repository.save(menu).also { auditService.auditMenuCreate(userService.requireCurrentUser(), it) }
     }
 
     fun updateMenu(id: Int, dto: Menu): Menu {
@@ -53,10 +57,12 @@ class MenuService(private val repository: MenuRepository) {
         menu.icon = dto.icon
         menu.auth = dto.auth
         menu.admin = dto.admin
-        return repository.save(menu)
+        return repository.save(menu).also { auditService.auditMenuUpdate(userService.requireCurrentUser(), it) }
     }
 
     fun deleteMenu(id: Int) {
-        repository.deleteById(id)
+        val menu = repository.findByIdOrNull(id) ?: return
+        repository.delete(menu)
+        auditService.auditMenuDelete(userService.requireCurrentUser(), menu)
     }
 }
