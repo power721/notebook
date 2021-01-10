@@ -1,16 +1,5 @@
 <template>
   <div class="ui container">
-    <div class="ui left aligned container">
-      <div class="ui breadcrumb">
-        <router-link class="section" :exact="true" to="/">首页</router-link>
-        <i class="right chevron icon divider"></i>
-        <div class="section">用户中心</div>
-        <i class="right chevron icon divider"></i>
-        <div class="active section">用户设置</div>
-      </div>
-    </div>
-    <div class="ui divider"></div>
-
     <div class="ui cards">
       <div class="card">
         <div class="content">
@@ -26,12 +15,12 @@
                 <input type="email" name="email" v-model="account.email" placeholder="邮箱">
               </div>
               <div class="field">
-                <label>原密码</label>
-                <input type="password" name="password" v-model="account.password" placeholder="账号密码">
+                <label>原始密码</label>
+                <input type="password" name="password" v-model="account.password" placeholder="原始密码">
               </div>
               <div class="field">
-                <label>新密码</label>
-                <input type="password" name="newPassword" v-model="account.newPassword" placeholder="新密码">
+                <label>新的密码</label>
+                <input type="password" name="newPassword" v-model="account.newPassword" placeholder="新的密码">
               </div>
               <div class="field">
                 <label>确认密码</label>

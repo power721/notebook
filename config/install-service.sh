@@ -40,6 +40,7 @@ WantedBy=multi-user.target
 EOT
 
 [[ -f /etc/systemd/system/${APPNAME}.service ]] || sudo cp ${APPNAME}.service /etc/systemd/system/
+sudo systemctl stop ${APPNAME}.service
 sudo cp ${APPNAME}.jar /opt/${APPNAME}/${APPNAME}
 sudo chown ${USERNAME}:${USERNAME} /opt/${APPNAME}/${APPNAME}
 sudo chmod a+x /opt/${APPNAME}/${APPNAME}

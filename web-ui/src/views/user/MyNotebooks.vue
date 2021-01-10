@@ -1,14 +1,5 @@
 <template>
   <div class="ui left aligned container">
-    <div class="ui breadcrumb">
-      <router-link class="section" :exact="true" to="/">首页</router-link>
-      <i class="right chevron icon divider"></i>
-      <div class="section">用户中心</div>
-      <i class="right chevron icon divider"></i>
-      <div class="active section">我的笔记本</div>
-    </div>
-    <div class="ui divider"></div>
-
     <a href="javascript:void(0)" class="ui add icon primary button" data-tooltip="创建笔记本" v-if="authenticated"
        @click="modal=true">
       <i class="add icon"></i>

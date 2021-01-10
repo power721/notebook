@@ -1,14 +1,5 @@
 <template>
   <div class="ui left aligned container">
-    <div class="ui breadcrumb">
-      <router-link class="section" :exact="true" to="/">首页</router-link>
-      <i class="right chevron icon divider"></i>
-      <div class="section">用户中心</div>
-      <i class="right chevron icon divider"></i>
-      <div class="active section">回收站</div>
-    </div>
-    <div class="ui divider"></div>
-
     <a href="javascript:void(0)" class="ui trash icon button" data-tooltip="清空回收站" @click="confirm=true">
       <i class="trash icon"></i>
     </a>

@@ -1,14 +1,5 @@
 <template>
   <div class="ui left aligned container">
-    <div class="ui breadcrumb">
-      <router-link class="section" :exact="true" to="/">首页</router-link>
-      <i class="right chevron icon divider"></i>
-      <div class="section">用户中心</div>
-      <i class="right chevron icon divider"></i>
-      <div class="active section">我的笔记</div>
-    </div>
-    <div class="ui divider"></div>
-
     <router-link class="ui add icon primary button" data-tooltip="创建笔记" to="/notes/-/new">
       <i class="edit icon"></i>
     </router-link>

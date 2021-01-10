@@ -117,15 +117,21 @@
   import Modal from '@/components/Modal.vue'
   import configService from '@/services/config.service'
   import {Notebook} from '@/models/Notebook'
+  import {EntityView} from "@/components/EntityView";
 
-  @Component({
+  @Component<EntityView>({
     components: {
       Dropdown,
       Modal,
+    },
+    watch: {
+      '$route'(to) {
+        this.id = to.params.id
+        this.load()
+      }
     }
   })
-  export default class NoteDetails extends Vue {
-    id: string = ''
+  export default class NoteDetails extends EntityView {
     notebookId: string = ''
     old: boolean = false
     author: boolean = false
@@ -137,6 +143,7 @@
 
     mounted() {
       this.id = this.$route.params.id
+      console.log(this.$route.name)
       this.load()
     }
 

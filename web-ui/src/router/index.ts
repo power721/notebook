@@ -66,6 +66,11 @@ const routes: Array<RouteConfig> = [
     component: NoteDetails
   },
   {
+    path: '/articles/:id',
+    name: 'ArticleDetails',
+    component: NoteDetails
+  },
+  {
     path: '/notes/:id/history',
     name: 'NoteHistory',
     component: NoteHistory,

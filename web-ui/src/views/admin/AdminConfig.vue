@@ -1,14 +1,5 @@
 <template>
   <div class="ui left aligned container">
-    <div class="ui breadcrumb">
-      <router-link class="section" :exact="true" to="/">首页</router-link>
-      <i class="right chevron icon divider"></i>
-      <div class="section">管理中心</div>
-      <i class="right chevron icon divider"></i>
-      <div class="active section">站点设置</div>
-    </div>
-    <div class="ui divider"></div>
-
     <div class="ui form">
       <div class="required field">
         <label>站点名称</label>
