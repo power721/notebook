@@ -202,6 +202,12 @@ class NoteService(
             return note
         }
 
+        if (notebook.access == Access.PRIVATE) {
+            note.access = Access.PRIVATE
+        } else if (notebook.access == Access.SECRET && note.access == Access.PUBLIC) {
+            note.access = Access.SECRET
+        }
+
         note.notebook = notebook
         note.updatedTime = Instant.now()
         note.notebook.updatedTime = Instant.now()

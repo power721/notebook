@@ -35,7 +35,7 @@
       </div>
       <div class="field">
         <label>slug</label>
-        <input type="text" name="slug" autocomplete="off" pattern="[a-z0-9-]+" v-model="note.slug" placeholder="slug">
+        <input type="text" name="slug" autocomplete="off" v-model="note.slug" placeholder="slug">
       </div>
       <div class="fields">
         <div class="required field">
