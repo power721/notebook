@@ -23,6 +23,7 @@ class Note(
         @ManyToMany var tags: List<Tag> = ArrayList(),
         @JoinColumn(foreignKey = ForeignKey(name = "FK_CONTENT_ID"))
         @OneToOne var content: NoteContent? = null,
+        @Column(unique = true) var slug: String? = null,
         @Enumerated(EnumType.STRING) @Column(length = 16, nullable = false) var access: Access = Access.PUBLIC,
         @JsonProperty("id") @Column(nullable = false, unique = true) var rid: String,
         @Column(nullable = false) var views: Int = 0,
@@ -46,6 +47,8 @@ interface NoteRepository : JpaRepository<Note, Int> {
     fun deleteAllByNotebook(notebook: Notebook)
     fun findByRid(rid: String): Note?
     fun existsByRid(rid: String): Boolean
+    fun findBySlug(slug: String): Note?
+    fun existsBySlug(slug: String): Boolean
 
     @Query("SELECT n from Note n where n.access='PUBLIC' and n.deleted=false")
     fun findPublic(pageable: Pageable): Page<Note>

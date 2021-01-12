@@ -60,7 +60,7 @@ class NoteService(
     }
 
     fun get(id: String): Note {
-        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        val note = noteRepository.findByRid(id) ?: noteRepository.findBySlug(id) ?: throw AppNotFoundException("笔记不存在")
         if (note.deleted) {
             val user = userService.getCurrentUser()
             if (user == null || note.author.id != user.id) {
@@ -103,6 +103,9 @@ class NoteService(
         if (notebook.owner.id != user.id) {
             throw AppForbiddenException("用户无权操作")
         }
+        if (dto.slug != null && dto.slug.isNotEmpty() && noteRepository.existsBySlug(dto.slug)) {
+            throw AppException("slug重复")
+        }
         val category = getCategory(dto.categoryId ?: throw AppException("分类ID缺失"))
         var rid = IdUtils.generate()
         while (noteRepository.existsByRid(rid)) {
@@ -118,7 +121,7 @@ class NoteService(
             }
         }
 
-        val note = noteRepository.save(Note(user, notebook, category, getTags(dto.tags), access = dto.access
+        val note = noteRepository.save(Note(user, notebook, category, getTags(dto.tags), slug = dto.slug, access = dto.access
                 ?: notebook.access, rid = rid))
         val content = contentRepository.save(NoteContent(dto.title, dto.content, note, dto.markdown))
         note.content = content
@@ -136,6 +139,14 @@ class NoteService(
         val note = getNote(id)
         if (note.author.id != user.id) {
             throw AppForbiddenException("用户无权操作")
+        }
+
+        if (dto.slug != null && dto.slug.isNotEmpty()) {
+            val n = noteRepository.findBySlug(id)
+            if (n != null && n.id != note.id) {
+                throw AppException("slug重复")
+            }
+            note.slug = dto.slug
         }
 
         if (dto.tags != null) {
@@ -200,7 +211,7 @@ class NoteService(
 
     fun getNoteHistory(id: String): List<NoteContent> {
         val user = userService.requireCurrentUser()
-        val note = noteRepository.findByRid(id) ?: throw AppNotFoundException("笔记不存在")
+        val note = noteRepository.findByRid(id) ?: noteRepository.findBySlug(id) ?: throw AppNotFoundException("笔记不存在")
         if (note.author.id != user.id) {
             throw AppForbiddenException("用户无权操作")
         }

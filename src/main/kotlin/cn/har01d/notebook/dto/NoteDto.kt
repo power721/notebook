@@ -7,6 +7,7 @@ data class NoteDto(
         val content: String,
         val markdown: Boolean,
         val tags: List<TagDto>?,
+        val slug: String? = null,
         val notebookId: String? = null,
         val categoryId: String? = null,
         val access: Access? = null

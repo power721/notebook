@@ -7,17 +7,17 @@
       <i class="right chevron icon divider" v-if="note.deleted"></i>
       <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
       <i class="right chevron icon divider"></i>
-      <router-link class="section" :to="'/notes/'+id">{{note.title}}</router-link>
+      <router-link class="section" :to="'/notes/'+(note.slug?note.slug:note.id)">{{note.title}}</router-link>
       <i class="right chevron icon divider"></i>
       <div class="active section">编辑历史</div>
     </div>
     <div class="ui divider"></div>
 
     <div class="ui center aligned raised segment">
-      <router-link :to="'/notes/'+id" class="ui large header" v-if="note.deleted">
+      <router-link :to="'/notes/'+(note.slug?note.slug:note.id)" class="ui large header" v-if="note.deleted">
         <del>{{note.title}}</del>
       </router-link>
-      <router-link :to="'/notes/'+id" class="ui large header" v-else>{{note.title}}</router-link>
+      <router-link :to="'/notes/'+(note.slug?note.slug:note.id)" class="ui large header" v-else>{{note.title}}</router-link>
       <div class="metadata">
         <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>
         <span :data-tooltip="note.createdTime | datetime">
@@ -112,7 +112,7 @@
         this.parse()
         this.modal = true
       } else {
-        axios.get(`/notes/${this.id}/content/${history.version}`).then(({data}) => {
+        axios.get(`/notes/${this.note.id}/content/${history.version}`).then(({data}) => {
           history.content = data.content
           this.history = data
         }).then(() => {
@@ -134,7 +134,7 @@
 
     revert() {
       if (this.note.version != this.history.version) {
-        axios.post(`/notes/${this.id}/content/${this.history.version}`).then(({data}) => {
+        axios.post(`/notes/${this.note.id}/content/${this.history.version}`).then(({data}) => {
           this.note = data
           this.modal = false
         })
@@ -143,7 +143,7 @@
 
     deleteVersion() {
       if (this.note.version != this.history.version) {
-        axios.delete(`/notes/${this.id}/content/${this.history.version}`).then(() => {
+        axios.delete(`/notes/${this.note.id}/content/${this.history.version}`).then(() => {
           this.modal = false
           this.$toasted.success(`版本${this.history.version}删除成功`)
           const index = this.list.findIndex(e => e.version === this.history.version)

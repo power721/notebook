@@ -18,7 +18,7 @@
       <template v-if="id">
         <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
         <i class="right chevron icon divider"></i>
-        <router-link class="section" :to="'/notes/'+id">{{title}}</router-link>
+        <router-link class="section" :to="'/notes/'+(note.slug?note.slug:note.id)">{{title}}</router-link>
         <i class="right chevron icon divider"></i>
         <div class="active section">编辑笔记</div>
       </template>
@@ -32,6 +32,10 @@
       <div class="required field">
         <label>标题</label>
         <input type="text" name="title" autocomplete="off" v-model="note.title" placeholder="标题">
+      </div>
+      <div class="field">
+        <label>slug</label>
+        <input type="text" name="slug" autocomplete="off" pattern="[a-z0-9-]+" v-model="note.slug" placeholder="slug">
       </div>
       <div class="fields">
         <div class="required field">
@@ -300,16 +304,16 @@
       // this.note.markdown = editor.invoke('isMarkdownMode')
       // this.note.content = this.note.markdown ? editor.invoke('getMarkdown') : editor.invoke('getHtml')
       if (this.id) {
-        axios.put(`/notes/${this.id}`, this.note).then(({data}) => {
+        axios.put(`/notes/${this.note.id}`, this.note).then(({data}) => {
           this.note = data
           this.$toasted.success('更新成功')
-          this.$router.push('/notes/' + data.id)
+          this.$router.push('/notes/' + (this.note.slug?this.note.slug:this.note.id))
         })
       } else {
         axios.post(`/notes`, this.note).then(({data}) => {
           this.note = data
           this.$toasted.success('创建成功')
-          this.$router.push('/notes/' + data.id)
+          this.$router.push('/notes/' + (this.note.slug?this.note.slug:this.note.id))
         })
       }
     }

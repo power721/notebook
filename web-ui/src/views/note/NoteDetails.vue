@@ -34,12 +34,12 @@
         <span :data-tooltip="note.views+'阅读'" v-if="note.access!=='PRIVATE'">
           {{note.views}} <i class="eye icon"></i>
         </span>
-        <router-link :to="'/notes/'+note.id+'/edit'" class="edit" data-tooltip="编辑笔记" v-if="author&&!note.deleted">
+        <router-link :to="'/notes/'+(note.slug?note.slug:note.id)+'/edit'" class="edit" data-tooltip="编辑笔记" v-if="author&&!note.deleted">
           <i class="edit icon"></i>
         </router-link>
         <Dropdown icon="bars" position="top right" :pointing="true" v-if="author">
-          <router-link class="item" :to="'/notes/'+note.id+'/edit'" v-if="!note.deleted">编辑笔记</router-link>
-          <router-link class="item" :to="'/notes/'+note.id+'/history'" v-if="note.version>1">历史记录</router-link>
+          <router-link class="item" :to="'/notes/'+(note.slug?note.slug:note.id)+'/edit'" v-if="!note.deleted">编辑笔记</router-link>
+          <router-link class="item" :to="'/notes/'+(note.slug?note.slug:note.id)+'/history'" v-if="note.version>1">历史记录</router-link>
           <a class="item" @click="confirm=true">删除笔记</a>
           <a class="item" @click="showMove" v-if="!note.deleted">移动笔记</a>
           <a class="item" @click="revert=true" v-if="note.deleted">恢复笔记</a>
@@ -110,7 +110,7 @@
 
 <script lang="ts">
   import axios from 'axios'
-  import {Component, Vue} from 'vue-property-decorator'
+  import {Component} from 'vue-property-decorator'
   import {Note} from '@/models/Note'
   import accountService from '@/services/account.service'
   import Dropdown from '@/components/Dropdown.vue'
@@ -161,8 +161,10 @@
         setTimeout(() => {
           document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
           document.querySelectorAll('.article').forEach(node => {
+            // eslint-disable-next-line
             (window as any).twemoji.parse(node, {'size': 72})
           });
+          // eslint-disable-next-line
           (window as any).Prism.highlightAll()
         }, 0)
       })
@@ -176,7 +178,7 @@
     }
 
     revertNote() {
-      axios.post(`/notes/${this.id}/revert`).then(({data}) => {
+      axios.post(`/notes/${this.note.id}/revert`).then(({data}) => {
         this.$toasted.success('恢复笔记成功')
         this.revert = false
         this.note = data
@@ -184,7 +186,7 @@
     }
 
     moveNote() {
-      axios.post(`/notes/${this.id}/move?notebookId=${this.notebookId}`).then(({data}) => {
+      axios.post(`/notes/${this.note.id}/move?notebookId=${this.notebookId}`).then(({data}) => {
         this.modal = false
         this.$toasted.success('移动笔记成功')
         this.note = data
@@ -192,7 +194,7 @@
     }
 
     deleteNote() {
-      axios.delete(`/notes/${this.id}`).then(() => {
+      axios.delete(`/notes/${this.note.id}`).then(() => {
         this.confirm = false
         this.$toasted.success('删除笔记成功')
         this.$router.push('/notebooks/' + this.note.notebook.id)

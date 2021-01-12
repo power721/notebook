@@ -59,7 +59,7 @@
       <div class="ui divided items">
         <div class="item" v-for="note in notes" :key="note.id">
           <div class="content">
-            <router-link class="header" :to="'/notes/'+note.id">{{ note.title }}</router-link>
+            <router-link class="header" :to="'/notes/'+(note.slug?note.slug:note.id)">{{ note.title }}</router-link>
             <div class="meta">
               <router-link :to="'/users/'+note.author.id">@{{ note.author.username }}</router-link>
               <router-link class="ui small label" :to="'/categories/'+note.category.id">{{ note.category.name }}

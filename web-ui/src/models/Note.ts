@@ -16,6 +16,7 @@ export class Tag {
 export class Note {
   id: string = ''
   title: string = ''
+  slug: string = ''
   content: string = ''
   author: User = new User()
   notebookId: string = ''
