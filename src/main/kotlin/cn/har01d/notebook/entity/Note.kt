@@ -95,4 +95,8 @@ interface NoteRepository : JpaRepository<Note, Int> {
     @Modifying
     @Query("UPDATE Note n set n.access='PRIVATE' where n.access<>'PRIVATE' and n.notebook=?1")
     fun updatePrivateNotebook(notebook: Notebook)
+
+    @Modifying
+    @Query("UPDATE Note n SET n.access=?2 WHERE n.notebook=?1")
+    fun updateNoteAccess(notebook: Notebook, access: Access)
 }

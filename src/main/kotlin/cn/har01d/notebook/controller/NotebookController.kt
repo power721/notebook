@@ -1,5 +1,6 @@
 package cn.har01d.notebook.controller
 
+import cn.har01d.notebook.core.Access
 import cn.har01d.notebook.dto.NotebookDto
 import cn.har01d.notebook.service.NotebookService
 import cn.har01d.notebook.vo.toVo
@@ -25,6 +26,9 @@ class NotebookController(private val service: NotebookService) {
 
     @PutMapping("{id}")
     fun update(@PathVariable id: String, @RequestBody dto: NotebookDto) = service.update(id, dto).toVo()
+
+    @PostMapping("{id}/access")
+    fun updateAccess(@PathVariable id: String, access: Access) = service.updateAccess(id, access)
 
     @DeleteMapping("{id}")
     fun delete(@PathVariable id: String, force: Boolean) = service.delete(id, force)

@@ -112,6 +112,22 @@ class NotebookService(
     }
 
     @Transactional
+    fun updateAccess(id: String, access: Access) {
+        val user = userService.requireCurrentUser()
+        val notebook = notebookRepository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("笔记本不存在")
+        if (notebook.owner.id != user.id) {
+            throw AppForbiddenException("用户无权操作")
+        }
+        if (notebook.access == Access.PRIVATE && access != Access.PRIVATE) {
+            throw AppException("无效操作")
+        }
+        if (notebook.access == Access.SECRET && access == Access.PUBLIC) {
+            throw AppException("无效操作")
+        }
+        noteRepository.updateNoteAccess(notebook, access)
+    }
+
+    @Transactional
     fun delete(id: String, force: Boolean = false) {
         val user = userService.requireCurrentUser()
         val notebook = notebookRepository.findByIdOrNull(decode(id)) ?: return
