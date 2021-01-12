@@ -3,18 +3,19 @@
     <button @click="addMenu" class="ui add primary icon button"><i class="add icon"></i></button>
 
     <div class="ui raised segment">
+      <i class="ui help circle link icon" @click="help=true"></i>
       <table class="ui selectable celled table">
         <thead>
         <tr>
           <th>ID</th>
           <th>标题</th>
           <th>链接</th>
-          <th>图标</th>
+          <th><a href="https://semantic-ui.com/elements/icon.html" target="_blank">图标</a></th>
           <th>顺序</th>
           <th>父菜单ID</th>
           <th>登录后显示</th>
           <th>管理员权限</th>
-          <th></th>
+          <th>操作</th>
         </tr>
         </thead>
         <tbody>
@@ -84,6 +85,17 @@
       </template>
     </Modal>
 
+    <Modal v-model="help" title="帮助">
+      <div class="ui info message">
+        <ul class="ui list">
+          <li>/notes/:id 支持别名 /articles/:id</li>
+          <li>图标查看<a href="https://semantic-ui.com/elements/icon.html" target="_blank">semantic-ui</a></li>
+          <li>图标可以为空</li>
+          <li>管理员权限： 仅对管理员显示</li>
+        </ul>
+      </div>
+    </Modal>
+
   </div>
 </template>
 
@@ -101,6 +113,7 @@
   })
   export default class AdminMenu extends Vue {
     modal: boolean = false
+    help: boolean = false
     title: string = '添加菜单'
     menu: Menu = new Menu()
     menus: Menu[] = []
@@ -169,5 +182,10 @@
   .add.button {
     float: right;
     margin-top: -60px;
+  }
+  .help.icon {
+    position: absolute;
+    top: 6px;
+    right: 12px;
   }
 </style>
