@@ -171,7 +171,7 @@
     showMove() {
       axios.get('/users/-/notebooks').then(({data}) => {
         this.modal = true
-        this.notebooks = data.content
+        this.notebooks = data.content.filter((e: Notebook) => e.id !== this.note.notebook.id)
       })
     }
 
