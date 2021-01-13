@@ -30,16 +30,16 @@ object IdUtils {
     }
 
     private fun encode(token: String, number: Int): String {
-        var number = number
+        var num = number
         val chars = token.toCharArray()
-        if (number == 0) {
+        if (num == 0) {
             return String(chars, 0, 1)
         }
         val n = chars.size
         val sb = StringBuilder()
-        while (number > 0) {
-            sb.append(chars[(number % n).toInt()])
-            number /= n.toInt()
+        while (num > 0) {
+            sb.append(chars[(num % n)])
+            num /= n
         }
         return sb.reverse().toString()
     }
@@ -57,7 +57,7 @@ object IdUtils {
     }
 
     private fun decode(token: String, str: String): Int {
-        var n: Int = 0
+        var n = 0
         val chars = token.toCharArray()
         for (c in str.toCharArray()) {
             var k = 0
@@ -67,8 +67,8 @@ object IdUtils {
                 }
                 k++
             }
-            n *= chars.size.toInt()
-            n += k.toInt()
+            n *= chars.size
+            n += k
         }
         return n
     }
