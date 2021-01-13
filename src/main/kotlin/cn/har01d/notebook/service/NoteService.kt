@@ -121,8 +121,10 @@ class NoteService(
             }
         }
 
-        val note = noteRepository.save(Note(user, notebook, category, getTags(dto.tags), slug = dto.slug, access = dto.access
-                ?: notebook.access, rid = rid))
+        val note = noteRepository.save(Note(user, notebook, category, getTags(dto.tags), access = dto.access ?: notebook.access, rid = rid))
+        if (dto.slug != null && dto.slug.isNotEmpty()) {
+            note.slug = dto.slug
+        }
         val content = contentRepository.save(NoteContent(dto.title, dto.content, note, dto.markdown))
         note.content = content
         notebook.updatedTime = Instant.now()
