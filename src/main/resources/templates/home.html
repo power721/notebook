@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta th:replace="common :: header">
+  <style>
+      body {
+          background-image: url(https://api.dujin.org/bing/1920.php);
+      }
+      #form {
+          padding-top: 300px;
+      }
+      #form .ui.input {
+          width: 25em;
+      }
+      .ui.inverted.footer {
+          background: #1b1c1d;
+          color: hsla(0,0%,100%,.9);
+          opacity: 80%;
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+      }
+  </style>
+  <title th:text="${siteConfig.siteName}">Home</title>
+</head>
+<body>
+<div id="app">
+  <div class="ui container">
+  <div class="ui secondary inverted pointing menu">
+    <div th:remove="tag" th:if="${menu.auth}==false and ${menu.admin}==false" th:each="menu: ${menus}">
+      <div class="ui simple dropdown item" th:if="${menu.children}!=null and ${menu.children.size()}>0">
+        <span th:text="${menu.title}"></span>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <div th:remove="tag" th:each="menu: ${menu.children}">
+            <a class="item" th:if="${menu.uri.startsWith('http')}" th:href="${menu.uri}" target="_blank">
+              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+            </a>
+            <a th:class="'item'+${url.contains(menu.uri)?' active':''}" th:if="${menu.uri.startsWith('/')}" th:href="${menu.uri}+'.html'">
+              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a class="item" th:if="${menu.uri.startsWith('http')}" th:href="${menu.uri}" target="_blank">
+        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+      </a>
+      <a th:class="'item'+${url.contains(menu.uri)?' active':''}" th:if="${menu.uri.startsWith('/')}" th:href="${menu.uri}+'.html'">
+        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+      </a>
+    </div>
+  </div>
+  </div>
+
+  <div id="main" class="ui center aligned container">
+    <form id="form" action="/notes.html" class="ui search">
+      <div class="ui icon input">
+        <input class="prompt" type="text" name="q" placeholder="搜索笔记">
+        <i class="search link icon" th:onclick="'search()'"></i>
+      </div>
+      <div class="results"></div>
+    </form>
+  </div>
+
+  <div class="ui footer inverted">
+    <div class="ui left aligned container">
+      <div class="ui inverted horizontal link list">
+        <a href="http://beian.miit.gov.cn/" class="item" target="_blank" th:text="${siteConfig.icpBeian}"></a>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo" class="item"
+           th:if="${siteConfig.govBeian}">
+          <img alt="beian" src="/beian.png" style="width: 16px;">
+          <span th:text="${siteConfig.govBeian}"></span>
+        </a>
+        <a href="/home.html" class="item">静态版</a>
+        <a href="/#/" class="item" target="_blank">动态版</a>
+        <a href="/about.html" class="item">关于</a>
+        <a href="https://gitee.com/power/notebook" class="item" target="_blank">代码</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+  function search() {
+    const form = document.getElementById('form')
+    form.submit()
+  }
+</script>
+</html>

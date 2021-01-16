@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta th:replace="common :: header">
+  <title th:text="'标签 - '+${siteConfig.siteName}">标签</title>
+</head>
+<body>
+<div id="app">
+  <div th:replace="common :: menu"></div>
+
+  <div id="main" class="ui left aligned container">
+    <div class="ui breadcrumb">
+      <a class="section" href="/home.html">首页</a>
+      <i class="right chevron icon divider"></i>
+      <div class="active section">标签</div>
+    </div>
+    <div class="ui divider"></div>
+
+    <div class="ui divided items raised segment">
+      <div class="ui blue tag labels">
+        <a th:href="'/tags/'+${tag.name}+'.html'" class="ui label" th:text="${tag.name}" th:each="tag: ${tags}"></a>
+      </div>
+    </div>
+
+    <div th:replace="common :: pagination"></div>
+  </div>
+
+  <div th:replace="common :: footer"></div>
+</div>
+</body>
+</html>

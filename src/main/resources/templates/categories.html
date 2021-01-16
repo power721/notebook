@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta th:replace="common :: header">
+  <title th:text="'分类 - '+${siteConfig.siteName}">分类</title>
+</head>
+<body>
+<div id="app">
+  <div th:replace="common :: menu"></div>
+
+  <div id="main" class="ui left aligned container">
+    <div class="ui breadcrumb">
+      <a class="section" href="/home.html">首页</a>
+      <i class="right chevron icon divider"></i>
+      <div class="active section">分类</div>
+    </div>
+    <div class="ui divider"></div>
+
+    <div class="ui divided items raised segment">
+      <div class="item" th:each="category: ${categories}">
+        <div class="content">
+          <a class="header" th:href="'/categories/'+${category.id}+'.html'" th:text="${category.name}"></a>
+          <div class="description">
+            <p th:text="${category.description}"></p>
+          </div>
+          <div class="extra">
+            创建于<span class="datetime" th:text="${category.createdTime}"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="common :: pagination"></div>
+  </div>
+
+  <div th:replace="common :: footer"></div>
+</div>
+</body>
+</html>

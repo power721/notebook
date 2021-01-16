@@ -15,9 +15,11 @@
       <h1 class="ui header" v-if="note.deleted">
         <del>{{note.title}}</del>
       </h1>
-      <h1 class="ui header" v-else>
-        {{note.title}}
-      </h1>
+      <a :href="'/notes/'+(note.slug?note.slug:note.id)+'.html'" target="_blank" v-else>
+        <h1 class="ui header">
+          {{note.title}}
+        </h1>
+      </a>
       <a class="ui top left attached label" data-tooltip="知道ID可以访问" v-if="note.access==='SECRET'">秘密</a>
       <a class="ui top left attached label" data-tooltip="只有你可以访问" v-if="note.access==='PRIVATE'">私有</a>
       <div class="metadata">

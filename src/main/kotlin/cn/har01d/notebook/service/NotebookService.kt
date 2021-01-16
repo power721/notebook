@@ -28,13 +28,13 @@ class NotebookService(
     fun list(q: String?, pageable: Pageable): Page<Notebook> {
         val user = userService.getCurrentUser()
         if (user != null) {
-            return if (q == null) {
+            return if (q == null || q.isEmpty()) {
                 notebookRepository.findPublicOrOwner(user, pageable)
             } else {
                 notebookRepository.searchPublicOrOwner(q, user, pageable)
             }
         }
-        return if (q != null) {
+        return if (q != null && q.isNotEmpty()) {
             notebookRepository.findByNameContainsAndAccess(q, Access.PUBLIC, pageable)
         } else {
             notebookRepository.findByAccess(Access.PUBLIC, pageable)

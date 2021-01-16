@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta th:replace="common :: header">
+  <title th:text="${notebook.name}+' - '+${siteConfig.siteName}">Notebook</title>
+</head>
+<body>
+<div id="app">
+  <div th:replace="common :: menu"></div>
+
+  <div id="main" class="ui left aligned container">
+    <div class="ui breadcrumb">
+      <a class="section" href="/home.html">首页</a>
+      <i class="right chevron icon divider"></i>
+      <a class="section" href="/notebooks.html">笔记本</a>
+      <i class="right chevron icon divider"></i>
+      <div class="active section" th:text="${notebook.name}"></div>
+    </div>
+    <div class="ui divider"></div>
+
+    <div class="ui center aligned raised segment">
+      <h1 class="ui header" th:text="${notebook.name}"></h1>
+      <a class="ui top left attached label" data-tooltip="知道ID可以访问" th:if="${notebook.access}=='SECRET'">秘密</a>
+      <a class="ui top left attached label" data-tooltip="只有你可以访问" th:if="${notebook.access}=='PRIVATE'">私有</a>
+      <div class="metadata">
+        <a th:href="'/users/'+${notebook.owner.id}+'.html'" th:text="'@'+${notebook.owner.username}"></a>
+        创建于<span class="datetime" th:text="${notebook.createdTime}"></span>
+        <div th:remove="tag" th:if="${notebook.updatedTime}!=null">
+          更新于<span class="datetime" th:text="${notebook.updatedTime}"></span>
+        </div>
+      </div>
+      <div class="ui info message" th:if="${notebook.description}!=''" th:text="${notebook.description}"></div>
+    </div>
+
+    <div class="ui raised segment">
+      <div class="ui warning message" th:if="${notes.size}==0">
+        还没有笔记。
+      </div>
+      <div class="ui divided items">
+        <div class="item" th:each="note: ${notes}">
+          <div class="content">
+            <a class="header" th:href="'/notes/'+(${note.slug} and ${note.slug}!=''?${note.slug}:${note.id})+'.html'"
+               th:text="${note.title}"></a>
+            <div class="meta">
+              <a th:href="'/users/'+${note.author.id}+'.html'" th:text="'@'+${note.author.username}"></a>
+              <a class="ui small label" th:href="'/categories/'+${note.category.id}+'.html'"
+                 th:text="${note.category.name}"></a>
+            </div>
+            <div class="extra" th:if="${note.version}>1">
+              更新于<span class="datetime" th:text="${note.updatedTime}"></span>
+            </div>
+            <div class="extra" th:if="${note.version}==1">
+              创建于<span class="datetime" th:text="${note.createdTime}"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div th:replace="common :: pagination"></div>
+  </div>
+
+  <div th:replace="common :: footer"></div>
+</div>
+</body>
+</html>

@@ -55,8 +55,8 @@
           <div class="three wide column">
             <h4 class="ui header" :class="{inverted:inverted}">内容</h4>
             <div class="ui link list" :class="{inverted:inverted}">
-              <router-link to="/categories" class="item">分类</router-link>
-              <router-link to="/tags" class="item">标签</router-link>
+              <a href="/home.html" class="item" target="_blank">静态版</a>
+              <router-link to="/" class="item">动态版</router-link>
             </div>
           </div>
           <div class="six wide column" v-if="siteConfig.icpBeian">

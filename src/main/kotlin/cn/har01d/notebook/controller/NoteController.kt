@@ -12,7 +12,7 @@ import javax.transaction.Transactional
 @RestController
 class NoteController(private val service: NoteService) {
     @GetMapping
-    fun list(q: String?, pageable: Pageable) = if (q != null) service.search(q, pageable).map { it.toVo2() } else service.list(pageable).map { it.toVo2() }
+    fun list(q: String?, pageable: Pageable) = service.list(q, pageable).map { it.toVo2() }
 
     @PostMapping
     fun create(@RequestBody dto: NoteDto) = service.create(dto).toVo()

@@ -75,8 +75,8 @@
       localStorage.setItem('rememberMe', this.account.rememberMe + '')
       accountService.login(this.account.username, this.account.password, this.account.rememberMe).then(() => {
         this.success = true
-        //const back = this.$route.query.redirect || '/'
-        setTimeout(() => this.$router.push('/'), 500)
+        const back = (this.$route.query.redirect as string) || '/'
+        setTimeout(() => this.$router.push(back), 500)
       }, ({response}) => {
         this.error = response.data.message
       })

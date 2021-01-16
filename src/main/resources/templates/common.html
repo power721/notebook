@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:remove="tag" th:fragment="header">
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Language" content="zh-CN">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="keywords" content="Notebook,Note,笔记,笔记本,技术笔记,技术分享,个人笔记,个人分享,个人博客">
+  <meta name="description" itemprop="description" content="支持多用户的笔记系统。本站使用Vue(TypeScript) + Spring(Kotlin)开发。UI框架： Semantic UI， Element。分享关于Java，Kotlin，Spring，云计算，大数据，Vue，nodejs等技术学习笔记。">
+  <link href="https://cdn.bootcdn.net/ajax/libs/semantic-ui/2.4.1/semantic.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/style.css">
+</div>
+
+<div class="ui stackable menu" th:fragment="menu">
+  <div class="ui container">
+    <a href="/home.html"><h3 th:class="'ui header item '+${siteConfig.brandColor}" th:text="${siteConfig.siteName}"></h3></a>
+    <div th:remove="tag" th:if="${menu.auth}==false and ${menu.admin}==false" th:each="menu: ${menus}">
+      <div class="ui simple dropdown item" th:if="${menu.children}!=null and ${menu.children.size()}>0">
+        <span th:text="${menu.title}"></span>
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <div th:remove="tag" th:each="menu: ${menu.children}">
+            <a class="item" th:if="${menu.uri.startsWith('http')}" th:href="${menu.uri}" target="_blank">
+              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+            </a>
+            <a th:class="'item'+${url.contains(menu.uri)?' active':''}" th:if="${menu.uri.startsWith('/')}" th:href="${menu.uri}+'.html'">
+              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a class="item" th:if="${menu.uri.startsWith('http')}" th:href="${menu.uri}" target="_blank">
+        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+      </a>
+      <a th:class="'item'+${url.contains(menu.uri)?' active':''}" th:if="${menu.uri.startsWith('/')}" th:href="${menu.uri}+'.html'">
+        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+      </a>
+    </div>
+    <div class="right menu">
+      <form action="/notes.html" class="item">
+        <div class="ui action input">
+          <input type="text" name="q" placeholder="搜索笔记" th:value="${q}">
+          <button class="ui button" type="submit">搜索</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="ui vertical footer raised segment" th:fragment="footer">
+  <div class="ui left aligned container">
+    <div class="ui stackable divided equal height stackable grid">
+      <div class="three wide column" th:if="${siteConfig.qrCode}">
+        <div class="ui inverted link list">
+          <div class="item">
+            <img th:src="${siteConfig.qrCode}" class="ui rounded image" alt="qrCode" style="width: 72px">
+          </div>
+        </div>
+      </div>
+      <div class="three wide column">
+        <h4 class="ui header">关于</h4>
+        <div class="ui link list">
+          <a href="/about.html" class="item">关于</a>
+          <a href="https://gitee.com/power/notebook" class="item" target="_blank">代码</a>
+        </div>
+      </div>
+      <div class="three wide column">
+        <h4 class="ui header">内容</h4>
+        <div class="ui link list">
+          <a href="/home.html" class="item">静态版</a>
+          <a href="/#/" class="item" target="_blank">动态版</a>
+        </div>
+      </div>
+      <div class="six wide column" th:if="${siteConfig.icpBeian}">
+        <h4 class="ui header">备案</h4>
+        <div class="ui link list">
+          <a href="http://beian.miit.gov.cn/" class="item" target="_blank" th:text="${siteConfig.icpBeian}"></a>
+          <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo" class="item"
+             th:if="${siteConfig.govBeian}">
+            <img alt="beian" src="/beian.png" style="width: 16px;">
+            <span th:text="${siteConfig.govBeian}"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <script>
+      function toFix2(value) {
+        const str = Math.floor(value) + ''
+        if (str.length < 2) {
+          return '0' + str
+        }
+        return str
+      }
+      function datetime(value) {
+        if (!value) {
+          return ''
+        }
+        const dateObj = new Date(value)
+        const month = dateObj.getMonth() + 1
+        const day = dateObj.getDate()
+        const year = dateObj.getFullYear()
+        const hour = dateObj.getHours()
+        const minute = dateObj.getMinutes()
+        const second = dateObj.getSeconds()
+        return year + '-' + toFix2(month) + '-' + toFix2(day) + ' ' + toFix2(hour) + ':' + toFix2(minute) + ':' + toFix2(second)
+      }
+      function fromNow(value) {
+        const now = new Date().getTime()
+        const diff = now - new Date(value).getTime()
+
+        const second = 1000
+        const minute = 60 * second
+        const hour = 60 * minute
+        const day = 24 * hour
+        const month = 30 * day
+        const year = 365 * day
+
+        if (diff < 1000) {
+          return '刚刚'
+        } else if (diff < minute) {
+          return Math.floor(diff / second) + '秒前'
+        } else if (diff < hour) {
+          return Math.floor(diff / minute) + '分钟前'
+        } else if (diff < day) {
+          return Math.floor(diff / hour) + '小时前'
+        } else if (diff < month) {
+          return Math.floor(diff / day) + '天前'
+        } else if (diff < year) {
+          const m = Math.floor(diff / month)
+          if (diff === m * month) {
+            return m + '个月前'
+          } else {
+            return Math.floor(diff / day) + '天前'
+          }
+        } else {
+          const y = Math.floor(diff / year)
+          if (diff === y * year) {
+            return y + '年前'
+          } else {
+            return Math.floor(diff / day) + '天前'
+          }
+        }
+      }
+
+      const a = document.getElementsByClassName('datetime')
+      for (let i = 0; i < a.length; i++) {
+        const time = a[i].textContent
+        a[i].textContent = fromNow(time)
+        a[i].setAttribute("data-tooltip", datetime(time))
+      }
+    </script>
+  </div>
+</div>
+
+<div class="pagination" th:fragment="pagination">
+  <div class="ui pagination menu" th:if="${pages}>1">
+    <a class="item" th:href="'?q='+${q}+'&page='+${page - 1}" th:if="${page>1}">上一页</a>
+    <a class="item" th:href="'?q='+${q}+'&page=1'" th:if="${page}>=4">1</a>
+    <div class="disabled item" th:if="${page}>4">...</div>
+    <a class="item" th:href="'?q='+${q}+'&page='+${page - 2}" th:if="${page>2}" th:text="${page - 2}"></a>
+    <a class="item" th:href="'?q='+${q}+'&page='+${page - 1}" th:if="${page>1}" th:text="${page - 1}"></a>
+    <div class="disabled active item" th:text="${page}"></div>
+    <a class="item" th:href="'?q='+${q}+'&page='+${page+1}" th:if="${page+1}<=${pages}" th:text="${page+1}"></a>
+    <a class="item" th:href="'?q='+${q}+'&page='+${page+2}" th:if="${page+2}<=${pages}" th:text="${page+2}"></a>
+    <div class="disabled item" th:if="${page}+3<${pages}">...</div>
+    <a class="item" th:href="'?q='+${q}+'&page='+${pages}" th:if="${page+3}<=${pages}" th:text="${pages}"></a>
+    <a class="item" th:href="'?q='+${q}+'&page='+${page+1}" th:if="${page}<${pages}">下一页</a>
+  </div>
+  <span class="total" th:if="${total}>0">共 <span th:remove="tag" th:text="${total}"></span> 条</span>
+</div>
+
+</body>
+</html>

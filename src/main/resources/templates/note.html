@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta th:replace="common :: header">
+  <link rel="stylesheet" type="text/css" href="/prism.css">
+  <script src="/prism.js"></script>
+  <script src="//power.gitee.io/twemoji/twemoji.min.js"></script>
+  <title th:text="${note.title}+' - '+${siteConfig.siteName}"></title>
+</head>
+<body>
+<div id="app">
+  <div th:replace="common :: menu"></div>
+
+  <div id="main" class="ui left aligned container">
+    <div class="ui breadcrumb">
+      <a class="section" href="/home.html">首页</a>
+      <i class="right chevron icon divider"></i>
+      <a class="section" th:href="'/notebooks/'+${note.notebook.id}+'.html'" th:text="${note.notebook.name}"></a>
+      <i class="right chevron icon divider"></i>
+      <div class="active section" th:text="${note.title}"></div>
+    </div>
+    <div class="ui divider"></div>
+
+    <div class="ui center aligned raised segment">
+      <a th:href="'/#/notes/'+(${note.slug} and ${note.slug}!=''?${note.slug}:${note.id})" target="_blank">
+        <h1 class="ui header" th:text="${note.title}"></h1>
+      </a>
+      <a class="ui top left attached label" data-tooltip="知道ID可以访问" th:if="${note.access} == 'SECRET'">秘密</a>
+      <a class="ui top left attached label" data-tooltip="只有你可以访问" th:if="${note.access} == 'PRIVATE'">私有</a>
+      <div class="metadata">
+        <a th:href="'/users/'+${note.author.id}+'.html'" th:text="'@'+${note.author.username}"></a>
+        创建于<span class="datetime" th:text="${note.createdTime}"></span>
+        <span th:remove="tag" th:if="${note.version} > 1">
+          更新于<span class="datetime" th:text="${note.updatedTime}"></span>
+        </span>
+        <a class="ui teal small label" th:href="'/categories/'+${note.category.id}+'.html'"
+           th:text="${note.category.name}"></a>
+        <span th:if="${note.access} != 'PRIVATE'">
+        <span th:remove="tag" th:text="${note.views}"></span> <i class="eye icon"></i>
+      </span>
+      </div>
+    </div>
+
+    <div class="ui left aligned raised segment">
+      <div class="article content" th:utext="${note.content}"></div>
+      <div class="footer">
+        <div class="ui divider"></div>
+        <div class="ui blue tag labels">
+          <a th:href="'/tags/'+${tag.name}+'.html'" class="ui label" th:text="${tag.name}" th:each="tag: ${note.tags}">
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="common :: footer"></div>
+</div>
+</body>
+<script>
+  document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
+  document.querySelectorAll('.article').forEach(node => {
+    twemoji.parse(node, {'size': 72})
+  });
+  Prism.highlightAll()
+</script>
+</html>

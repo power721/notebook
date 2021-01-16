@@ -26,7 +26,11 @@ class NoteService(
         private val userService: UserService,
         private val auditService: AuditService,
 ) {
-    fun list(pageable: Pageable): Page<Note> {
+    fun list(q: String?, pageable: Pageable): Page<Note> {
+        if (q != null && q.isNotEmpty()) {
+            return search(q, pageable)
+        }
+
         val user = userService.getCurrentUser()
         return if (user == null) {
             noteRepository.findPublic(pageable)
@@ -121,7 +125,8 @@ class NoteService(
             }
         }
 
-        val note = noteRepository.save(Note(user, notebook, category, getTags(dto.tags), access = dto.access ?: notebook.access, rid = rid))
+        val note = noteRepository.save(Note(user, notebook, category, getTags(dto.tags), access = dto.access
+                ?: notebook.access, rid = rid))
         if (dto.slug != null && dto.slug.isNotEmpty()) {
             note.slug = dto.slug
         }
