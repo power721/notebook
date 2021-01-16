@@ -57,9 +57,13 @@ class AccountService {
   }
 
   logout() {
-    axios.post('/accounts/logout').then()
-    store.commit('logout')
-    this.clean()
+    axios.post('/accounts/logout').then(() => {
+      store.commit('logout')
+      this.clean()
+    }, () => {
+      store.commit('logout')
+      this.clean()
+    })
   }
 
   clean() {

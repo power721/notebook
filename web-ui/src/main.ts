@@ -66,13 +66,13 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
   return response
 }, function (error) {
-  if (error.response.status === 401 && auth.getToken()) {
-    auth.clean()
-    Vue.toasted.error('登录失效')
-    router.push('/')
-  }
   const data = error.response.data
-  Vue.toasted.error(data.message)
+  if (error.response.status === 401) {
+    auth.clean()
+    router.push('/')
+  } else {
+    Vue.toasted.error(data.message)
+  }
   return Promise.reject(data)
 })
 

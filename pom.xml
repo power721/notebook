@@ -28,9 +28,9 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.har01d</groupId>
+            <groupId>cn.spark2fire</groupId>
             <artifactId>auth-jwt</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.6</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
