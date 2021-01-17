@@ -9,11 +9,16 @@ import cn.har01d.notebook.dto.TagDto
 import cn.har01d.notebook.entity.*
 import cn.har01d.notebook.service.IdUtils.CATEGORY_OFFSET
 import cn.har01d.notebook.service.IdUtils.NOTEBOOK_OFFSET
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.Instant
+import java.time.LocalDate
+import java.util.concurrent.TimeUnit
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @Service
@@ -26,6 +31,7 @@ class NoteService(
         private val userService: UserService,
         private val auditService: AuditService,
 ) {
+    private val viewCache: Cache<String, Boolean> = Caffeine.newBuilder().maximumSize(10_000).expireAfterWrite(1, TimeUnit.DAYS).build()
     fun list(q: String?, pageable: Pageable): Page<Note> {
         if (q != null && q.isNotEmpty()) {
             return search(q, pageable)
@@ -89,11 +95,19 @@ class NoteService(
         return note
     }
 
-    fun updateViews(note: Note) {
-        // TODO: check IP
+    fun updateViews(note: Note, request: HttpServletRequest) {
         if (note.access == Access.PRIVATE || note.deleted) {
             return
         }
+        val key = note.id.toString() + "-" + request.remoteAddr + "-" + LocalDate.now()
+        if (viewCache.getIfPresent(key) != null) {
+            return
+        }
+        val user = userService.getCurrentUser()
+        if (user != null && note.author.id == user.id) {
+            return
+        }
+        viewCache.put(key, true)
         note.views = note.views + 1
         noteRepository.save(note)
     }

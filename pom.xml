@@ -36,6 +36,10 @@
             <artifactId>flyway-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+        <dependency>
             <groupId>cn.spark2fire</groupId>
             <artifactId>auth-jwt</artifactId>
             <version>0.0.6</version>

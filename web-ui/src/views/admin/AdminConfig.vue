@@ -6,7 +6,7 @@
         <input type="text" v-model="siteConfig.siteName" name="siteName">
       </div>
       <div class="required field">
-        <label>品牌颜色</label>
+        <label>站点名称颜色</label>
         <el-select v-model="siteConfig.brandColor">
           <el-option v-for="item in colors" :key="item.id" :label="item.name" :value="item.id">
             <span style="float: left">{{ item.name }}</span>

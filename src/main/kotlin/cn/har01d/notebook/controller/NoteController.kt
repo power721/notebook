@@ -6,6 +6,7 @@ import cn.har01d.notebook.vo.toVo
 import cn.har01d.notebook.vo.toVo2
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @RequestMapping("/notes")
@@ -19,8 +20,8 @@ class NoteController(private val service: NoteService) {
 
     @Transactional
     @GetMapping("{id}")
-    fun get(@PathVariable id: String, view: Boolean) = service.get(id).also {
-        if (view) service.updateViews(it)
+    fun get(@PathVariable id: String, view: Boolean, request: HttpServletRequest) = service.get(id).also {
+        if (view) service.updateViews(it, request)
     }.toVo()
 
     @DeleteMapping("{id}")
