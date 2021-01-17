@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:th="http://www.thymeleaf.org">
+  <url>
+    <loc th:text="${base}+'/'">/</loc>
+  </url>
+  <url>
+    <loc th:text="${base}+'/home.html'">/home.html</loc>
+  </url>
+  <url>
+    <loc th:text="${base}+'/about.html'">/about.html</loc>
+  </url>
+  <url>
+    <loc th:text="${base}+'/notes.html'">/notes.html</loc>
+  </url>
+  <url>
+    <loc th:text="${base}+'/notebooks.html'">/notebooks.html</loc>
+  </url>
+  <url th:each="notebook: ${notebooks}">
+    <loc th:text="${base}+'/notebooks/'+${notebook.id}+'.html'">/notebooks.html</loc>
+  </url>
+  <url>
+    <loc th:text="${base}+'/categories.html'">/categories.html</loc>
+  </url>
+  <url th:each="category: ${categories}">
+    <loc th:text="${base}+'/categories/'+${category.id}+'.html'">/categories.html</loc>
+  </url>
+  <url>
+    <loc th:text="${base}+'/tags.html'">/tags.html</loc>
+  </url>
+  <url th:each="tag: ${tags}">
+    <loc th:text="${base}+'/tags/'+${tag.name}+'.html'">/tags.html</loc>
+  </url>
+</urlset>

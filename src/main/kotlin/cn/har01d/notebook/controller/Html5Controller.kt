@@ -46,6 +46,27 @@ class Html5Controller(
         return "about"
     }
 
+    @GetMapping("/sitemap.xml", produces = ["text/xml"])
+    fun sitemap(request: HttpServletRequest, model: Model): String {
+        val scheme = request.scheme
+        val host = request.serverName
+        val port = request.serverPort
+        val base = StringBuilder()
+        base.append(if (port == 443) "https" else scheme).append("://").append(host)
+        if ((scheme == "http" && port != 80) || (scheme == "https" && port != 443)) {
+            base.append(":").append(port)
+        }
+        base.append(request.contextPath)
+        model.addAttribute("base", base.toString())
+        val notebooks = notebookService.list("", PageRequest.of(0, 50)).map { it.toVo() }
+        model.addAttribute("notebooks", notebooks.content)
+        val categories = categoryService.list("", PageRequest.of(0, 50)).map { it.toVo() }
+        model.addAttribute("categories", categories.content)
+        val tags = tagService.list("", PageRequest.of(0, 50))
+        model.addAttribute("tags", tags.content)
+        return "sitemap"
+    }
+
     @GetMapping("/notes.html")
     fun notes(q: String?, @RequestParam(defaultValue = "1") page: Int, model: Model): String {
         val pageable = PageRequest.of(page - 1, 20, Sort.Direction.DESC, "updatedTime")

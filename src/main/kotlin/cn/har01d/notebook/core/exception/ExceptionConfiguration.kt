@@ -23,7 +23,9 @@ class ExceptionConfiguration {
             } else if (error is HttpMessageConversionException) {
                 errorAttributes["message"] = "数据转换异常"
             }
-            logger.warn("", error)
+            if (error != null) {
+                logger.warn("", error)
+            }
             return errorAttributes
         }
     }

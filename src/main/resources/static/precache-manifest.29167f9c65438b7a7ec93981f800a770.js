@@ -76,7 +76,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/outline-icons.82f60bd0.svg"
   },
   {
-    "revision": "d9585731885b49e5ec1d6e30d3a6ec82",
+    "revision": "ff0e54ac4b57fc71ff295f9acf78d547",
     "url": "/index.html"
   },
   {
