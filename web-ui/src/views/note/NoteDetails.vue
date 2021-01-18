@@ -7,7 +7,10 @@
       <i class="right chevron icon divider" v-if="note.deleted"></i>
       <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
       <i class="right chevron icon divider"></i>
-      <div class="active section">{{note.title}}</div>
+      <div class="active section">
+        <i class="lock icon" v-if="note.access==='PRIVATE'"></i>
+        <i class="unlock alternate icon" v-if="note.access==='SECRET'"></i>
+        {{note.title}}</div>
     </div>
     <div class="ui divider"></div>
 

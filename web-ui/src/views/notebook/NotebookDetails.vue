@@ -5,12 +5,16 @@
       <i class="right chevron icon divider"></i>
       <router-link class="section" to="/notebooks">笔记本</router-link>
       <i class="right chevron icon divider"></i>
-      <div class="active section">{{ notebook.name }}</div>
+      <div class="active section">
+        <i class="lock icon" v-if="notebook.access==='PRIVATE'"></i>
+        <i class="unlock alternate icon" v-if="notebook.access==='SECRET'"></i>
+        {{ notebook.name }}
+      </div>
     </div>
     <div class="ui divider"></div>
 
-    <router-link class="ui add icon primary button" data-tooltip="创建笔记" :to="'/notes/-/new?notebook='+id"
-                 v-if="author&&notes.length">
+    <router-link class="ui add icon primary button" data-tooltip="创建笔记"
+                 :to="'/notes/-/new?notebook='+id" v-if="author&&notes.length">
       <i class="add icon"></i>
     </router-link>
 
@@ -59,6 +63,8 @@
       <div class="ui divided items">
         <div class="item" v-for="note in notes" :key="note.id">
           <div class="content">
+            <i class="lock icon" v-if="note.access==='PRIVATE'"></i>
+            <i class="unlock alternate icon" v-if="note.access==='SECRET'"></i>
             <router-link class="header" :to="'/notes/'+(note.slug?note.slug:note.id)">{{ note.title }}</router-link>
             <div class="meta">
               <router-link :to="'/users/'+note.author.id">@{{ note.author.username }}</router-link>
