@@ -173,9 +173,9 @@
         {text: 'XML', value: 'xml'},
         {text: 'YAML', value: 'yaml'},
       ],
+      skin_url: '/tinymce',
       content_css: [
-        'https://cdn.tiny.cloud/1/qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc/tinymce/5.5.1-99/skins/ui/oxide/content.min.css',
-        'prism.css',
+        '/prism.css',
       ],
       toolbar:
         'undo redo | formatselect | bold italic backcolor | \
