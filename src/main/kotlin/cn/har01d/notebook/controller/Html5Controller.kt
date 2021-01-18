@@ -67,7 +67,7 @@ class Html5Controller(
         return "sitemap"
     }
 
-    @GetMapping("/notes.html")
+    @GetMapping("/notes.html", "/articles.html")
     fun notes(q: String?, @RequestParam(defaultValue = "1") page: Int, model: Model): String {
         val pageable = PageRequest.of(page - 1, 20, Sort.Direction.DESC, "updatedTime")
         val notes = noteService.list(q, pageable).map { it.toVo2() }

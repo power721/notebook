@@ -6,11 +6,15 @@
       body {
           background-image: url(https://api.dujin.org/bing/1920.php);
       }
+      .ui.secondary.inverted.pointing.menu {
+          border: none;
+      }
       #form {
           padding-top: 300px;
       }
       #form .ui.input {
           width: 25em;
+          opacity: 80%;
       }
       .ui.inverted.footer {
           background: #1b1c1d;
@@ -34,19 +38,19 @@
         <div class="menu">
           <div th:remove="tag" th:each="menu: ${menu.children}">
             <a class="item" th:if="${menu.uri.startsWith('http')}" th:href="${menu.uri}" target="_blank">
-              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}!=''"></i><span th:text="${menu.title}"></span>
             </a>
             <a th:class="'item'+${url.contains(menu.uri)?' active':''}" th:if="${menu.uri.startsWith('/')}" th:href="${menu.uri}+'.html'">
-              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}!=''"></i><span th:text="${menu.title}"></span>
             </a>
           </div>
         </div>
       </div>
       <a class="item" th:if="${menu.uri.startsWith('http')}" th:href="${menu.uri}" target="_blank">
-        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}!=''"></i><span th:text="${menu.title}"></span>
       </a>
       <a th:class="'item'+${url.contains(menu.uri)?' active':''}" th:if="${menu.uri.startsWith('/')}" th:href="${menu.uri}+'.html'">
-        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}!=''"></i><span th:text="${menu.title}"></span>
       </a>
     </div>
   </div>
@@ -63,7 +67,7 @@
   </div>
 
   <div class="ui footer inverted">
-    <div class="ui left aligned container">
+    <div class="ui center aligned container">
       <div class="ui inverted horizontal link list">
         <a href="http://beian.miit.gov.cn/" class="item" target="_blank" th:text="${siteConfig.icpBeian}"></a>
         <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo" class="item"

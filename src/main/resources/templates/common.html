@@ -23,19 +23,19 @@
         <div class="menu">
           <div th:remove="tag" th:each="menu: ${menu.children}">
             <a class="item" th:if="${menu.uri.startsWith('http')}" th:href="${menu.uri}" target="_blank">
-              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}!=''"></i><span th:text="${menu.title}"></span>
             </a>
             <a th:class="'item'+${url.contains(menu.uri)?' active':''}" th:if="${menu.uri.startsWith('/')}" th:href="${menu.uri}+'.html'">
-              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+              <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}!=''"></i><span th:text="${menu.title}"></span>
             </a>
           </div>
         </div>
       </div>
       <a class="item" th:if="${menu.uri.startsWith('http')}" th:href="${menu.uri}" target="_blank">
-        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}!=''"></i><span th:text="${menu.title}"></span>
       </a>
       <a th:class="'item'+${url.contains(menu.uri)?' active':''}" th:if="${menu.uri.startsWith('/')}" th:href="${menu.uri}+'.html'">
-        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}"></i><span th:text="${menu.title}"></span>
+        <i th:class="${menu.icon}+' icon'" th:if="${menu.icon}!=''"></i><span th:text="${menu.title}"></span>
       </a>
     </div>
     <div class="right menu">
