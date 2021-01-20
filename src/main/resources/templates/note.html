@@ -35,9 +35,9 @@
         </span>
         <a class="ui teal small label" th:href="'/categories/'+${note.category.id}+'.html'"
            th:text="${note.category.name}"></a>
-        <span th:if="${note.access} != 'PRIVATE'">
-        <span th:remove="tag" th:text="${note.views}"></span> <i class="eye icon"></i>
-      </span>
+        <span th:if="${siteConfig.showViews} and ${note.access} != 'PRIVATE'">
+          <span th:remove="tag" th:text="${note.views}"></span> <i class="eye icon"></i>
+        </span>
       </div>
     </div>
 

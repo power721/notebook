@@ -28,6 +28,12 @@
       </div>
       <div class="field">
         <div class="ui toggle checkbox">
+          <input type="checkbox" name="showViews" v-model="siteConfig.showViews">
+          <label>显示阅读量</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="ui toggle checkbox">
           <input type="checkbox" name="enableAudit" v-model="siteConfig.enableAudit">
           <label>开启审计</label>
         </div>

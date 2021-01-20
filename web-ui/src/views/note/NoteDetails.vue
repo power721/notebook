@@ -34,7 +34,7 @@
         <router-link class="ui teal small label" :to="'/categories/'+note.category.id">
           {{note.category.name}}
         </router-link>
-        <span :data-tooltip="note.views+'阅读'" v-if="note.access!=='PRIVATE'">
+        <span :data-tooltip="note.views+'阅读'" v-if="showViews&&note.access!=='PRIVATE'">
           {{note.views}} <i class="eye icon"></i>
         </span>
         <router-link :to="'/notes/'+(note.slug?note.slug:note.id)+'/edit'" class="edit" data-tooltip="编辑笔记" v-if="author&&!note.deleted">
@@ -121,6 +121,7 @@
   import configService from '@/services/config.service'
   import {Notebook} from '@/models/Notebook'
   import {EntityView} from "@/components/EntityView";
+  import {SiteConfig} from "@/models/SiteConfig";
 
   @Component<EntityView>({
     components: {
@@ -143,6 +144,10 @@
     revert: boolean = false
     note: Note = new Note()
     notebooks: Notebook[] = []
+
+    get showViews(): boolean {
+      return this.$store.state.siteConfig.showViews
+    }
 
     mounted() {
       this.id = this.$route.params.id

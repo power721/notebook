@@ -25,6 +25,8 @@ class ExceptionConfiguration {
             }
             if (error != null) {
                 logger.warn("", error)
+            } else {
+                logger.warn("{}", errorAttributes["message"])
             }
             return errorAttributes
         }
