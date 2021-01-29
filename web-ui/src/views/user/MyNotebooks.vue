@@ -17,8 +17,8 @@
       <div class="ui divided items">
         <div class="item" v-for="notebook in notebooks" :key="notebook.id">
           <div class="content">
-            <i class="lock icon" v-if="notebook.access==='PRIVATE'"></i>
-            <i class="unlock alternate icon" v-if="notebook.access==='SECRET'"></i>
+            <a class="link" data-tooltip="只有你可以访问" v-if="notebook.access==='PRIVATE'"><i class="lock icon"></i></a>
+            <a class="link" data-tooltip="知道ID才能访问" v-if="notebook.access==='SECRET'"><i class="unlock alternate icon"></i></a>
             <router-link class="header" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>
             <div class="description">
               <p>{{notebook.description}}</p>

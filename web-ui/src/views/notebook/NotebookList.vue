@@ -24,8 +24,8 @@
       <div class="ui divided items">
         <div class="item" v-for="notebook in notebooks" :key="notebook.id">
           <div class="content">
-            <i class="lock icon" v-if="notebook.access==='PRIVATE'"></i>
-            <i class="unlock alternate icon" v-if="notebook.access==='SECRET'"></i>
+            <a class="link" data-tooltip="只有你可以访问" v-if="notebook.access==='PRIVATE'"><i class="lock icon"></i></a>
+            <a class="link" data-tooltip="知道ID才能访问" v-if="notebook.access==='SECRET'"><i class="unlock alternate icon"></i></a>
             <router-link class="header" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>
             <div class="meta">
               <router-link :to="'/users/'+notebook.owner.id">@{{notebook.owner.username}}</router-link>
@@ -56,7 +56,7 @@
           <label>访问权限</label>
           <el-radio-group v-model="notebook.access">
             <el-radio label="PUBLIC" data-tooltip="所有人可以访问">公开</el-radio>
-            <el-radio label="SECRET" data-tooltip="知道ID可以访问">秘密</el-radio>
+            <el-radio label="SECRET" data-tooltip="知道ID才能访问">秘密</el-radio>
             <el-radio label="PRIVATE" data-tooltip="只有你可以访问">私有</el-radio>
           </el-radio-group>
         </div>

@@ -20,7 +20,7 @@
 
     <div class="ui center aligned raised segment">
       <h1 class="ui header">{{ notebook.name }}</h1>
-      <a class="ui top left attached label" data-tooltip="知道ID可以访问" v-if="notebook.access==='SECRET'">秘密</a>
+      <a class="ui top left attached label" data-tooltip="知道ID才能访问" v-if="notebook.access==='SECRET'">秘密</a>
       <a class="ui top left attached label" data-tooltip="只有你可以访问" v-if="notebook.access==='PRIVATE'">私有</a>
       <div class="metadata">
         <router-link :to="'/users/'+notebook.owner.id">@{{ notebook.owner.username }}</router-link>
@@ -63,8 +63,8 @@
       <div class="ui divided items">
         <div class="item" v-for="note in notes" :key="note.id">
           <div class="content">
-            <i class="lock icon" v-if="note.access==='PRIVATE'"></i>
-            <i class="unlock alternate icon" v-if="note.access==='SECRET'"></i>
+            <a class="link" data-tooltip="只有你可以访问" v-if="note.access==='PRIVATE'"><i class="lock icon"></i></a>
+            <a class="link" data-tooltip="知道ID才能访问" v-if="note.access==='SECRET'"><i class="unlock alternate icon"></i></a>
             <router-link class="header" :to="'/notes/'+(note.slug?note.slug:note.id)">{{ note.title }}</router-link>
             <div class="meta">
               <router-link :to="'/users/'+note.author.id">@{{ note.author.username }}</router-link>
@@ -94,7 +94,7 @@
           <label>访问权限</label>
           <el-radio-group v-model="nb.access">
             <el-radio label="PUBLIC" data-tooltip="所有人可以访问">公开</el-radio>
-            <el-radio label="SECRET" data-tooltip="知道ID可以访问">秘密</el-radio>
+            <el-radio label="SECRET" data-tooltip="知道ID才能访问">秘密</el-radio>
             <el-radio label="PRIVATE" data-tooltip="只有你可以访问">私有</el-radio>
           </el-radio-group>
         </div>
@@ -130,7 +130,7 @@
           <label>访问权限</label>
           <el-radio-group v-model="access">
             <el-radio label="PUBLIC" data-tooltip="所有人可以访问" v-if="notebook.access==='PUBLIC'">公开</el-radio>
-            <el-radio label="SECRET" data-tooltip="知道ID可以访问" v-if="notebook.access!=='PRIVATE'">秘密</el-radio>
+            <el-radio label="SECRET" data-tooltip="知道ID才能访问" v-if="notebook.access!=='PRIVATE'">秘密</el-radio>
             <el-radio label="PRIVATE" data-tooltip="只有你可以访问">私有</el-radio>
           </el-radio-group>
         </div>

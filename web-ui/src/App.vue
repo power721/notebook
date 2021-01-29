@@ -205,6 +205,10 @@
     width: 1.25em;
   }
 
+  .ui.items>.item>.content>.link {
+    color: rgba(0,0,0,.85);
+  }
+
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

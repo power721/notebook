@@ -21,7 +21,7 @@
       <h1 class="ui header" v-else>
         {{note.title}}
       </h1>
-      <a class="ui top left attached label" data-tooltip="知道ID可以访问" v-if="note.access==='SECRET'">秘密</a>
+      <a class="ui top left attached label" data-tooltip="知道ID才能访问" v-if="note.access==='SECRET'">秘密</a>
       <a class="ui top left attached label" data-tooltip="只有你可以访问" v-if="note.access==='PRIVATE'">私有</a>
       <div class="metadata">
         <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>
@@ -146,7 +146,7 @@
     notebooks: Notebook[] = []
 
     get showViews(): boolean {
-      return this.$store.state.siteConfig.showViews
+      return this.$store.state.siteConfig.showViews || this.$store.state.authenticated
     }
 
     mounted() {

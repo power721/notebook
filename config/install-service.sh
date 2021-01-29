@@ -7,7 +7,7 @@ sudo useradd -r -m ${USERNAME}
 sudo mkdir -p /opt/${APPNAME}/config
 sudo mkdir -p /opt/${APPNAME}/log
 if [[ ! -f /opt/${APPNAME}/config/application-production.yaml ]]; then
-cat <<EOT > /opt/${APPNAME}/config/application-production.yaml
+cat <<EOT > /tmp/${APPNAME}.yaml
 cn:
   har01d:
     auth:
@@ -19,12 +19,13 @@ spring:
     password: password
 logging:
   file:
-    name: /opt/notebook/log/notebook.log
+    name: /opt/${APPNAME}/log/${APPNAME}.log
 EOT
+sudo cp /tmp/${APPNAME}.yaml /opt/${APPNAME}/config/application-production.yaml
 fi
 sudo chown -R ${USERNAME}:${USERNAME} /opt/${APPNAME}/
 
-cat <<EOT > ${APPNAME}.service
+cat <<EOT > /tmp/${APPNAME}.service
 [Unit]
 Description=${APPNAME} API
 After=syslog.target
@@ -39,7 +40,7 @@ SuccessExitStatus=143
 WantedBy=multi-user.target
 EOT
 
-[[ -f /etc/systemd/system/${APPNAME}.service ]] || sudo cp ${APPNAME}.service /etc/systemd/system/
+[[ -f /etc/systemd/system/${APPNAME}.service ]] || sudo cp /tmp/${APPNAME}.service /etc/systemd/system/
 sudo systemctl stop ${APPNAME}.service
 sudo cp ${APPNAME}.jar /opt/${APPNAME}/${APPNAME}
 sudo chown ${USERNAME}:${USERNAME} /opt/${APPNAME}/${APPNAME}
