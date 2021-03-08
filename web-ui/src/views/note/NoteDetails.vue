@@ -15,6 +15,9 @@
     <div class="ui divider"></div>
 
     <div class="ui center aligned raised segment">
+      <div class="ui active inverted dimmer" v-if="loading">
+        <div class="ui text loader">加载中</div>
+      </div>
       <h1 class="ui header" v-if="note.deleted">
         <del>{{note.title}}</del>
       </h1>
@@ -51,6 +54,9 @@
     </div>
 
     <div class="ui left aligned raised segment">
+      <div class="ui active inverted dimmer" v-if="loading">
+        <div class="ui text loader">加载中</div>
+      </div>
       <div class="ui warning message" v-if="old">
         <i class="warning icon"></i>
         <template v-if="note.updatedTime">
@@ -138,6 +144,7 @@
   export default class NoteDetails extends EntityView {
     notebookId: string = ''
     old: boolean = false
+    loading: boolean = false
     author: boolean = false
     modal: boolean = false
     confirm: boolean = false
@@ -156,6 +163,7 @@
     }
 
     load() {
+      this.loading = true
       axios.get(`/notes/${this.id}?view=true`).then(({data}) => {
         this.note = data
         configService.setTitle(this.note.title)
@@ -163,7 +171,9 @@
         const diff = now - new Date(this.note.createdTime).getTime()
         this.old = diff > 1000 * 3600 * 24 * 360
         this.author = accountService.account.id === this.note.author.id
+        this.loading = false
       }, () => {
+        this.loading = false
         this.$router.push('/')
       }).then(() => {
         setTimeout(() => {

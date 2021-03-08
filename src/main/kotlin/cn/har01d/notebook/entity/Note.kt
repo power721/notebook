@@ -28,7 +28,7 @@ class Note(
         @JsonProperty("id") @Column(nullable = false, unique = true) var rid: String,
         @Column(nullable = false) var views: Int = 0,
         @Column(nullable = false) var deleted: Boolean = false,
-        var updatedTime: Instant = Instant.now(),
+        @Column(nullable = false) var updatedTime: Instant = Instant.now(),
         @Column(nullable = false) val createdTime: Instant = Instant.now(),
         @JsonIgnore @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Int? = null
 )

@@ -45,6 +45,9 @@
     </div>
 
     <div class="ui left aligned raised segment">
+      <div class="ui active inverted dimmer" v-if="loading">
+        <div class="ui text loader">加载中</div>
+      </div>
       <div class="ui warning message" v-if="notes.length===0">
         还没有笔记。
         <template v-if="author">
@@ -171,6 +174,7 @@ import configService from '@/services/config.service'
 })
 export default class NotebookDetails extends Pageable {
   id: string = ''
+  loading: boolean = false
   modal: boolean = false
   confirm: boolean = false
   force: boolean = false
@@ -200,11 +204,15 @@ export default class NotebookDetails extends Pageable {
   }
 
   load() {
+    this.loading = true
     axios.get(`/notebooks/${this.id}/notes?${this.query}`).then(({data}) => {
       this.notes = data.content
       this.totalPages = data.totalPages
       this.totalElements = data.totalElements
+      this.loading = false
       goTop()
+    }, () => {
+      this.loading = false
     })
   }
 

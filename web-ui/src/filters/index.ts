@@ -56,6 +56,9 @@ export function duration(value: number) {
 }
 
 export function fromNow(value: number | string) {
+  if (!value) {
+    return ''
+  }
   const now = new Date().getTime()
   const diff = now - new Date(value).getTime()
 

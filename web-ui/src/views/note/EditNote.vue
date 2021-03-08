@@ -29,6 +29,9 @@
     <div class="ui divider"></div>
 
     <form class="ui form">
+      <div class="ui active inverted dimmer" v-if="noteLoading">
+        <div class="ui text loader">加载中</div>
+      </div>
       <div class="required field">
         <label>标题</label>
         <input type="text" name="title" autocomplete="off" v-model="note.title" placeholder="标题">
@@ -104,7 +107,7 @@
         <Editor :init="config" v-model="note.content"></Editor>
       </div>
       <div class="right floated">
-        <button class="ui button" @click="cancel">取消</button>
+        <button class="ui button" @click.prevent="cancel">取消</button>
         <button class="ui primary button" @click.prevent="submit"
                 :disabled="!note.title||!note.notebookId||!note.categoryId">保存
         </button>
@@ -136,6 +139,7 @@
     id: string = ''
     title: string = ''
     loading: boolean = false
+    noteLoading: boolean = false
     notebook: Notebook = new Notebook()
     category: Category = new Category()
     notebooks: Notebook[] = []
@@ -273,17 +277,21 @@
     }
 
     loadNote() {
+      this.noteLoading = true
       axios.get(`/notes/${this.id}`).then(({data}) => {
         //this.options.initialEditType = data.markdown ? 'markdown' : 'wysiwyg'
         Object.assign(this.note, data)
         this.title = this.note.title
         this.note.notebookId = this.note.notebook.id
         this.note.categoryId = this.note.category.id
+        this.noteLoading = false
         if (accountService.account.id !== this.note.author.id) {
           this.$toasted.error('用户无权操作')
           this.$router.push('/')
         }
         configService.setTitle(this.note.title + ' - 编辑')
+      }, () => {
+        this.noteLoading = false
       })
     }
 

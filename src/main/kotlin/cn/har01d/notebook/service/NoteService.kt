@@ -163,7 +163,7 @@ class NoteService(
         }
 
         if (dto.slug != null && dto.slug.isNotEmpty()) {
-            val n = noteRepository.findBySlug(id)
+            val n = noteRepository.findBySlug(dto.slug)
             if (n != null && n.id != note.id) {
                 throw AppException("slug重复")
             }
