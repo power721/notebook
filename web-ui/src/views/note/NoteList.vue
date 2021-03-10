@@ -92,6 +92,8 @@
         this.totalElements = data.totalElements
         this.loading = false
         goTop()
+      }, () => {
+        this.loading = false
       })
     }
 

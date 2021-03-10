@@ -12,7 +12,7 @@
       <i class="add icon"></i>
     </a>
 
-    <div class="ui divided items raised segment">
+    <div class="ui divided items raised segment" :class="{loading: loading}">
       <div class="item" v-for="category in categories" :key="category.id">
         <div class="content">
           <router-link class="header" :to="'/categories/'+category.id">{{category.name}}</router-link>
@@ -71,6 +71,7 @@
   })
   export default class CategoryList extends Pageable {
     modal: boolean = false
+    loading: boolean = false
     category: Category = new Category()
     categories: Category[] = []
 
@@ -85,11 +86,15 @@
     }
 
     load() {
+      this.loading = true
       axios.get(`/categories?${this.query}`).then(({data}) => {
         this.categories = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
+        this.loading = false
         goTop()
+      }, () => {
+        this.loading = false
       })
     }
 

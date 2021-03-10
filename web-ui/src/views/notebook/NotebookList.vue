@@ -12,7 +12,7 @@
       <i class="add icon"></i>
     </a>
 
-    <div class="ui raised segment">
+    <div class="ui raised segment" :class="{loading: loading}">
       <Dropdown icon="bars" position="top right" :pointing="true">
         <a class="item" :class="{active:sort==='createdTime,desc'}" @click="sorted('createdTime,desc')">创建时间(最新)</a>
         <a class="item" :class="{active:sort==='createdTime,asc'}" @click="sorted('createdTime,asc')">创建时间(最早)</a>
@@ -98,6 +98,7 @@
   })
   export default class NotebookList extends Pageable {
     modal: boolean = false
+    loading: boolean = false
     notebook: Notebook = new Notebook()
     notebooks: Notebook[] = []
 
@@ -113,11 +114,15 @@
     }
 
     load() {
+      this.loading = true
       axios.get(`/notebooks?${this.query}`).then(({data}) => {
         this.notebooks = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
+        this.loading = false
         goTop()
+      }, () => {
+        this.loading = false
       })
     }
 
