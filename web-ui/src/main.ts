@@ -31,6 +31,9 @@ import 'tinymce/plugins/toc'
 import 'tinymce/plugins/fullscreen'
 import 'tinymce/plugins/help'
 import 'tinymce/plugins/wordcount'
+import 'tinymce/plugins/searchreplace'
+import 'tinymce/plugins/charmap'
+import 'tinymce/plugins/quickbars'
 
 import '@/assets/langs/zh_CN'
 
@@ -64,9 +67,9 @@ axios.interceptors.response.use(function (response) {
   return response
 }, function (error) {
   const data = error.response.data
-  if (error.response.status === 401) {
+  if (error.response.status === 401 && data.message === 'Token失效') {
     auth.clean()
-    router.push('/')
+    router.push('/?_t=' + (new Date().getTime()))
   } else {
     Vue.toasted.error(data.message)
   }

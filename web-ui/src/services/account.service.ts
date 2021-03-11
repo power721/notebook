@@ -69,6 +69,7 @@ class AccountService {
   clean() {
     this.account = new Account()
     localStorage.removeItem('token')
+    store.commit('logout')
   }
 }
 

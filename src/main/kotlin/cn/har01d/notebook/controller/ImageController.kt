@@ -1,6 +1,7 @@
 package cn.har01d.notebook.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -16,8 +17,10 @@ import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/images")
-class ImageController(restTemplateBuilder: RestTemplateBuilder, private val mapper: ObjectMapper) {
+class ImageController(restTemplateBuilder: RestTemplateBuilder) {
     private val restTemplate = restTemplateBuilder.build()
+    private val mapper = jacksonObjectMapper()
+    private val apiUrl = "http://changyan.sohu.com/api/2/comment/attachment"
 
     @PostMapping
     fun upload(@RequestParam(value = "file") file: MultipartFile): Map<String, String> {
@@ -25,12 +28,12 @@ class ImageController(restTemplateBuilder: RestTemplateBuilder, private val mapp
         headers.contentType = MediaType.MULTIPART_FORM_DATA
         headers.accept = listOf(MediaType.APPLICATION_JSON)
         val parts: MultiValueMap<String, Any> = LinkedMultiValueMap()
-        parts.add("photo", file.resource)
+        parts.add("file", file.resource)
         val httpEntity = HttpEntity(parts, headers)
-        val json = restTemplate.postForObject<String>("https://mp.toutiao.com/upload_photo/?type=json", httpEntity)
-        val image = mapper.readValue(json, ImageResponse::class.java)
-        return mapOf("location" to image.web_url)
+        val json = restTemplate.postForObject<String>(apiUrl, httpEntity)
+        val image = mapper.readValue<ImageResponse>(json.substring(1, json.length - 1).replace("\\", ""))
+        return mapOf("location" to image.url)
     }
 }
 
-data class ImageResponse(val width: Int, val height: Int, val message: String, val web_url: String, val web_uri: String)
+data class ImageResponse(val url: String)

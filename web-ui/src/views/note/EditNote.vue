@@ -155,8 +155,8 @@
       language: 'zh_CN',
       plugins: [
         'autolink link media table advlist lists hr',
-        'code codesample image preview fullscreen',
-        'insertdatetime toc paste wordcount help'
+        'code codesample charmap image quickbars preview fullscreen',
+        'insertdatetime toc paste wordcount help searchreplace'
       ],
       images_upload_url: '/images',
       default_link_target: '_blank',
