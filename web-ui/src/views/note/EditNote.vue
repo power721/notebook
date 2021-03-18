@@ -179,6 +179,7 @@
       ],
       skin_url: '/tinymce',
       content_css: [
+        '/tinymce/content.min.css',
         '/prism.css',
       ],
       toolbar:
