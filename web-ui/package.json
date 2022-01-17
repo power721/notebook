@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@npkg/tinymce-plugins": "^0.0.7",
     "@tinymce/tinymce-vue": "^3.2.6",
     "@toast-ui/editor": "^2.5.1",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^1.0.0",

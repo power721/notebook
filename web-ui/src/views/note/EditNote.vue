@@ -154,8 +154,8 @@
       branding: false,
       language: 'zh_CN',
       plugins: [
-        'autolink link media table advlist lists hr',
-        'code codesample charmap image quickbars preview fullscreen',
+        'autolink link media table advlist lists hr upfile attachment',
+        'code codesample charmap image imagetools quickbars preview fullscreen',
         'insertdatetime toc paste wordcount help searchreplace'
       ],
       images_upload_url: '/images',
@@ -182,8 +182,33 @@
       ],
       toolbar:
         'undo redo | formatselect | bold italic backcolor | \
-        alignleft aligncenter alignright alignjustify | link image media | \
-        bullist numlist outdent indent | codesample | removeformat code preview fullscreen | help'
+        alignleft aligncenter alignright alignjustify | link image media upfile attachment | \
+        bullist numlist outdent indent | codesample | removeformat code preview fullscreen | help',
+      file_callback: function (file: File, callback: (url: string, details: unknown) => void) {
+        const formData = new FormData();
+        formData.append("file", file);
+        axios.post('/files', formData).then((res) => {
+          callback(res.data.url, {text: res.data.name})
+        }).catch((error) => {
+          console.error(error)
+        })
+      },
+      attachment_max_size: 104857600,
+      attachment_upload_handler: function (file: File, succFun: (url: string) => void, failFun: (url: string) => void, progressCallback: (url: number) => void) {
+        const formData = new FormData();
+        formData.append("file", file);
+        axios.post('/files', formData, {
+          onUploadProgress: function(progressEvent) {
+            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            progressCallback(percent)
+          }
+        }).then((res) => {
+          succFun(res.data.url)
+        }).catch((error) => {
+          console.log(error)
+          failFun(error.message)
+        })
+      },
     }
 
     mounted() {

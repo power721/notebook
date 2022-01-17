@@ -10,14 +10,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.AuthenticationEntryPoint
-import org.springframework.web.servlet.config.annotation.CorsRegistry
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import org.springframework.web.bind.annotation.CrossOrigin
 import javax.servlet.http.HttpServletResponse
 
 
 @Configuration
+@CrossOrigin
 @EnableWebSecurity
-class WebSecurityConfiguration : WebSecurityConfigurerAdapter(), WebMvcConfigurer {
+class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
     @Bean
     fun authenticationEntryPoint(): AuthenticationEntryPoint? {
         return AuthenticationEntryPoint { _, response, _ ->
@@ -54,7 +54,4 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter(), WebMvcConfigure
                 .logout().disable();
     }
 
-    override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/**").allowedMethods("*")
-    }
 }
