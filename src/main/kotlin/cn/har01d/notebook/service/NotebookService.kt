@@ -56,7 +56,7 @@ class NotebookService(
     }
 
     fun get(id: String): Notebook {
-        val notebook = notebookRepository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("笔记本不存在")
+        val notebook = notebookRepository.findBySlug(id) ?: notebookRepository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("笔记本不存在")
         if (notebook.access == Access.PRIVATE) {
             val user = userService.getCurrentUser()
             if (user == null || notebook.owner.id != user.id) {
@@ -78,7 +78,10 @@ class NotebookService(
         if (notebookRepository.countByOwner(user) >= limit) {
             throw AppException("笔记本数量不能超过$limit")
         }
-        val notebook = Notebook(dto.name, dto.description, user, dto.access ?: Access.PUBLIC)
+        if (dto.slug != null && dto.slug.isNotEmpty() && notebookRepository.existsBySlug(dto.slug)) {
+            throw AppException("slug重复")
+        }
+        val notebook = Notebook(dto.name, dto.description, user, dto.slug, dto.access ?: Access.PUBLIC)
         return notebookRepository.save(notebook).also { auditService.auditNotebookCreate(user, notebook) }
     }
 
@@ -91,6 +94,12 @@ class NotebookService(
         val notebook = notebookRepository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("笔记本不存在")
         if (notebook.owner.id != user.id) {
             throw AppForbiddenException("用户无权操作")
+        }
+        if (dto.slug != null && dto.slug.isNotEmpty()) {
+            val other = notebookRepository.findBySlug(dto.slug)
+            if (other != null && other.id != notebook.id) {
+                throw AppException("slug重复")
+            }
         }
         val other = notebookRepository.findByOwnerAndName(user, dto.name)
         if (other != null && other.id != notebook.id) {
@@ -106,6 +115,7 @@ class NotebookService(
             notebook.access = dto.access
         }
         notebook.name = dto.name
+        notebook.slug = dto.slug
         notebook.description = dto.description
         notebook.updatedTime = Instant.now()
         return notebookRepository.save(notebook).also { auditService.auditNotebookUpdate(user, notebook) }

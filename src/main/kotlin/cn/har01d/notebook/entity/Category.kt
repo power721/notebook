@@ -10,11 +10,14 @@ import javax.persistence.*
 class Category(
         @Column(nullable = false, unique = true) var name: String,
         @Column(nullable = false) var description: String = "",
+        @Column(unique = true) var slug: String? = null,
         @Column(nullable = false) val createdTime: Instant = Instant.now(),
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Int? = null
 )
 
 interface CategoryRepository : JpaRepository<Category, Int> {
+    fun existsBySlug(slug: String): Boolean
+    fun findBySlug(slug: String): Category?
     fun existsByName(name: String): Boolean
     fun findByName(name: String): Category?
     fun findByNameContains(text: String, pageable: Pageable): Page<Category>

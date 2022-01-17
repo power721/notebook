@@ -6,17 +6,17 @@
       <template v-if="notebook.name">
         <router-link class="section" to="/notebooks">笔记本</router-link>
         <i class="right chevron icon divider"></i>
-        <router-link class="section" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>
+        <router-link class="section" :to="'/notebooks/'+(notebook.slug?notebook.slug:notebook.id)">{{notebook.name}}</router-link>
         <i class="right chevron icon divider"></i>
       </template>
       <template v-if="category.name">
         <router-link class="section" to="/categories">分类</router-link>
         <i class="right chevron icon divider"></i>
-        <router-link class="section" :to="'/categories/'+category.id">{{category.name}}</router-link>
+        <router-link class="section" :to="'/categories/'+(category.slug?category.slug:category.id)">{{category.name}}</router-link>
         <i class="right chevron icon divider"></i>
       </template>
       <template v-if="id">
-        <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
+        <router-link class="section" :to="'/notebooks/'+(note.notebook.slug?note.notebook.slug:note.notebook.id)">{{note.notebook.name}}</router-link>
         <i class="right chevron icon divider"></i>
         <router-link class="section" :to="'/notes/'+(note.slug?note.slug:note.id)">{{title}}</router-link>
         <i class="right chevron icon divider"></i>
@@ -177,9 +177,7 @@
         {text: 'XML', value: 'xml'},
         {text: 'YAML', value: 'yaml'},
       ],
-      skin_url: '/tinymce',
       content_css: [
-        '/tinymce/content.min.css',
         '/prism.css',
       ],
       toolbar:
@@ -300,9 +298,9 @@
       if (this.id) {
         this.$router.push('/notes/' + this.id)
       } else if (this.notebook.id) {
-        this.$router.push('/notebooks/' + this.notebook.id)
+        this.$router.push('/notebooks/' + (this.notebook.slug?this.notebook.slug:this.notebook.id))
       } else if (this.category.id) {
-        this.$router.push('/categories/' + this.category.id)
+        this.$router.push('/categories/' + (this.category.slug?this.category.slug:this.category.id))
       } else {
         this.$router.push('/')
       }

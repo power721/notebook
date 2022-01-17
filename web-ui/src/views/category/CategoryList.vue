@@ -15,7 +15,7 @@
     <div class="ui divided items raised segment" :class="{loading: loading}">
       <div class="item" v-for="category in categories" :key="category.id">
         <div class="content">
-          <router-link class="header" :to="'/categories/'+category.id">{{category.name}}</router-link>
+          <router-link class="header" :to="'/categories/'+(category.slug?category.slug:category.id)">{{category.name}}</router-link>
           <div class="description">
             <p>{{category.description}}</p>
           </div>
@@ -33,6 +33,10 @@
         <div class="required field">
           <label>标题</label>
           <input type="text" name="title" autocomplete="off" v-model="category.name" placeholder="标题">
+        </div>
+        <div class="field">
+          <label>slug</label>
+          <input type="text" name="slug" autocomplete="off" v-model="category.slug" placeholder="slug">
         </div>
         <div class="field">
           <label>描述</label>

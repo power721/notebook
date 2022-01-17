@@ -14,6 +14,7 @@ class Notebook(
         @Column(nullable = false) var description: String,
         @JoinColumn(foreignKey = ForeignKey(name = "FK_OWNER_ID"))
         @ManyToOne val owner: User,
+        @Column(unique = true) var slug: String? = null,
         @Enumerated(EnumType.STRING) @Column(length = 16, nullable = false) var access: Access = Access.PUBLIC,
         var updatedTime: Instant? = null,
         @Column(nullable = false) val createdTime: Instant = Instant.now(),
@@ -21,6 +22,8 @@ class Notebook(
 )
 
 interface NotebookRepository : JpaRepository<Notebook, Int> {
+    fun existsBySlug(slug: String): Boolean
+    fun findBySlug(slug: String): Notebook?
     fun countByOwner(user: User): Long
     fun existsByOwnerAndName(user: User, name: String): Boolean
     fun findByOwnerAndName(user: User, name: String): Notebook?

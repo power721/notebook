@@ -14,7 +14,7 @@
     <div class="ui divider"></div>
 
     <router-link class="ui add icon primary button" data-tooltip="创建笔记"
-                 :to="'/notes/-/new?notebook='+id" v-if="author&&notes.length">
+                 :to="'/notes/-/new?notebook='+notebook.id" v-if="author&&notes.length">
       <i class="add icon"></i>
     </router-link>
 
@@ -34,9 +34,9 @@
           <i class="edit icon"></i>
         </a>
         <Dropdown icon="bars" position="top right" :pointing="true" v-if="author">
-          <a class="item" @click="edit">编辑笔记</a>
+          <a class="item" @click="edit">编辑笔记本</a>
           <a class="item" @click="show=true" v-if="notebook.access!=='PRIVATE'">访问权限</a>
-          <a class="item" @click="confirm=true">删除笔记</a>
+          <a class="item" @click="confirm=true">删除笔记本</a>
         </Dropdown>
       </div>
       <div class="ui info message" v-if="notebook.description">
@@ -51,7 +51,7 @@
       <div class="ui warning message" v-if="notes.length===0">
         还没有笔记。
         <template v-if="author">
-          <router-link :to="'/notes/-/new?notebook='+id">创建</router-link>
+          <router-link :to="'/notes/-/new?notebook='+notebook.id">创建</router-link>
           一个？
         </template>
       </div>
@@ -92,6 +92,10 @@
         <div class="required field">
           <label>标题</label>
           <input type="text" name="title" autocomplete="off" v-model="nb.name" placeholder="标题">
+        </div>
+        <div class="field">
+          <label>slug</label>
+          <input type="text" name="slug" autocomplete="off" v-model="nb.slug" placeholder="slug">
         </div>
         <div class="required field">
           <label>访问权限</label>
@@ -189,12 +193,13 @@ export default class NotebookDetails extends Pageable {
     this.sort = configService.getNotesSortOrder()
     this.id = this.$route.params.id
     this.page = +this.$route.query.page || 1
-    this.loadNotebook()
-    this.load()
+    this.loadNotebook().then(() => {
+      this.load()
+    })
   }
 
   loadNotebook() {
-    axios.get(`/notebooks/${this.id}`).then(({data}) => {
+    return axios.get(`/notebooks/${this.id}`).then(({data}) => {
       this.notebook = data
       this.author = accountService.account.id === this.notebook.owner.id
       configService.setTitle(this.notebook.name + ' - 笔记本')
@@ -205,7 +210,7 @@ export default class NotebookDetails extends Pageable {
 
   load() {
     this.loading = true
-    axios.get(`/notebooks/${this.id}/notes?${this.query}`).then(({data}) => {
+    axios.get(`/notebooks/${this.notebook.id}/notes?${this.query}`).then(({data}) => {
       this.notes = data.content
       this.totalPages = data.totalPages
       this.totalElements = data.totalElements
@@ -232,14 +237,14 @@ export default class NotebookDetails extends Pageable {
   }
 
   submit() {
-    axios.put(`/notebooks/${this.id}`, this.nb).then(({data}) => {
+    axios.put(`/notebooks/${this.notebook.id}`, this.nb).then(({data}) => {
       this.notebook = data
       this.modal = false
     })
   }
 
   deleteNotebook() {
-    axios.delete(`/notebooks/${this.id}?force=${this.force}`).then(() => {
+    axios.delete(`/notebooks/${this.notebook.id}?force=${this.force}`).then(() => {
       this.confirm = false
       this.$toasted.success('删除成功')
       this.$router.push('/user/notebooks')
@@ -247,7 +252,7 @@ export default class NotebookDetails extends Pageable {
   }
 
   updateAccess() {
-    axios.post(`/notebooks/${this.id}/access?access=${this.access}`).then(() => {
+    axios.post(`/notebooks/${this.notebook.id}/access?access=${this.access}`).then(() => {
       this.show = false
       this.$toasted.success('更新成功')
     })

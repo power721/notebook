@@ -5,7 +5,7 @@
       <i class="right chevron icon divider"></i>
       <router-link class="section" to="/trash-notes" v-if="note.deleted">回收站</router-link>
       <i class="right chevron icon divider" v-if="note.deleted"></i>
-      <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
+      <router-link class="section" :to="'/notebooks/'+(note.notebook.slug?note.notebook.slug:note.notebook.id)">{{note.notebook.name}}</router-link>
       <i class="right chevron icon divider"></i>
       <div class="active section">
         <i class="lock icon" v-if="note.access==='PRIVATE'"></i>
@@ -34,7 +34,7 @@
         <span :data-tooltip="note.updatedTime | datetime" v-if="note.version>1">
           更新于{{note.updatedTime | fromNow}}
         </span>
-        <router-link class="ui teal small label" :to="'/categories/'+note.category.id">
+        <router-link class="ui teal small label" :to="'/categories/'+(note.category.slug?note.category.slug:note.category.id)">
           {{note.category.name}}
         </router-link>
         <span :data-tooltip="note.views+'阅读'" v-if="showViews&&note.access!=='PRIVATE'">
@@ -158,7 +158,6 @@
 
     mounted() {
       this.id = this.$route.params.id
-      console.log(this.$route.name)
       this.load()
     }
 

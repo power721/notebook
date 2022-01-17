@@ -5,7 +5,7 @@
       <i class="right chevron icon divider"></i>
       <router-link class="section" to="/trash-notes" v-if="note.deleted">回收站</router-link>
       <i class="right chevron icon divider" v-if="note.deleted"></i>
-      <router-link class="section" :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
+      <router-link class="section" :to="'/notebooks/'+(note.notebook.slug?note.notebook.slug:note.notebook.id)">{{note.notebook.name}}</router-link>
       <i class="right chevron icon divider"></i>
       <router-link class="section" :to="'/notes/'+(note.slug?note.slug:note.id)">{{note.title}}</router-link>
       <i class="right chevron icon divider"></i>

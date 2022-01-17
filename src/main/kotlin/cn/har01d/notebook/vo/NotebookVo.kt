@@ -9,6 +9,7 @@ import java.time.Instant
 data class NotebookVo(
         val id: String,
         val name: String,
+        val slug: String?,
         val description: String,
         val owner: UserVo2,
         val access: Access,
@@ -19,8 +20,9 @@ data class NotebookVo(
 data class NotebookVo2(
         val id: String,
         val name: String,
+        val slug: String?,
         val access: Access,
 )
 
-fun Notebook.toVo() = NotebookVo(IdUtils.encode(id!! + NOTEBOOK_OFFSET), name, description, owner.toVo2(), access, createdTime, updatedTime)
-fun Notebook.toVo2() = NotebookVo2(IdUtils.encode(id!! + NOTEBOOK_OFFSET), name, access)
+fun Notebook.toVo() = NotebookVo(IdUtils.encode(id!! + NOTEBOOK_OFFSET), name, slug, description, owner.toVo2(), access, createdTime, updatedTime)
+fun Notebook.toVo2() = NotebookVo2(IdUtils.encode(id!! + NOTEBOOK_OFFSET), name, slug, access)

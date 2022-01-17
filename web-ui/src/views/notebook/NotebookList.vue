@@ -26,7 +26,7 @@
           <div class="content">
             <a class="link" data-tooltip="只有你可以访问" v-if="notebook.access==='PRIVATE'"><i class="lock icon"></i></a>
             <a class="link" data-tooltip="知道ID才能访问" v-if="notebook.access==='SECRET'"><i class="unlock alternate icon"></i></a>
-            <router-link class="header" :to="'/notebooks/'+notebook.id">{{notebook.name}}</router-link>
+            <router-link class="header" :to="'/notebooks/'+(notebook.slug?notebook.slug:notebook.id)">{{notebook.name}}</router-link>
             <div class="meta">
               <router-link :to="'/users/'+notebook.owner.id">@{{notebook.owner.username}}</router-link>
             </div>
@@ -51,6 +51,10 @@
         <div class="required field">
           <label>标题</label>
           <input type="text" name="title" autocomplete="off" v-model="notebook.name" placeholder="标题">
+        </div>
+        <div class="field">
+          <label>slug</label>
+          <input type="text" name="slug" autocomplete="off" v-model="notebook.slug" placeholder="slug">
         </div>
         <div class="required field">
           <label>访问权限</label>

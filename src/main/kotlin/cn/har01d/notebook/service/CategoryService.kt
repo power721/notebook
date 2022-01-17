@@ -31,12 +31,12 @@ class CategoryService(
     }
 
     fun get(id: String): Category {
-        return repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("分类不存在")
+        return repository.findBySlug(id) ?: repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("分类不存在")
     }
 
     fun getNotes(id: String, pageable: Pageable): Page<Note> {
         val user = userService.getCurrentUser()
-        val category = repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("分类不存在")
+        val category = get(id)
         if (user != null) {
             return noteRepository.findByCategoryAndPublicOrOwn(category, user, pageable)
         }
@@ -52,18 +52,27 @@ class CategoryService(
         if (repository.count() >= limit) {
             throw AppException("分类数量不能超过$limit")
         }
-
-        val category = Category(dto.name, dto.description)
+        if (dto.slug != null && dto.slug.isNotEmpty() && repository.existsBySlug(dto.slug)) {
+            throw AppException("slug重复")
+        }
+        val category = Category(dto.name, dto.description, dto.slug)
         return repository.save(category).also { auditService.auditCategoryCreate(userService.requireCurrentUser(), it) }
     }
 
     fun update(id: String, dto: CategoryDto): Category {
-        val other = repository.findByName(dto.name)
         val category = repository.findByIdOrNull(decode(id)) ?: throw AppNotFoundException("分类不存在")
+        if (dto.slug != null && dto.slug.isNotEmpty()) {
+            val other = repository.findBySlug(dto.slug)
+            if (other != null && other.id != category.id) {
+                throw AppException("slug重复")
+            }
+        }
+        val other = repository.findByName(dto.name)
         if (other != null && other.id != category.id) {
             throw AppException("分类已经存在")
         }
         category.name = dto.name
+        category.slug = dto.slug
         category.description = dto.description
         return repository.save(category).also { auditService.auditCategoryUpdate(userService.requireCurrentUser(), it) }
     }

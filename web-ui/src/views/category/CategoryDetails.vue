@@ -9,7 +9,7 @@
     </div>
     <div class="ui divider"></div>
 
-    <router-link class="ui add icon primary button" data-tooltip="创建笔记" :to="'/notes/-/new?category='+id"
+    <router-link class="ui add icon primary button" data-tooltip="创建笔记" :to="'/notes/-/new?category='+category.id"
                  v-if="authenticated&&notes.length">
       <i class="add icon"></i>
     </router-link>
@@ -33,7 +33,7 @@
       <div class="ui warning message" v-if="notes.length===0">
         还没有笔记。
         <template v-if="authenticated">
-          <router-link :to="'/notes/-/new?category='+id">创建</router-link>
+          <router-link :to="'/notes/-/new?category='+category.id">创建</router-link>
           一个？
         </template>
       </div>
@@ -73,6 +73,10 @@
         <div class="required field">
           <label>标题</label>
           <input type="text" name="title" autocomplete="off" v-model="nb.name" placeholder="标题">
+        </div>
+        <div class="field">
+          <label>slug</label>
+          <input type="text" name="slug" autocomplete="off" v-model="nb.slug" placeholder="slug">
         </div>
         <div class="field">
           <label>描述</label>
@@ -132,19 +136,20 @@
       this.sort = configService.getNotesSortOrder()
       this.id = this.$route.params.id
       this.page = +this.$route.query.page || 1
-      this.loadCategory()
-      this.load()
+      this.loadCategory().then(() => {
+        this.load()
+      })
     }
 
     loadCategory() {
-      axios.get(`/categories/${this.id}`).then(({data}) => {
+      return axios.get(`/categories/${this.id}`).then(({data}) => {
         this.category = data
         configService.setTitle(this.category.name + ' - 分类')
       })
     }
 
     load() {
-      axios.get(`/categories/${this.id}/notes?${this.query}`).then(({data}) => {
+      axios.get(`/categories/${this.category.id}/notes?${this.query}`).then(({data}) => {
         this.notes = data.content
         this.totalPages = data.totalPages
         this.totalElements = data.totalElements
@@ -168,7 +173,7 @@
     }
 
     submit() {
-      axios.put(`/categories/${this.id}`, this.nb).then(({data}) => {
+      axios.put(`/categories/${this.category.id}`, this.nb).then(({data}) => {
         this.category = data
         this.modal = false
       })
