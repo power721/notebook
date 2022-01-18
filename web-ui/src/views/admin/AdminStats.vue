@@ -1,5 +1,5 @@
 <template>
-  <div class="ui left aligned container">
+  <div class="ui left aligned fluid container">
     <div class="ui raised segment">
       <div class="ui statistics">
         <div class="statistic">

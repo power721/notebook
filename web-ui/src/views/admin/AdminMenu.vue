@@ -1,5 +1,5 @@
 <template>
-  <div class="ui left aligned container">
+  <div class="ui left aligned fluid container">
     <button @click="addMenu" class="ui add primary icon button"><i class="add icon"></i></button>
 
     <div class="ui raised segment">

@@ -1,5 +1,5 @@
 <template>
-  <div class="ui left aligned container">
+  <div class="ui left aligned fluid container">
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>

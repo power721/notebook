@@ -1,5 +1,5 @@
 <template>
-  <div class="ui left aligned container">
+  <div class="ui left aligned fluid container">
     <a href="javascript:void(0)" class="ui add icon primary button" data-tooltip="创建笔记本" v-if="authenticated"
        @click="modal=true">
       <i class="add icon"></i>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ui left aligned container">
+  <div class="ui left aligned fluid container">
     <router-link class="ui add icon primary button" data-tooltip="创建笔记" to="/notes/-/new">
       <i class="edit icon"></i>
     </router-link>

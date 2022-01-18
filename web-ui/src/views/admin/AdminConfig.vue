@@ -1,5 +1,5 @@
 <template>
-  <div class="ui left aligned container">
+  <div class="ui left aligned fluid container">
     <div class="ui form">
       <div class="required field">
         <label>站点名称</label>

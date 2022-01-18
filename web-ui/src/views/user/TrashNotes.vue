@@ -1,5 +1,5 @@
 <template>
-  <div class="ui left aligned container">
+  <div class="ui left aligned fluid container">
     <a href="javascript:void(0)" class="ui trash icon button" data-tooltip="清空回收站" @click="confirm=true">
       <i class="trash icon"></i>
     </a>

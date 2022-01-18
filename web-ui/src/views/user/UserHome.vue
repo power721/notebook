@@ -1,5 +1,5 @@
 <template>
-  <div class="ui container">
+  <div class="ui fluid container">
 
     <div class="ui pointing secondary menu">
       <router-link class="item" to="/user/notes">我的笔记</router-link>
