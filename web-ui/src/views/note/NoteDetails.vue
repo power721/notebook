@@ -1,5 +1,5 @@
 <template>
-  <div class="ui left aligned container">
+  <div class="ui left aligned fluid container">
     <div class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
@@ -127,7 +127,6 @@
   import configService from '@/services/config.service'
   import {Notebook} from '@/models/Notebook'
   import {EntityView} from "@/components/EntityView";
-  import {SiteConfig} from "@/models/SiteConfig";
 
   @Component<EntityView>({
     components: {

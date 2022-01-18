@@ -27,7 +27,7 @@ class ImageController {
         val localFile = File(baseDir, generateFileName())
         localFile.createNewFile()
         FileCopyUtils.copy(file.bytes, localFile)
-        return mapOf("location" to "images/" + localFile.name)
+        return mapOf("location" to "/images/" + localFile.name)
     }
 
     @GetMapping("/{name}")

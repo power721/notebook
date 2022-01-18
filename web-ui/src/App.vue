@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div id="main" class="ui center aligned container" :class="{inverted:inverted}">
+    <div id="main" class="ui center aligned container" :class="{inverted:inverted,fluid:fluid}">
       <router-view/>
     </div>
 
@@ -80,7 +80,7 @@
             <i class="ui cog icon"></i>
           </div>
         </template>
-        <div>
+        <div class="actions">
           <div class="font">
             <button class="ui icon tiny basic button" data-tooltip="减小字体" @click="decFontSize"><i class="font icon"></i>-
             </button>
@@ -91,6 +91,10 @@
           <div class="ui toggle checkbox">
             <input type="checkbox" name="inverted" v-model="inverted" @change="save">
             <label>夜间模式</label>
+          </div>
+          <div class="ui toggle checkbox">
+            <input type="checkbox" name="fluid" v-model="fluid" @change="save">
+            <label>宽屏模式</label>
           </div>
         </div>
       </Popup>
@@ -120,6 +124,7 @@
   export default class App extends Vue {
     text: string = ''
     inverted: boolean = false
+    fluid: boolean = false
     show: boolean = false
     fontSize: number = 16
 
@@ -141,6 +146,7 @@
 
     created() {
       this.inverted = localStorage.getItem('invertedMode') === 'true'
+      this.fluid = localStorage.getItem('fluid') === 'true'
       this.fontSize = +(localStorage.getItem('fontSize') || '16')
       this.$store.dispatch('getSiteConfig')
       this.$store.dispatch('getMenus')
@@ -163,6 +169,7 @@
       //   }
       // })
       localStorage.setItem('invertedMode', this.inverted + '')
+      localStorage.setItem('fluid', this.fluid + '')
     }
 
     incFontSize() {
@@ -203,6 +210,15 @@
   img.emoji {
     height: 1.25em;
     width: 1.25em;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  #main.fluid {
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
   .ui.items>.item>.content>.link {
@@ -278,6 +294,10 @@
     position: absolute;
     bottom: 24px;
     right: 24px;
+  }
+
+  #config .toggle {
+    margin-top: 6px;
   }
 
   @media only screen and (max-width: 767px) {

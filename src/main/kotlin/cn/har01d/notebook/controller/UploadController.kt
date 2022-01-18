@@ -26,7 +26,7 @@ class UploadController {
         val localFile = File(baseDir, file.originalFilename ?: file.name)
         localFile.createNewFile()
         FileCopyUtils.copy(file.bytes, localFile)
-        return UploadResponse(localFile.name, "files/" + localFile.name)
+        return UploadResponse(localFile.name, "/files/" + localFile.name)
     }
 
     @GetMapping("/{name}")
