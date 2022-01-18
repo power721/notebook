@@ -20,3 +20,17 @@ fun generateFileName(): String {
     val name = LocalDate.now().toString() + UUID.randomUUID().toString()
     return name.replace("-", "")
 }
+
+fun wordCount(context: String): Int {
+    val cnWords = context.replace("[^(\\u4e00-\\u9fa5，。《》？；’‘：“”【】、）（……￥！·)]".toRegex(), "")
+    val cnWordsCount = cnWords.length
+
+    val nonCnWords = context.replace("[^(a-zA-Z0-9`\\-=\';.,/~!@#$%^&*()_+|}{\":><?\\[\\])]".toRegex(), " ")
+    var nonCnWordsCount = 0
+    val words = nonCnWords.split(" ").toTypedArray()
+    for (word in words) {
+        if (word.trim { it <= ' ' }.isNotEmpty()) nonCnWordsCount++
+    }
+
+    return cnWordsCount + nonCnWordsCount
+}

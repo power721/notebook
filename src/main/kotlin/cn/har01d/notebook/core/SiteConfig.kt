@@ -7,6 +7,7 @@ data class SiteConfig(
         val icpBeian: String,
         val govBeian: String,
         val showViews: Boolean,
+        val showWords: Boolean,
         val enableAudit: Boolean,
         val enableComment: Boolean,
         val enableSignup: Boolean

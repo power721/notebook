@@ -20,6 +20,7 @@ class ConfigService(private val repository: ConfigRepository) {
                 get(Const.ICP_BEIAN, ""),
                 get(Const.GOV_BEIAN, ""),
                 get(Const.SHOW_VIEWS, true),
+                get(Const.SHOW_WORDS, true),
                 get(Const.ENABLE_AUDIT, true),
                 get(Const.ENABLE_COMMENT, true),
                 get(Const.ENABLE_SIGNUP, true),
@@ -33,6 +34,7 @@ class ConfigService(private val repository: ConfigRepository) {
         save(Const.ICP_BEIAN, dto.icpBeian)
         save(Const.GOV_BEIAN, dto.govBeian)
         save(Const.SHOW_VIEWS, dto.showViews)
+        save(Const.SHOW_WORDS, dto.showWords)
         save(Const.ENABLE_AUDIT, dto.enableAudit)
         save(Const.ENABLE_COMMENT, dto.enableComment)
         save(Const.ENABLE_SIGNUP, dto.enableSignup)

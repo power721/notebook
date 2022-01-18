@@ -36,10 +36,9 @@
         </span>
         <router-link class="ui teal small label" :to="'/categories/'+(note.category.slug?note.category.slug:note.category.id)">
           {{note.category.name}}
-        </router-link>
-        <span :data-tooltip="note.views+'阅读'" v-if="showViews&&note.access!=='PRIVATE'">
-          {{note.views}} <i class="eye icon"></i>
-        </span>
+        </router-link>&nbsp;
+        <span v-if="showWords">字数：{{note.words}}</span>&nbsp;&nbsp;
+        <span v-if="showViews&&note.access!=='PRIVATE'">阅读：{{note.views}}</span>
         <router-link :to="'/notes/'+(note.slug?note.slug:note.id)+'/edit'" class="edit" data-tooltip="编辑笔记" v-if="author&&!note.deleted">
           <i class="edit icon"></i>
         </router-link>
@@ -153,6 +152,10 @@
 
     get showViews(): boolean {
       return this.$store.state.siteConfig.showViews || this.$store.state.authenticated
+    }
+
+    get showWords(): boolean {
+      return this.$store.state.siteConfig.showWords
     }
 
     mounted() {

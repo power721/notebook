@@ -7,6 +7,7 @@ object Const {
     const val BRAND_COLOR = "brand_color"  // 品牌颜色
     const val QR_CODE = "qr_code"  // 二维码
     const val SHOW_VIEWS = "show_views"  // 显示阅读量
+    const val SHOW_WORDS = "show_words"  // 显示字数
     const val ENABLE_AUDIT = "enable_audit"  // 开启审计
     const val ENABLE_SIGNUP = "enable_signup"  // 允许用户注册
     const val ENABLE_COMMENT = "enable_comment"  // 允许评论

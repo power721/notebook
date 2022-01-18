@@ -34,6 +34,12 @@
       </div>
       <div class="field">
         <div class="ui toggle checkbox">
+          <input type="checkbox" name="showWords" v-model="siteConfig.showWords">
+          <label>显示字数</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="ui toggle checkbox">
           <input type="checkbox" name="enableAudit" v-model="siteConfig.enableAudit">
           <label>开启审计</label>
         </div>

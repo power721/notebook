@@ -30,6 +30,7 @@ class Note(
         @Column(nullable = false) var deleted: Boolean = false,
         @Column(nullable = false) var updatedTime: Instant = Instant.now(),
         @Column(nullable = false) val createdTime: Instant = Instant.now(),
+        @Transient var words: Int = 0,
         @JsonIgnore @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Int? = null
 )
 

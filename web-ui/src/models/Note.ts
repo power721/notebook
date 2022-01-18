@@ -28,6 +28,7 @@ export class Note {
   access: string = Access[Access.PUBLIC]
   version: number = 0
   views: number = 0
+  words: number = 0
   deleted: boolean = false
   createdTime: string = ''
   updatedTime: string = ''

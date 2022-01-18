@@ -9,8 +9,10 @@ import cn.har01d.notebook.dto.TagDto
 import cn.har01d.notebook.entity.*
 import cn.har01d.notebook.service.IdUtils.CATEGORY_OFFSET
 import cn.har01d.notebook.service.IdUtils.NOTEBOOK_OFFSET
+import cn.har01d.notebook.util.wordCount
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
+import org.jsoup.Jsoup
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -84,6 +86,10 @@ class NoteService(
                 throw AppForbiddenException("用户无权操作")
             }
         }
+
+        val text = Jsoup.parse(note.content!!.content).text()
+        note.words = wordCount(text)
+
         return note
     }
 

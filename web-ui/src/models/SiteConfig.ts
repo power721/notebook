@@ -5,6 +5,7 @@ export class SiteConfig {
   icpBeian: string = ''
   govBeian: string = ''
   showViews: boolean = false
+  showWords: boolean = false
   enableAudit: boolean = true
   enableComment: boolean = true
   enableSignup: boolean = true
