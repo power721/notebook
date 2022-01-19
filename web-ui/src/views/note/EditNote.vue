@@ -150,7 +150,7 @@
       initialEditType: 'wysiwyg'
     }
     config = {
-      height: 500,
+      height: document.body.clientHeight - 530,
       branding: false,
       language: 'zh_CN',
       plugins: [
