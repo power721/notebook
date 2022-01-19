@@ -140,6 +140,8 @@ import accountService from '@/services/account.service'
 import configService from '@/services/config.service'
 import {ToastObject} from "vue-toasted";
 
+const DRAFT_KEY = 'noteDraft-'
+
 @Component({
   components: {
     Editor,
@@ -157,6 +159,7 @@ export default class EditNote extends Vue {
   categories: Category[] = []
   tags: Tag[] = []
   note: Note = new Note()
+  noteCache: Note = new Note()
   draftHandler: number = 0
   config = {
     height: document.body.clientHeight - 530,
@@ -187,11 +190,9 @@ export default class EditNote extends Vue {
       {text: 'XML', value: 'xml'},
       {text: 'YAML', value: 'yaml'},
     ],
-    content_css: [
-      '/prism.css',
-    ],
+    content_css: [],
     toolbar:
-      'undo redo | formatselect | bold italic backcolor | \
+      'formatselect | bold italic backcolor | \
       alignleft aligncenter alignright alignjustify | link image media upfile attachment | \
       bullist numlist outdent indent | charmap emoticons codesample | removeformat code preview fullscreen | help',
     file_callback: function (file: File, callback: (url: string, details: unknown) => void) {
@@ -370,42 +371,52 @@ export default class EditNote extends Vue {
   }
 
   loadDraft() {
-    const draft = localStorage.getItem('noteDraft-' + this.note.id)
+    this.noteCache = Object.assign({}, this.note)
+    const draft = localStorage.getItem(DRAFT_KEY + this.note.id)
     if (draft) {
       this.$toasted.info('您有未保存的草稿，是否恢复？', {
         duration: 30000,
-        action: [{
-          text: '恢复', onClick: (_, toastObject: ToastObject) => {
-            this.restoreDraft()
-            toastObject.goAway(0)
+        action: [
+          {
+            text: '恢复', onClick: (_, toastObject: ToastObject) => {
+              this.restoreDraft()
+              toastObject.goAway(0)
+            }
+          },
+          {
+            text: '清除', onClick: (_, toastObject: ToastObject) => {
+              this.cleanDraft()
+              toastObject.goAway(0)
+            }
+          },
+          {
+            text: '关闭', onClick: (_, toastObject: ToastObject) => toastObject.goAway(0)
           }
-        },
-          {text: '关闭', onClick: (_, toastObject: ToastObject) => toastObject.goAway(0)}
         ]
       })
     }
   }
 
   cleanDraft() {
-    localStorage.removeItem('noteDraft-' + this.note.id)
+    localStorage.removeItem(DRAFT_KEY + this.note.id)
   }
 
   restoreDraft() {
-    const draft = localStorage.getItem('noteDraft-' + this.note.id)
+    const draft = localStorage.getItem(DRAFT_KEY + this.note.id)
     if (draft) {
       this.note = JSON.parse(draft)
     }
   }
 
   saveDraft() {
-    const draft = JSON.parse(localStorage.getItem('noteDraft-' + this.note.id) || '{}')
-    if ((this.note.title && draft.title !== this.note.title)
-      || (this.note.slug && draft.slug !== this.note.slug)
-      || (this.note.content && draft.content !== this.note.content)) {
+    if (this.noteCache.title !== this.note.title
+      || this.noteCache.slug !== this.note.slug
+      || this.noteCache.content !== this.note.content) {
       console.log(new Date(), '草稿保存中')
       const note = Object.assign({}, this.note, {updatedTime: new Date().getTime()})
-      localStorage.setItem('noteDraft-' + this.note.id, JSON.stringify(note))
+      localStorage.setItem(DRAFT_KEY + this.note.id, JSON.stringify(note))
       this.$toasted.success('草稿保存中。。。', {duration: 1000})
+      this.noteCache = Object.assign({}, this.note)
     }
   }
 }

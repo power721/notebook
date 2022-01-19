@@ -2,29 +2,14 @@ import Vue from 'vue'
 import VueRouter, {RouteConfig} from 'vue-router'
 import NoteList from '@/views/note/NoteList.vue'
 import NoteDetails from '@/views/note/NoteDetails.vue'
-import EditNote from '@/views/note/EditNote.vue'
 import NoteHistory from '@/views/note/NoteHistory.vue'
 import NotebookDetails from '@/views/notebook/NotebookDetails.vue'
 import NotebookList from '@/views/notebook/NotebookList.vue'
 import CategoryList from '@/views/category/CategoryList.vue'
 import CategoryDetails from '@/views/category/CategoryDetails.vue'
 import About from '@/views/About.vue'
-import Signup from '@/views/user/Signup.vue'
-import Login from '@/views/user/Login.vue'
-import UserHome from '@/views/user/UserHome.vue'
-import MyNotes from '@/views/user/MyNotes.vue'
-import MyNotebooks from '@/views/user/MyNotebooks.vue'
-import TrashNotes from '@/views/user/TrashNotes.vue'
-import UserNotes from '@/views/user/UserNotes.vue'
-import UserInfo from '@/views/user/UserInfo.vue'
-import AdminHome from '@/views/admin/AdminHome.vue'
-import AdminAudit from '@/views/admin/AdminAudit.vue'
-import AdminConfig from '@/views/admin/AdminConfig.vue'
-import AdminStats from '@/views/admin/AdminStats.vue'
-import AdminInfo from '@/views/admin/AdminInfo.vue'
 import TagNotes from '@/views/tag/TagNotes.vue'
 import TagList from '@/views/tag/TagList.vue'
-import AdminMenu from '@/views/admin/AdminMenu.vue'
 
 Vue.use(VueRouter)
 
@@ -79,54 +64,54 @@ const routes: Array<RouteConfig> = [
   {
     path: '/notes/-/new',
     name: 'CreateNote',
-    component: EditNote,
+    component: () => import(/* webpackChunkName: "note" */ '@/views/note/EditNote.vue'),
     meta: {auth: true}
   },
   {
     path: '/notes/:id/edit',
     name: 'EditNote',
-    component: EditNote,
+    component: () => import(/* webpackChunkName: "note" */ '@/views/note/EditNote.vue'),
     meta: {auth: true}
   },
   {
     path: '/signup',
-    component: Signup,
+    component: () => import(/* webpackChunkName: "user" */ '@/views/user/Signup.vue'),
     meta: {guest: true}
   },
   {
     path: '/login',
-    component: Login,
+    component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login.vue'),
     meta: {guest: true}
   },
   {
     path: '/user',
     name: 'UserHome',
-    component: UserHome,
+    component: () => import(/* webpackChunkName: "user" */ '@/views/user/UserHome.vue'),
     redirect: '/user/notes',
     meta: {auth: true},
     children: [
       {
         path: 'notes',
         name: 'MyNotes',
-        component: MyNotes,
+        component: () => import(/* webpackChunkName: "user" */ '@/views/user/MyNotes.vue'),
         meta: {auth: true}
       },
       {
         path: 'notebooks',
         name: 'MyNotebooks',
-        component: MyNotebooks,
+        component: () => import(/* webpackChunkName: "user" */ '@/views/user/MyNotebooks.vue'),
         meta: {auth: true}
       },
       {
         path: 'trash',
         name: 'TrashNotes',
-        component: TrashNotes,
+        component: () => import(/* webpackChunkName: "user" */ '@/views/user/TrashNotes.vue'),
         meta: {auth: true}
       },
       {
         path: 'info',
         name: 'UserInfo',
-        component: UserInfo,
+        component: () => import(/* webpackChunkName: "user" */ '@/views/user/UserInfo.vue'),
         meta: {auth: true}
       },
     ]
@@ -134,7 +119,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/users/:id',
     name: 'UserNotes',
-    component: UserNotes,
+    component: () => import(/* webpackChunkName: "user" */ '@/views/user/UserNotes.vue'),
     meta: {auth: true}
   },
   {
@@ -150,38 +135,38 @@ const routes: Array<RouteConfig> = [
   {
     path: '/admin',
     name: 'AdminHome',
-    component: AdminHome,
+    component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/AdminHome.vue'),
     redirect: '/admin/info',
     meta: {admin: true},
     children: [
       {
         path: 'info',
         name: 'AdminInfo',
-        component: AdminInfo,
+        component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/AdminInfo.vue'),
         meta: {admin: true},
       },
       {
         path: 'audit',
         name: 'AdminAudit',
-        component: AdminAudit,
+        component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/AdminAudit.vue'),
         meta: {admin: true},
       },
       {
         path: 'stats',
         name: 'AdminStats',
-        component: AdminStats,
+        component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/AdminStats.vue'),
         meta: {admin: true},
       },
       {
         path: 'menu',
         name: 'AdminMenu',
-        component: AdminMenu,
+        component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/AdminMenu.vue'),
         meta: {admin: true},
       },
       {
         path: 'config',
         name: 'AdminConfig',
-        component: AdminConfig,
+        component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/AdminConfig.vue'),
         meta: {admin: true},
       },
     ]
