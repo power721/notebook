@@ -29,7 +29,7 @@
       <div class="field">
         <div class="ui toggle checkbox">
           <input type="checkbox" name="showViews" v-model="siteConfig.showViews">
-          <label>显示阅读量</label>
+          <label>为游客显示阅读量</label>
         </div>
       </div>
       <div class="field">

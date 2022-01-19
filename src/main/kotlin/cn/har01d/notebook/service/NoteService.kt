@@ -1,6 +1,7 @@
 package cn.har01d.notebook.service
 
 import cn.har01d.notebook.core.Access
+import cn.har01d.notebook.core.Const
 import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppNotFoundException
@@ -32,6 +33,7 @@ class NoteService(
         private val tagRepository: TagRepository,
         private val userService: UserService,
         private val auditService: AuditService,
+        private val configService: ConfigService,
 ) {
     private val viewCache: Cache<String, Boolean> = Caffeine.newBuilder().maximumSize(10_000).expireAfterWrite(1, TimeUnit.DAYS).build()
     fun list(q: String?, pageable: Pageable): Page<Note> {
@@ -87,8 +89,10 @@ class NoteService(
             }
         }
 
-        val text = Jsoup.parse(note.content!!.content).text()
-        note.words = wordCount(text)
+        if (configService.get(Const.SHOW_WORDS, true)) {
+            val text = Jsoup.parse(note.content!!.content).text()
+            note.words = wordCount(text)
+        }
 
         return note
     }
