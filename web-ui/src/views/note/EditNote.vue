@@ -34,11 +34,11 @@
       </div>
       <div class="required field">
         <label>标题</label>
-        <input type="text" name="title" autocomplete="off" v-model="note.title" placeholder="标题">
+        <input type="text" name="title" autocomplete="off" v-model="note.title" @change="clear" placeholder="标题">
       </div>
       <div class="field">
         <label>slug</label>
-        <input type="text" name="slug" autocomplete="off" v-model="note.slug" placeholder="slug">
+        <input type="text" name="slug" autocomplete="off" v-model="note.slug" @change="clear" placeholder="slug">
       </div>
       <div class="fields">
         <div class="required field">
@@ -104,12 +104,15 @@
 
       <div class="required field">
         <label>内容</label>
-        <Editor :init="config" v-model="note.content"></Editor>
+        <Editor :init="config" v-model="note.content" @change="clear"></Editor>
       </div>
       <div class="right floated">
         <button class="ui button" @click.prevent="cancel">取消</button>
+        <button class="ui primary button" @click.prevent="saveDraft" :disabled="!note.title||!note.content">
+          存草稿
+        </button>
         <button class="ui primary button" @click.prevent="submit"
-                :disabled="!note.title||!note.notebookId||!note.categoryId">保存
+                :disabled="!note.title||!note.content||!note.notebookId||!note.categoryId">保存
         </button>
       </div>
     </form>
@@ -128,6 +131,7 @@
   import {Category} from '@/models/Category'
   import accountService from '@/services/account.service'
   import configService from '@/services/config.service'
+  import {ToastObject} from "vue-toasted";
 
   @Component({
     components: {
@@ -146,9 +150,7 @@
     categories: Category[] = []
     tags: Tag[] = []
     note: Note = new Note()
-    options = {
-      initialEditType: 'wysiwyg'
-    }
+    draftHandler: number = 0
     config = {
       height: document.body.clientHeight - 530,
       branding: false,
@@ -212,7 +214,7 @@
     }
 
     mounted() {
-      this.id = this.$route.params.id
+      this.id = this.$route.params.id || ''
       this.notebook.id = this.$route.query.notebook as string
       if (this.notebook.id) {
         this.note.notebookId = this.notebook.id
@@ -229,6 +231,13 @@
       } else {
         configService.setTitle('创建笔记')
       }
+      this.loadDraft()
+      this.draftHandler = setInterval(() => this.saveDraft(), 30000)
+    }
+
+    destroyed() {
+      clearInterval(this.draftHandler)
+      this.$toasted.clear()
     }
 
     load() {
@@ -303,7 +312,6 @@
     loadNote() {
       this.noteLoading = true
       axios.get(`/notes/${this.id}`).then(({data}) => {
-        //this.options.initialEditType = data.markdown ? 'markdown' : 'wysiwyg'
         Object.assign(this.note, data)
         this.title = this.note.title
         this.note.notebookId = this.note.notebook.id
@@ -332,21 +340,62 @@
     }
 
     submit() {
-      // const editor: Editor = this.$refs.toastuiEditor as Editor
-      // this.note.markdown = editor.invoke('isMarkdownMode')
-      // this.note.content = this.note.markdown ? editor.invoke('getMarkdown') : editor.invoke('getHtml')
       if (this.id) {
         axios.put(`/notes/${this.note.id}`, this.note).then(({data}) => {
           this.note = data
           this.$toasted.success('更新成功')
           this.$router.push('/notes/' + (this.note.slug?this.note.slug:this.note.id))
+          this.cleanDraft()
         })
       } else {
         axios.post(`/notes`, this.note).then(({data}) => {
           this.note = data
           this.$toasted.success('创建成功')
           this.$router.push('/notes/' + (this.note.slug?this.note.slug:this.note.id))
+          this.cleanDraft()
         })
+      }
+    }
+
+    clear() {
+      this.$toasted.clear()
+    }
+
+    loadDraft() {
+      const draft = localStorage.getItem('noteDraft-' + this.note.id)
+      if (draft) {
+        this.$toasted.info('您有未保存的草稿，是否恢复？', {
+          duration: 30000,
+          action: [{text: '恢复', onClick: (_, toastObject: ToastObject) => {
+              this.restoreDraft()
+              toastObject.goAway(0)
+            }},
+            {text: '关闭', onClick: (_, toastObject: ToastObject) => toastObject.goAway(0)}
+            ]
+        })
+      }
+    }
+
+    cleanDraft() {
+      localStorage.removeItem('noteDraft-' + this.note.id)
+    }
+
+    restoreDraft() {
+      const draft = localStorage.getItem('noteDraft-' + this.note.id)
+      if (draft) {
+        this.note = JSON.parse(draft)
+      }
+    }
+
+    saveDraft() {
+      const draft = JSON.parse(localStorage.getItem('noteDraft-' + this.note.id) || '{}')
+      if ((this.note.title && draft.title !== this.note.title)
+        || (this.note.slug && draft.slug !== this.note.slug)
+        || (this.note.content && draft.content !== this.note.content)) {
+        console.log(new Date(), '草稿保存中')
+        const note = Object.assign({}, this.note, {updatedTime: new Date().getTime()})
+        localStorage.setItem('noteDraft-' + this.note.id, JSON.stringify(note))
+        this.$toasted.success('草稿保存中。。。', {duration: 1000})
       }
     }
   }

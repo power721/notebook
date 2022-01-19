@@ -30,8 +30,8 @@ export class Note {
   views: number = 0
   words: number = 0
   deleted: boolean = false
-  createdTime: string = ''
-  updatedTime: string = ''
+  createdTime: string | number = ''
+  updatedTime: string | number = ''
 }
 
 export class NoteHistory {
