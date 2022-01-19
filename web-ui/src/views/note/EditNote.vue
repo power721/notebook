@@ -6,19 +6,25 @@
       <template v-if="notebook.name">
         <router-link class="section" to="/notebooks">笔记本</router-link>
         <i class="right chevron icon divider"></i>
-        <router-link class="section" :to="'/notebooks/'+(notebook.slug?notebook.slug:notebook.id)">{{notebook.name}}</router-link>
+        <router-link class="section" :to="'/notebooks/'+(notebook.slug?notebook.slug:notebook.id)">
+          {{ notebook.name }}
+        </router-link>
         <i class="right chevron icon divider"></i>
       </template>
       <template v-if="category.name">
         <router-link class="section" to="/categories">分类</router-link>
         <i class="right chevron icon divider"></i>
-        <router-link class="section" :to="'/categories/'+(category.slug?category.slug:category.id)">{{category.name}}</router-link>
+        <router-link class="section" :to="'/categories/'+(category.slug?category.slug:category.id)">
+          {{ category.name }}
+        </router-link>
         <i class="right chevron icon divider"></i>
       </template>
       <template v-if="id">
-        <router-link class="section" :to="'/notebooks/'+(note.notebook.slug?note.notebook.slug:note.notebook.id)">{{note.notebook.name}}</router-link>
+        <router-link class="section" :to="'/notebooks/'+(note.notebook.slug?note.notebook.slug:note.notebook.id)">
+          {{ note.notebook.name }}
+        </router-link>
         <i class="right chevron icon divider"></i>
-        <router-link class="section" :to="'/notes/'+(note.slug?note.slug:note.id)">{{title}}</router-link>
+        <router-link class="section" :to="'/notes/'+(note.slug?note.slug:note.id)">{{ title }}</router-link>
         <i class="right chevron icon divider"></i>
         <div class="active section">编辑笔记</div>
       </template>
@@ -112,7 +118,8 @@
           存草稿
         </button>
         <button class="ui primary button" @click.prevent="submit"
-                :disabled="!note.title||!note.content||!note.notebookId||!note.categoryId">保存
+                :disabled="!note.title||!note.content||!note.notebookId||!note.categoryId">
+          保存
         </button>
       </div>
     </form>
@@ -120,289 +127,292 @@
 </template>
 
 <script lang="ts">
-  /* eslint-disable @typescript-eslint/camelcase */
-  import axios from 'axios'
-  import {Component, Vue} from 'vue-property-decorator'
-  import Editor from '@tinymce/tinymce-vue'
-  import Multiselect from 'vue-multiselect'
-  import 'vue-multiselect/dist/vue-multiselect.min.css'
-  import {Note, Tag} from '@/models/Note'
-  import {Notebook} from '@/models/Notebook'
-  import {Category} from '@/models/Category'
-  import accountService from '@/services/account.service'
-  import configService from '@/services/config.service'
-  import {ToastObject} from "vue-toasted";
+/* eslint-disable @typescript-eslint/camelcase */
+import axios from 'axios'
+import {Component, Vue} from 'vue-property-decorator'
+import Editor from '@tinymce/tinymce-vue'
+import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
+import {Note, Tag} from '@/models/Note'
+import {Notebook} from '@/models/Notebook'
+import {Category} from '@/models/Category'
+import accountService from '@/services/account.service'
+import configService from '@/services/config.service'
+import {ToastObject} from "vue-toasted";
 
-  @Component({
-    components: {
-      Editor,
-      Multiselect
-    }
-  })
-  export default class EditNote extends Vue {
-    id: string = ''
-    title: string = ''
-    loading: boolean = false
-    noteLoading: boolean = false
-    notebook: Notebook = new Notebook()
-    category: Category = new Category()
-    notebooks: Notebook[] = []
-    categories: Category[] = []
-    tags: Tag[] = []
-    note: Note = new Note()
-    draftHandler: number = 0
-    config = {
-      height: document.body.clientHeight - 530,
-      branding: false,
-      language: 'zh_CN',
-      plugins: [
-        'autolink link media table advlist lists hr upfile attachment',
-        'code codesample charmap image imagetools quickbars preview fullscreen',
-        'insertdatetime toc paste wordcount help searchreplace'
-      ],
-      images_upload_url: '/images',
-      default_link_target: '_blank',
-      codesample_global_prismjs: true,
-      codesample_languages: [
-        {text: 'Java', value: 'java'},
-        {text: 'JavaStacktrace', value: 'javastacktrace'},
-        {text: 'Kotlin', value: 'kotlin'},
-        {text: 'JavaScript', value: 'javascript'},
-        {text: 'Typescript', value: 'typescript'},
-        {text: 'CSS', value: 'css'},
-        {text: 'Docker', value: 'docker'},
-        {text: 'Bash', value: 'bash'},
-        {text: 'Regex', value: 'regex'},
-        {text: 'Nginx', value: 'nginx'},
-        {text: 'SQL', value: 'sql'},
-        {text: 'JSON', value: 'json'},
-        {text: 'XML', value: 'xml'},
-        {text: 'YAML', value: 'yaml'},
-      ],
-      content_css: [
-        '/prism.css',
-      ],
-      toolbar:
-        'undo redo | formatselect | bold italic backcolor | \
-        alignleft aligncenter alignright alignjustify | link image media upfile attachment | \
-        bullist numlist outdent indent | codesample | removeformat code preview fullscreen | help',
-      file_callback: function (file: File, callback: (url: string, details: unknown) => void) {
-        const formData = new FormData();
-        formData.append("file", file);
-        axios.post('/files', formData).then((res) => {
-          callback(res.data.url, {text: res.data.name})
-        }).catch((error) => {
-          console.error(error)
-        })
-      },
-      attachment_max_size: 104857600,
-      attachment_upload_handler: function (file: File, succFun: (url: string) => void, failFun: (url: string) => void, progressCallback: (url: number) => void) {
-        const formData = new FormData();
-        formData.append("file", file);
-        axios.post('/files', formData, {
-          onUploadProgress: function(progressEvent) {
-            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-            progressCallback(percent)
-          }
-        }).then((res) => {
-          succFun(res.data.url)
-        }).catch((error) => {
-          console.log(error)
-          failFun(error.message)
-        })
-      },
-    }
+@Component({
+  components: {
+    Editor,
+    Multiselect
+  }
+})
+export default class EditNote extends Vue {
+  id: string = ''
+  title: string = ''
+  loading: boolean = false
+  noteLoading: boolean = false
+  notebook: Notebook = new Notebook()
+  category: Category = new Category()
+  notebooks: Notebook[] = []
+  categories: Category[] = []
+  tags: Tag[] = []
+  note: Note = new Note()
+  draftHandler: number = 0
+  config = {
+    height: document.body.clientHeight - 530,
+    branding: false,
+    language: 'zh_CN',
+    plugins: [
+      'autolink link media table advlist lists hr upfile attachment',
+      'code codesample charmap image imagetools quickbars preview fullscreen',
+      'insertdatetime toc paste wordcount help searchreplace emoticons'
+    ],
+    images_upload_url: '/images',
+    emoticons_database_url: '/emojis.js',
+    default_link_target: '_blank',
+    codesample_global_prismjs: true,
+    codesample_languages: [
+      {text: 'Java', value: 'java'},
+      {text: 'JavaStacktrace', value: 'javastacktrace'},
+      {text: 'Kotlin', value: 'kotlin'},
+      {text: 'JavaScript', value: 'javascript'},
+      {text: 'Typescript', value: 'typescript'},
+      {text: 'CSS', value: 'css'},
+      {text: 'Docker', value: 'docker'},
+      {text: 'Bash', value: 'bash'},
+      {text: 'Regex', value: 'regex'},
+      {text: 'Nginx', value: 'nginx'},
+      {text: 'SQL', value: 'sql'},
+      {text: 'JSON', value: 'json'},
+      {text: 'XML', value: 'xml'},
+      {text: 'YAML', value: 'yaml'},
+    ],
+    content_css: [
+      '/prism.css',
+    ],
+    toolbar:
+      'undo redo | formatselect | bold italic backcolor | \
+      alignleft aligncenter alignright alignjustify | link image media upfile attachment | \
+      bullist numlist outdent indent | charmap emoticons codesample | removeformat code preview fullscreen | help',
+    file_callback: function (file: File, callback: (url: string, details: unknown) => void) {
+      const formData = new FormData();
+      formData.append("file", file);
+      axios.post('/files', formData).then((res) => {
+        callback(res.data.url, {text: res.data.name})
+      }).catch((error) => {
+        console.error(error)
+      })
+    },
+    attachment_max_size: 104857600,
+    attachment_upload_handler: function (file: File, succFun: (url: string) => void, failFun: (url: string) => void, progressCallback: (url: number) => void) {
+      const formData = new FormData();
+      formData.append("file", file);
+      axios.post('/files', formData, {
+        onUploadProgress: function (progressEvent) {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          progressCallback(percent)
+        }
+      }).then((res) => {
+        succFun(res.data.url)
+      }).catch((error) => {
+        console.log(error)
+        failFun(error.message)
+      })
+    },
+  }
 
-    mounted() {
-      this.id = this.$route.params.id || ''
-      this.notebook.id = this.$route.query.notebook as string
+  mounted() {
+    this.id = this.$route.params.id || ''
+    this.notebook.id = this.$route.query.notebook as string
+    if (this.notebook.id) {
+      this.note.notebookId = this.notebook.id
+      this.loadNotebook()
+    }
+    this.category.id = this.$route.query.category as string
+    if (this.category.id) {
+      this.note.categoryId = this.category.id
+    }
+    this.load()
+    if (this.id) {
+      configService.setTitle('编辑笔记')
+      this.loadNote().then(() => this.loadDraft())
+    } else {
+      configService.setTitle('创建笔记')
+      this.loadDraft()
+    }
+    this.draftHandler = setInterval(() => this.saveDraft(), 30000)
+  }
+
+  destroyed() {
+    clearInterval(this.draftHandler)
+    this.$toasted.clear()
+  }
+
+  load() {
+    axios.get('/users/-/notebooks').then(({data}) => {
+      this.notebooks = data.content
+      if (!this.id && !this.notebook.id) {
+        this.note.notebookId = this.notebooks[0].id
+      }
       if (this.notebook.id) {
-        this.note.notebookId = this.notebook.id
-        this.loadNotebook()
+        this.notebook.name = this.notebooks.find(e => e.id === this.notebook.id)?.name || ''
       }
-      this.category.id = this.$route.query.category as string
+    })
+    axios.get('/categories').then(({data}) => {
+      this.categories = data.content
+      if (!this.id && !this.category.id) {
+        this.note.categoryId = this.categories[0].id
+      }
       if (this.category.id) {
-        this.note.categoryId = this.category.id
+        this.category.name = this.categories.find(e => e.id === this.category.id)?.name || ''
       }
-      this.load()
-      if (this.id) {
-        configService.setTitle('编辑笔记')
-        this.loadNote().then(() => this.loadDraft())
-      } else {
-        configService.setTitle('创建笔记')
-        this.loadDraft()
-      }
-      this.draftHandler = setInterval(() => this.saveDraft(), 30000)
-    }
+    })
+    this.loadTags('')
+  }
 
-    destroyed() {
-      clearInterval(this.draftHandler)
-      this.$toasted.clear()
-    }
+  loadNotebook() {
+    axios.get(`/notebooks/${this.notebook.id}`).then(({data}) => {
+      this.notebook = data
+      this.note.access = this.notebook.access
+    }, () => {
+      this.$router.push('/')
+    })
+  }
 
-    load() {
-      axios.get('/users/-/notebooks').then(({data}) => {
-        this.notebooks = data.content
-        if (!this.id && !this.notebook.id) {
-          this.note.notebookId = this.notebooks[0].id
-        }
-        if (this.notebook.id) {
-          this.notebook.name = this.notebooks.find(e => e.id === this.notebook.id)?.name || ''
-        }
-      })
-      axios.get('/categories').then(({data}) => {
-        this.categories = data.content
-        if (!this.id && !this.category.id) {
-          this.note.categoryId = this.categories[0].id
-        }
-        if (this.category.id) {
-          this.category.name = this.categories.find(e => e.id === this.category.id)?.name || ''
-        }
-      })
-      this.loadTags('')
-    }
+  addTag(name: string) {
+    const tag = {id: 0, name: name}
+    axios.post('/tags?size=10', tag).then(() => {
+      this.tags.push(tag)
+      this.note.tags.push(tag)
+    })
+  }
 
-    loadNotebook() {
-      axios.get(`/notebooks/${this.notebook.id}`).then(({data}) => {
-        this.notebook = data
-        this.note.access = this.notebook.access
-      }, () => {
-        this.$router.push('/')
-      })
-    }
+  loadTags(query: string) {
+    this.loading = true
+    axios.get('/tags?size=10&q=' + query).then(({data}) => {
+      this.tags = data.content
+      this.loading = false
+    }, () => {
+      this.loading = false
+    })
+  }
 
-    addTag(name: string) {
-      const tag = {id: 0, name: name}
-      axios.post('/tags?size=10', tag).then(() => {
-        this.tags.push(tag)
-        this.note.tags.push(tag)
-      })
-    }
+  searchNotebooks(query: string) {
+    this.loading = true
+    axios.get('/users/-/notebooks?q=' + query).then(({data}) => {
+      this.notebooks = data.content
+      this.loading = false
+    }, () => {
+      this.loading = false
+    })
+  }
 
-    loadTags(query: string) {
-      this.loading = true
-      axios.get('/tags?size=10&q=' + query).then(({data}) => {
-        this.tags = data.content
-        this.loading = false
-      }, () => {
-        this.loading = false
-      })
-    }
+  searchCategories(query: string) {
+    this.loading = true
+    axios.get('/categories?q=' + query).then(({data}) => {
+      this.categories = data.content
+      this.loading = false
+    }, () => {
+      this.loading = false
+    })
+  }
 
-    searchNotebooks(query: string) {
-      this.loading = true
-      axios.get('/users/-/notebooks?q=' + query).then(({data}) => {
-        this.notebooks = data.content
-        this.loading = false
-      }, () => {
-        this.loading = false
-      })
-    }
-
-    searchCategories(query: string) {
-      this.loading = true
-      axios.get('/categories?q=' + query).then(({data}) => {
-        this.categories = data.content
-        this.loading = false
-      }, () => {
-        this.loading = false
-      })
-    }
-
-    loadNote() {
-      this.noteLoading = true
-      return axios.get(`/notes/${this.id}`).then(({data}) => {
-        Object.assign(this.note, data)
-        this.title = this.note.title
-        this.note.notebookId = this.note.notebook.id
-        this.note.categoryId = this.note.category.id
-        this.noteLoading = false
-        if (accountService.account.id !== this.note.author.id) {
-          this.$toasted.error('用户无权操作')
-          this.$router.push('/')
-        }
-        configService.setTitle(this.note.title + ' - 编辑')
-      }, () => {
-        this.noteLoading = false
-      })
-    }
-
-    cancel() {
-      if (this.id) {
-        this.$router.push('/notes/' + this.id)
-      } else if (this.notebook.id) {
-        this.$router.push('/notebooks/' + (this.notebook.slug?this.notebook.slug:this.notebook.id))
-      } else if (this.category.id) {
-        this.$router.push('/categories/' + (this.category.slug?this.category.slug:this.category.id))
-      } else {
+  loadNote() {
+    this.noteLoading = true
+    return axios.get(`/notes/${this.id}`).then(({data}) => {
+      Object.assign(this.note, data)
+      this.title = this.note.title
+      this.note.notebookId = this.note.notebook.id
+      this.note.categoryId = this.note.category.id
+      this.noteLoading = false
+      if (accountService.account.id !== this.note.author.id) {
+        this.$toasted.error('用户无权操作')
         this.$router.push('/')
       }
-    }
+      configService.setTitle(this.note.title + ' - 编辑')
+    }, () => {
+      this.noteLoading = false
+    })
+  }
 
-    submit() {
-      if (this.id) {
-        axios.put(`/notes/${this.note.id}`, this.note).then(({data}) => {
-          this.note = data
-          this.$toasted.success('更新成功')
-          this.$router.push('/notes/' + (this.note.slug?this.note.slug:this.note.id))
-          this.cleanDraft()
-        })
-      } else {
-        axios.post(`/notes`, this.note).then(({data}) => {
-          this.note = data
-          this.$toasted.success('创建成功')
-          this.$router.push('/notes/' + (this.note.slug?this.note.slug:this.note.id))
-          this.cleanDraft()
-        })
-      }
-    }
-
-    clear() {
-      this.$toasted.clear()
-    }
-
-    loadDraft() {
-      const draft = localStorage.getItem('noteDraft-' + this.note.id)
-      if (draft) {
-        this.$toasted.info('您有未保存的草稿，是否恢复？', {
-          duration: 30000,
-          action: [{text: '恢复', onClick: (_, toastObject: ToastObject) => {
-              this.restoreDraft()
-              toastObject.goAway(0)
-            }},
-            {text: '关闭', onClick: (_, toastObject: ToastObject) => toastObject.goAway(0)}
-            ]
-        })
-      }
-    }
-
-    cleanDraft() {
-      localStorage.removeItem('noteDraft-' + this.note.id)
-    }
-
-    restoreDraft() {
-      const draft = localStorage.getItem('noteDraft-' + this.note.id)
-      if (draft) {
-        this.note = JSON.parse(draft)
-      }
-    }
-
-    saveDraft() {
-      const draft = JSON.parse(localStorage.getItem('noteDraft-' + this.note.id) || '{}')
-      if ((this.note.title && draft.title !== this.note.title)
-        || (this.note.slug && draft.slug !== this.note.slug)
-        || (this.note.content && draft.content !== this.note.content)) {
-        console.log(new Date(), '草稿保存中')
-        const note = Object.assign({}, this.note, {updatedTime: new Date().getTime()})
-        localStorage.setItem('noteDraft-' + this.note.id, JSON.stringify(note))
-        this.$toasted.success('草稿保存中。。。', {duration: 1000})
-      }
+  cancel() {
+    if (this.id) {
+      this.$router.push('/notes/' + this.id)
+    } else if (this.notebook.id) {
+      this.$router.push('/notebooks/' + (this.notebook.slug ? this.notebook.slug : this.notebook.id))
+    } else if (this.category.id) {
+      this.$router.push('/categories/' + (this.category.slug ? this.category.slug : this.category.id))
+    } else {
+      this.$router.push('/')
     }
   }
+
+  submit() {
+    if (this.id) {
+      axios.put(`/notes/${this.note.id}`, this.note).then(({data}) => {
+        this.note = data
+        this.$toasted.success('更新成功')
+        this.$router.push('/notes/' + (this.note.slug ? this.note.slug : this.note.id))
+        this.cleanDraft()
+      })
+    } else {
+      axios.post(`/notes`, this.note).then(({data}) => {
+        this.note = data
+        this.$toasted.success('创建成功')
+        this.$router.push('/notes/' + (this.note.slug ? this.note.slug : this.note.id))
+        this.cleanDraft()
+      })
+    }
+  }
+
+  clear() {
+    this.$toasted.clear()
+  }
+
+  loadDraft() {
+    const draft = localStorage.getItem('noteDraft-' + this.note.id)
+    if (draft) {
+      this.$toasted.info('您有未保存的草稿，是否恢复？', {
+        duration: 30000,
+        action: [{
+          text: '恢复', onClick: (_, toastObject: ToastObject) => {
+            this.restoreDraft()
+            toastObject.goAway(0)
+          }
+        },
+          {text: '关闭', onClick: (_, toastObject: ToastObject) => toastObject.goAway(0)}
+        ]
+      })
+    }
+  }
+
+  cleanDraft() {
+    localStorage.removeItem('noteDraft-' + this.note.id)
+  }
+
+  restoreDraft() {
+    const draft = localStorage.getItem('noteDraft-' + this.note.id)
+    if (draft) {
+      this.note = JSON.parse(draft)
+    }
+  }
+
+  saveDraft() {
+    const draft = JSON.parse(localStorage.getItem('noteDraft-' + this.note.id) || '{}')
+    if ((this.note.title && draft.title !== this.note.title)
+      || (this.note.slug && draft.slug !== this.note.slug)
+      || (this.note.content && draft.content !== this.note.content)) {
+      console.log(new Date(), '草稿保存中')
+      const note = Object.assign({}, this.note, {updatedTime: new Date().getTime()})
+      localStorage.setItem('noteDraft-' + this.note.id, JSON.stringify(note))
+      this.$toasted.success('草稿保存中。。。', {duration: 1000})
+    }
+  }
+}
 </script>
 
 <style scoped>
-  .ui.form {
-    padding-bottom: 33px;
-  }
+.ui.form {
+  padding-bottom: 33px;
+}
 </style>
