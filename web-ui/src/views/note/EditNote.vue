@@ -227,11 +227,11 @@
       this.load()
       if (this.id) {
         configService.setTitle('编辑笔记')
-        this.loadNote()
+        this.loadNote().then(() => this.loadDraft())
       } else {
         configService.setTitle('创建笔记')
+        this.loadDraft()
       }
-      this.loadDraft()
       this.draftHandler = setInterval(() => this.saveDraft(), 30000)
     }
 
@@ -311,7 +311,7 @@
 
     loadNote() {
       this.noteLoading = true
-      axios.get(`/notes/${this.id}`).then(({data}) => {
+      return axios.get(`/notes/${this.id}`).then(({data}) => {
         Object.assign(this.note, data)
         this.title = this.note.title
         this.note.notebookId = this.note.notebook.id
