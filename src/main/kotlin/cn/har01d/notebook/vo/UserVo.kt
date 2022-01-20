@@ -2,8 +2,8 @@ package cn.har01d.notebook.vo
 
 import cn.har01d.notebook.core.Role
 import cn.har01d.notebook.entity.User
-import cn.har01d.notebook.service.IdUtils
-import cn.har01d.notebook.service.IdUtils.USER_OFFSET
+import cn.har01d.notebook.util.IdUtils
+import cn.har01d.notebook.util.IdUtils.USER_OFFSET
 import java.time.Instant
 
 data class UserVo(

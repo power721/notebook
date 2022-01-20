@@ -43,6 +43,7 @@
           <i class="edit icon"></i>
         </router-link>
         <Dropdown icon="bars" position="top right" :pointing="true" v-if="author">
+          <a class="item" @click="exportPng">存为图片</a>
           <router-link class="item" :to="'/notes/'+(note.slug?note.slug:note.id)+'/edit'" v-if="!note.deleted">编辑笔记</router-link>
           <router-link class="item" :to="'/notes/'+(note.slug?note.slug:note.id)+'/history'" v-if="note.version>1">历史记录</router-link>
           <a class="item" @click="confirm=true">删除笔记</a>
@@ -52,7 +53,7 @@
       </div>
     </div>
 
-    <div class="ui left aligned raised segment">
+    <div id="content" class="ui left aligned raised segment">
       <div class="ui active inverted dimmer" v-if="loading">
         <div class="ui text loader">加载中</div>
       </div>
@@ -118,6 +119,7 @@
 
 <script lang="ts">
   import axios from 'axios'
+  import { toPng } from 'html-to-image'
   import {Component} from 'vue-property-decorator'
   import {Note} from '@/models/Note'
   import accountService from '@/services/account.service'
@@ -126,6 +128,7 @@
   import configService from '@/services/config.service'
   import {Notebook} from '@/models/Notebook'
   import {EntityView} from "@/components/EntityView";
+  import {createDiv, createElement, createLink} from "@/utils/utils";
 
   @Component<EntityView>({
     components: {
@@ -219,11 +222,36 @@
         this.$router.push('/notebooks/' + this.note.notebook.id)
       })
     }
+
+    exportPng() {
+      const link = window.location.href
+      const info = createDiv({},
+        createDiv({}, '标题：', this.note.title),
+        createDiv({}, '作者：', createLink(this.note.author.username)),
+        createDiv({}, '链接：', createLink(link, link))
+      )
+      const divider = this.note.tags.length ? createDiv({classList: 'ui divider'}) : createElement('p')
+      const div = createDiv({}, divider, info)
+      const content = document.getElementById('content') as HTMLElement
+      content.append(div)
+
+      toPng(content)
+        .then((dataUrl) => {
+          div.remove()
+          const link = createLink('', dataUrl, this.note.title + '.png')
+          link.click()
+          link.remove()
+        })
+    }
   }
 </script>
 
 <style scoped>
   .edit {
     margin-left: 3px;
+  }
+
+  #content {
+    margin-top: 0;
   }
 </style>

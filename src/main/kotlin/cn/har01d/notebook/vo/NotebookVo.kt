@@ -2,8 +2,8 @@ package cn.har01d.notebook.vo
 
 import cn.har01d.notebook.core.Access
 import cn.har01d.notebook.entity.Notebook
-import cn.har01d.notebook.service.IdUtils
-import cn.har01d.notebook.service.IdUtils.NOTEBOOK_OFFSET
+import cn.har01d.notebook.util.IdUtils
+import cn.har01d.notebook.util.IdUtils.NOTEBOOK_OFFSET
 import java.time.Instant
 
 data class NotebookVo(

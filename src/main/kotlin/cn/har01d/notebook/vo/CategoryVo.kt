@@ -1,8 +1,8 @@
 package cn.har01d.notebook.vo
 
 import cn.har01d.notebook.entity.Category
-import cn.har01d.notebook.service.IdUtils
-import cn.har01d.notebook.service.IdUtils.CATEGORY_OFFSET
+import cn.har01d.notebook.util.IdUtils
+import cn.har01d.notebook.util.IdUtils.CATEGORY_OFFSET
 import java.time.Instant
 
 data class CategoryVo(

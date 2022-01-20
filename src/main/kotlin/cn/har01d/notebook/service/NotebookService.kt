@@ -9,7 +9,8 @@ import cn.har01d.notebook.entity.Note
 import cn.har01d.notebook.entity.NoteRepository
 import cn.har01d.notebook.entity.Notebook
 import cn.har01d.notebook.entity.NotebookRepository
-import cn.har01d.notebook.service.IdUtils.NOTEBOOK_OFFSET
+import cn.har01d.notebook.util.IdUtils
+import cn.har01d.notebook.util.IdUtils.NOTEBOOK_OFFSET
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull

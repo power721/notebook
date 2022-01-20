@@ -258,6 +258,16 @@
     font-size: 22px;
   }
 
+  .mce-toc {
+    position: fixed;
+    left: 100px;
+  }
+
+  #main.fluid .mce-toc{
+    position: relative;
+    left: auto;
+  }
+
   .font {
     margin-bottom: 6px;
   }

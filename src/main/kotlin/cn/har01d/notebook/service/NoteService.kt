@@ -8,8 +8,9 @@ import cn.har01d.notebook.core.exception.AppNotFoundException
 import cn.har01d.notebook.dto.NoteDto
 import cn.har01d.notebook.dto.TagDto
 import cn.har01d.notebook.entity.*
-import cn.har01d.notebook.service.IdUtils.CATEGORY_OFFSET
-import cn.har01d.notebook.service.IdUtils.NOTEBOOK_OFFSET
+import cn.har01d.notebook.util.IdUtils
+import cn.har01d.notebook.util.IdUtils.CATEGORY_OFFSET
+import cn.har01d.notebook.util.IdUtils.NOTEBOOK_OFFSET
 import cn.har01d.notebook.util.wordCount
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine

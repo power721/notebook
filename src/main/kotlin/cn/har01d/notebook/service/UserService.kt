@@ -11,7 +11,8 @@ import cn.har01d.notebook.entity.Notebook
 import cn.har01d.notebook.entity.NotebookRepository
 import cn.har01d.notebook.entity.User
 import cn.har01d.notebook.entity.UserRepository
-import cn.har01d.notebook.service.IdUtils.USER_OFFSET
+import cn.har01d.notebook.util.IdUtils
+import cn.har01d.notebook.util.IdUtils.USER_OFFSET
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
