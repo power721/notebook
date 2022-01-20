@@ -170,6 +170,7 @@ export default class EditNote extends Vue {
       'code codesample charmap image imagetools quickbars preview fullscreen',
       'insertdatetime toc paste wordcount help searchreplace emoticons'
     ],
+    relative_urls : false,
     images_upload_url: '/images',
     emoticons_database_url: '/emojis.js',
     default_link_target: '_blank',

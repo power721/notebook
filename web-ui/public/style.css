@@ -17,6 +17,14 @@ img.emoji {
     width: 1.25em;
 }
 
+img {
+    max-width: 100%;
+}
+
+.article {
+    word-break: break-word;
+}
+
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

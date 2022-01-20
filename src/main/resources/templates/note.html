@@ -35,8 +35,11 @@
         </span>
         <a class="ui teal small label" th:href="'/categories/'+${note.category.id}+'.html'"
            th:text="${note.category.name}"></a>
+        <span th:if="${siteConfig.showWords}">
+          字数：<span th:remove="tag" th:text="${note.words}"></span>
+        </span>
         <span th:if="${siteConfig.showViews} and ${note.access} != 'PRIVATE'">
-          <span th:remove="tag" th:text="${note.views}"></span> <i class="eye icon"></i>
+          阅读：<span th:remove="tag" th:text="${note.views}"></span>
         </span>
       </div>
     </div>
