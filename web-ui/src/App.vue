@@ -258,7 +258,21 @@
     font-size: 22px;
   }
 
-  .mce-toc {
+  .hide {
+    display: none;
+  }
+
+  .mce-toc.rail0 {
+    position: fixed;
+    left: 20px;
+  }
+
+  .mce-toc.rail1 {
+    position: fixed;
+    left: 50px;
+  }
+
+  .mce-toc.rail2 {
     position: fixed;
     left: 100px;
   }

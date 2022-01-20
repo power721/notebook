@@ -119,15 +119,15 @@
 
 <script lang="ts">
   import axios from 'axios'
-  import { toPng } from 'html-to-image'
+  import {toPng} from 'html-to-image'
   import {Component} from 'vue-property-decorator'
-  import {Note} from '@/models/Note'
-  import accountService from '@/services/account.service'
   import Dropdown from '@/components/Dropdown.vue'
   import Modal from '@/components/Modal.vue'
-  import configService from '@/services/config.service'
+  import {Note} from '@/models/Note'
   import {Notebook} from '@/models/Notebook'
   import {EntityView} from "@/components/EntityView";
+  import accountService from '@/services/account.service'
+  import configService from '@/services/config.service'
   import {createDiv, createElement, createLink} from "@/utils/utils";
 
   @Component<EntityView>({
@@ -188,8 +188,31 @@
           });
           // eslint-disable-next-line
           (window as any).Prism.highlightAll()
+
+          const toc = document.querySelector('.mce-toc')
+          if (toc) {
+            const width: number = document.getElementById('main')?.clientWidth || 0
+            this.adjustToc(toc, width)
+            window.addEventListener('resize', () => {
+              this.adjustToc(toc, width)
+            })
+          }
         }, 0)
       })
+    }
+
+    adjustToc(toc: Element, width: number) {
+      const offset = (document.body.clientWidth - width) / 2
+      toc.classList.remove('rail0', 'rail1', 'rail2')
+      if (offset < 350) {
+        //
+      } else if (offset < 450) {
+        toc.classList.add('rail0')
+      } else if (offset < 550) {
+        toc.classList.add('rail1')
+      } else {
+        toc.classList.add('rail2')
+      }
     }
 
     showMove() {
@@ -224,7 +247,8 @@
     }
 
     exportPng() {
-      const link = window.location.href
+      const toc = document.querySelector('.mce-toc')
+      const link = window.location.origin + '/#/notes/' + this.note.id
       const info = createDiv({},
         createDiv({}, '标题：', this.note.title),
         createDiv({}, '作者：', createLink(this.note.author.username)),
@@ -235,9 +259,14 @@
       const content = document.getElementById('content') as HTMLElement
       content.append(div)
 
+      if (toc) {
+        toc.classList.add('hide')
+      }
+
       toPng(content)
         .then((dataUrl) => {
           div.remove()
+          if (toc) toc.classList.remove('hide')
           const link = createLink('', dataUrl, this.note.title + '.png')
           link.click()
           link.remove()
@@ -249,6 +278,10 @@
 <style scoped>
   .edit {
     margin-left: 3px;
+  }
+
+  .article {
+    word-break: break-word;
   }
 
   #content {
