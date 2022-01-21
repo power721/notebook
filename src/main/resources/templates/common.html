@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<div th:remove="tag" th:fragment="header">
+<div id="header" th:remove="tag" th:fragment="header">
   <meta charset="UTF-8">
   <meta http-equiv="Content-Language" content="zh-CN">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -13,7 +13,7 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
 </div>
 
-<div class="ui stackable menu" th:fragment="menu">
+<div id="menu" class="ui stackable menu" th:fragment="menu">
   <div class="ui container">
     <a href="/home.html"><h3 th:class="'ui header item '+${siteConfig.brandColor}" th:text="${siteConfig.siteName}"></h3></a>
     <div th:remove="tag" th:if="${menu.auth}==false and ${menu.admin}==false" th:each="menu: ${menus}">
@@ -49,7 +49,7 @@
   </div>
 </div>
 
-<div class="ui vertical footer raised segment" th:fragment="footer">
+<div id="footer" class="ui vertical footer raised segment" th:fragment="footer">
   <div class="ui left aligned container">
     <div class="ui stackable divided equal height stackable grid">
       <div class="three wide column" th:if="${siteConfig.qrCode}">
@@ -149,6 +149,30 @@
         const time = a[i].textContent
         a[i].textContent = fromNow(time)
         a[i].setAttribute("data-tooltip", datetime(time))
+      }
+
+      if (localStorage.getItem('invertedMode') === 'true') {
+        let elements = [
+          document.getElementById('app'),
+          document.getElementById('menu'),
+          document.getElementById('main'),
+          document.getElementById('footer')
+        ]
+        elements = elements.concat(Array.from(document.querySelectorAll('#footer .ui.grid')))
+        elements = elements.concat(Array.from(document.querySelectorAll('#footer .ui.list')))
+        elements = elements.concat(Array.from(document.querySelectorAll('#footer .ui.header')))
+        for (const elm of elements) {
+          if (elm && elm.classList) {
+            elm.classList.add('inverted')
+          }
+        }
+      }
+
+      if (localStorage.getItem('fluid') === 'true') {
+        const main = document.getElementById('main')
+        if (main) {
+          main.classList.add('fluid')
+        }
       }
     </script>
   </div>

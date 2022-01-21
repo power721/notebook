@@ -193,141 +193,37 @@
 </script>
 
 <style>
-  .right.floated {
-    float: right;
-  }
+.font {
+  margin-bottom: 6px;
+}
 
-  .top.right.dropdown {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-  }
+.font .ui.icon.button {
+  margin: 0;
+}
 
-  .footer {
-    margin-top: 12px;
-  }
+.font .size {
+  margin: 0 6px;
+}
 
-  img.emoji {
-    height: 1.25em;
-    width: 1.25em;
-  }
+#config .ui.popup {
+  margin-top: -52px;
+  margin-right: 24px;
+}
 
-  img {
-    max-width: 100%;
-  }
+.trigger {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+}
 
-  #main.fluid {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
+#config .toggle {
+  margin-top: 6px;
+}
 
-  .ui.items>.item>.content>.link {
-    color: rgba(0,0,0,.85);
-  }
-
-  #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    min-height: 100vh;
-  }
-
-  #app[data-font-size='12'] .ui.segment .article.content {
-    font-size: 12px;
-  }
-
-  #app[data-font-size='14'] .ui.segment .article.content {
-    font-size: 14px;
-  }
-
-  #app[data-font-size='16'] .ui.segment .article.content {
-    font-size: 16px;
-  }
-
-  #app[data-font-size='18'] .ui.segment .article.content {
-    font-size: 18px;
-  }
-
-  #app[data-font-size='20'] .ui.segment .article.content {
-    font-size: 20px;
-  }
-
-  #app[data-font-size='22'] .ui.segment .article.content {
-    font-size: 22px;
-  }
-
-  .hide {
-    display: none;
-  }
-
-  .mce-toc.rail0 {
-    position: fixed;
-    left: 20px;
-  }
-
-  .mce-toc.rail1 {
-    position: fixed;
-    left: 50px;
-  }
-
-  .mce-toc.rail2 {
-    position: fixed;
-    left: 100px;
-  }
-
-  #main.fluid .mce-toc{
-    position: relative;
-    left: auto;
-  }
-
-  .font {
-    margin-bottom: 6px;
-  }
-
-  .font .ui.icon.button {
-    margin: 0;
-  }
-
-  .font .size {
-    margin: 0 6px;
-  }
-
-  /*.inverted {*/
-  /*  background: #1b1c1d;*/
-  /*  color: rgba(255,255,255,.9);*/
-  /*}*/
-
-  #main {
-    margin-bottom: 12px;
-    min-height: calc(100vh - 180px);
-  }
-
-  #main.inverted {
-    margin-bottom: 12px;
-    min-height: calc(100vh - 178px);
-  }
-
+@media only screen and (max-width: 767px) {
   #config .ui.popup {
-    margin-top: -52px;
-    margin-right: 24px;
+    top: auto;
+    bottom: 60px;
   }
-
-  .trigger {
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-  }
-
-  #config .toggle {
-    margin-top: 6px;
-  }
-
-  @media only screen and (max-width: 767px) {
-    #config .ui.popup {
-      top: auto;
-      bottom: 60px;
-    }
-  }
+}
 </style>

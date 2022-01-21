@@ -4,7 +4,7 @@
   <meta th:replace="common :: header">
   <link rel="stylesheet" type="text/css" href="/prism.css">
   <script src="/prism.js"></script>
-  <script src="//power.gitee.io/twemoji/twemoji.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/twemoji@13.0.0/dist/twemoji.min.js"></script>
   <title th:text="${note.title}+' - '+${siteConfig.siteName}"></title>
 </head>
 <body>
@@ -65,5 +65,33 @@
     twemoji.parse(node, {'size': 72})
   });
   Prism.highlightAll()
+
+  const app = document.getElementById('app')
+  if (app) {
+    app.setAttribute('data-font-size', localStorage.getItem('fontSize') || '16')
+  }
+
+  function adjustToc(toc, width) {
+    const offset = (document.body.clientWidth - width) / 2
+    toc.classList.remove('rail0', 'rail1', 'rail2')
+    if (offset < 350) {
+      //
+    } else if (offset < 450) {
+      toc.classList.add('rail0')
+    } else if (offset < 550) {
+      toc.classList.add('rail1')
+    } else {
+      toc.classList.add('rail2')
+    }
+  }
+
+  const toc = document.querySelector('.mce-toc')
+  if (toc) {
+    const width = document.getElementById('main')?.clientWidth || 0
+    adjustToc(toc, width)
+    window.addEventListener('resize', () => {
+      adjustToc(toc, width)
+    })
+  }
 </script>
 </html>
