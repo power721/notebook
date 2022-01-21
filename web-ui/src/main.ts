@@ -112,3 +112,10 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+const info =
+  '<<<<<<<<< Notebook >>>>>>>>>\n\n'
+  + '    Powered by Har01d\n'
+  + '    https://har01d.cn/\n'
+  + '\n<<<<<<<<< Notebook >>>>>>>>>\n'
+console.info(info)

@@ -130,15 +130,28 @@
   import configService from '@/services/config.service'
   import {createDiv, createElement, createLink} from "@/utils/utils";
 
-  @Component<EntityView>({
+  function goAnchor(anchor: string) {
+    if (anchor) {
+      const element = document.getElementById(anchor)
+      if (element) {
+        window.scrollTo(0, element.offsetTop)
+      }
+    }
+  }
+
+  @Component<NoteDetails>({
     components: {
       Dropdown,
       Modal,
     },
     watch: {
-      '$route'(to) {
-        this.id = to.params.id
-        this.load()
+      '$route'(to, from) {
+        if (to.params.id != from.params.id) {
+          this.load()
+        } else {
+          const anchor = to.query.anchor as string || ''
+          goAnchor(anchor)
+        }
       }
     }
   })
@@ -162,12 +175,12 @@
     }
 
     mounted() {
-      this.id = this.$route.params.id
       this.load()
     }
 
     load() {
       this.loading = true
+      this.id = this.$route.params.id
       axios.get(`/notes/${this.id}?view=true`).then(({data}) => {
         this.note = data
         configService.setTitle(this.note.title)
@@ -180,7 +193,7 @@
         this.loading = false
         this.$router.push('/')
       }).then(() => {
-        setTimeout(() => {
+        this.$nextTick(() => {
           document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
           document.querySelectorAll('.article').forEach(node => {
             // eslint-disable-next-line
@@ -191,13 +204,25 @@
 
           const toc = document.querySelector('.mce-toc')
           if (toc) {
+            const origin = window.location.origin + '/#'
+            const url = '/#/notes/' + (this.note.slug || this.note.id)
+            for (const a of toc.querySelectorAll('a')) {
+              if (!a.href.includes('?anchor=')) {
+                a.href = url + '?anchor=' + a.href.replace(origin, '')
+              }
+            }
             const width: number = document.getElementById('main')?.clientWidth || 0
             this.adjustToc(toc, width)
             window.addEventListener('resize', () => {
               this.adjustToc(toc, width)
             })
           }
-        }, 0)
+
+          setTimeout(() => {
+            const anchor = this.$route.query.anchor as string || ''
+            goAnchor(anchor)
+          }, 500)
+        })
       })
     }
 
@@ -248,7 +273,7 @@
 
     exportPng() {
       const toc = document.querySelector('.mce-toc')
-      const link = window.location.origin + '/#/notes/' + this.note.id
+      const link = window.location.origin + '/#/notes/' + (this.note.slug || this.note.id)
       const info = createDiv({},
         createDiv({}, '标题：', this.note.title),
         createDiv({}, '作者：', createLink(this.note.author.username)),
