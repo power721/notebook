@@ -1,5 +1,6 @@
 package cn.har01d.notebook.core.config
 
+import cn.spark2fire.auth.token.TokenFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.web.bind.annotation.CrossOrigin
 import javax.servlet.http.HttpServletResponse
 
@@ -17,7 +19,7 @@ import javax.servlet.http.HttpServletResponse
 @Configuration
 @CrossOrigin
 @EnableWebSecurity
-class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
+class WebSecurityConfiguration(private val tokenFilter: TokenFilter) : WebSecurityConfigurerAdapter() {
     @Bean
     fun authenticationEntryPoint(): AuthenticationEntryPoint? {
         return AuthenticationEntryPoint { _, response, _ ->
@@ -38,7 +40,7 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .antMatchers(HttpMethod.GET, "/config/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/menus").permitAll()
-                .antMatchers(HttpMethod.POST, "/accounts/login", "/accounts/logout").permitAll()
+                .antMatchers(HttpMethod.POST, "/accounts/login", "/accounts/logout", "/accounts/signup").permitAll()
                 .antMatchers(HttpMethod.POST, "/categories").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/categories/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/categories/**").hasRole("ADMIN")
@@ -56,7 +58,7 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
                 .and()
                 .csrf().disable()
                 .formLogin().disable()
-                .logout().disable();
+                .logout().disable()
+        http.addFilterBefore(tokenFilter, BasicAuthenticationFilter::class.java)
     }
-
 }

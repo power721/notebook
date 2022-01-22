@@ -23,7 +23,7 @@ class CaptchaService(private val repository: CaptchaRepository, private val kapt
         ImageIO.write(image, "jpg", response.outputStream)
     }
 
-    fun validate(name: String, code: String): Boolean {
+    fun validate(name: String, code: String?): Boolean {
         val captcha = repository.findByName(name) ?: return false
 
         if (Instant.now().isAfter(captcha.expireTime)) {

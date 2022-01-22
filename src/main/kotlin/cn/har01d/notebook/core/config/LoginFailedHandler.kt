@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 
 @Component
-class LoginFailedHandler(private val userRepository: UserRepository, private val captchaService: CaptchaService) : UserAuthHandler() {
+class LoginFailedHandler(
+    private val userRepository: UserRepository,
+    private val captchaService: CaptchaService
+) : UserAuthHandler() {
     private val cache: Cache<String, Int> =
         Caffeine.newBuilder().maximumSize(10_000).expireAfterWrite(1, TimeUnit.MINUTES).build()
 
@@ -22,10 +25,8 @@ class LoginFailedHandler(private val userRepository: UserRepository, private val
         val key = if (user == null) "$ip" else "${user.id}-$ip"
         val count = cache.getIfPresent(key) ?: 0
 
-        if (count > 5) {
-            if (account.captcha == null || !captchaService.validate(account.username, account.captcha!!)) {
-                throw AppUnauthorizedException("验证码错误")
-            }
+        if (count > 5 && !captchaService.validate(account.username, account.captcha)) {
+            throw AppUnauthorizedException("验证码错误")
         }
     }
 
