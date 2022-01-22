@@ -1,7 +1,10 @@
 package cn.har01d.notebook.controller
 
+import cn.har01d.notebook.service.UserService
+import cn.har01d.notebook.util.IdUtils
 import cn.har01d.notebook.util.copy
 import cn.har01d.notebook.util.generateFileName
+import cn.har01d.notebook.vo.UploadResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.util.FileCopyUtils
@@ -13,7 +16,7 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/images")
-class ImageController {
+class ImageController(private val userService: UserService) {
     private val baseDir = "upload/images"
 
     @PostConstruct
@@ -23,16 +26,19 @@ class ImageController {
     }
 
     @PostMapping
-    fun upload(@RequestParam(value = "file") file: MultipartFile): Map<String, String> {
-        val localFile = File(baseDir, generateFileName())
+    fun upload(@RequestParam(value = "file") file: MultipartFile): UploadResponse {
+        val prefix = IdUtils.encode(userService.requireCurrentUser().id!! + IdUtils.USER_OFFSET)
+        val dir = File(baseDir, prefix)
+        dir.mkdirs()
+        val localFile = File(dir, generateFileName())
         localFile.createNewFile()
         FileCopyUtils.copy(file.bytes, localFile)
-        return mapOf("location" to "/images/" + localFile.name)
+        return UploadResponse(file.originalFilename ?: file.name, "/images/${prefix}/" + localFile.name)
     }
 
-    @GetMapping("/{name}")
-    fun getFile(@PathVariable name: String, response: HttpServletResponse) {
-        val localFile = File(baseDir, name)
+    @GetMapping("/{prefix}/{name}")
+    fun getFile(@PathVariable prefix: String, @PathVariable name: String, response: HttpServletResponse) {
+        val localFile = File("$baseDir/$prefix", name)
         response.contentType = MediaType.IMAGE_PNG_VALUE
         response.setHeader(HttpHeaders.CACHE_CONTROL, "max-age=31536000")
         localFile.inputStream().use {

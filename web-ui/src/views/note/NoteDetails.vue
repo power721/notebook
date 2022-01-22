@@ -38,7 +38,16 @@
           {{note.category.name}}
         </router-link>&nbsp;
         <span v-if="showWords">字数：{{note.words}}</span>&nbsp;&nbsp;
-        <span v-if="showViews&&note.access!=='PRIVATE'">阅读：{{note.views}}</span>
+        <span v-if="showViews&&note.access!=='PRIVATE'">阅读：{{note.views}}</span>&nbsp;
+        <Popup position="bottom right" trigger="hover">
+          <template slot="trigger">
+            <i class="share link icon"></i>
+          </template>
+          <div class="share">
+            <p style="margin: 0">微信扫一扫分享</p>
+            <canvas id="qrcode"></canvas>
+          </div>
+        </Popup>
         <router-link :to="'/notes/'+(note.slug?note.slug:note.id)+'/edit'" class="edit" data-tooltip="编辑笔记" v-if="author&&!note.deleted">
           <i class="edit icon"></i>
         </router-link>
@@ -50,15 +59,6 @@
           <a class="item" @click="showMove" v-if="!note.deleted">移动笔记</a>
           <a class="item" @click="revert=true" v-if="note.deleted">恢复笔记</a>
         </Dropdown>
-        <Popup position="bottom right" trigger="hover">
-          <template slot="trigger">
-            <i class="share link icon"></i>
-          </template>
-          <div class="share">
-             <p style="margin: 0">微信扫一扫分享</p>
-            <canvas id="qrcode"></canvas>
-          </div>
-        </Popup>
       </div>
     </div>
 

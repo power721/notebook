@@ -142,6 +142,16 @@ import {ToastObject} from "vue-toasted";
 
 const DRAFT_KEY = 'noteDraft-'
 
+interface BlobInfo {
+  id: () => string;
+  name: () => string;
+  filename: () => string;
+  blob: () => Blob;
+  base64: () => string;
+  blobUri: () => string;
+  uri: () => string | undefined;
+}
+
 @Component({
   components: {
     Editor,
@@ -171,7 +181,6 @@ export default class EditNote extends Vue {
       'insertdatetime toc paste wordcount help searchreplace emoticons'
     ],
     relative_urls : false,
-    images_upload_url: '/images',
     emoticons_database_url: '/emojis.js',
     default_link_target: '_blank',
     codesample_global_prismjs: true,
@@ -206,9 +215,9 @@ export default class EditNote extends Vue {
       })
     },
     attachment_max_size: 104857600,
-    attachment_upload_handler: function (file: File, succFun: (url: string) => void, failFun: (url: string) => void, progressCallback: (url: number) => void) {
-      const formData = new FormData();
-      formData.append("file", file);
+    attachment_upload_handler: function (file: File, succFun: (url: string) => void, failFun: (error: string) => void, progressCallback: (progress: number) => void) {
+      const formData = new FormData()
+      formData.append("file", file)
       axios.post('/files', formData, {
         onUploadProgress: function (progressEvent) {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -221,6 +230,21 @@ export default class EditNote extends Vue {
         failFun(error.message)
       })
     },
+    images_upload_handler: function (blobInfo: BlobInfo, success: (url: string) => void, failure: (error: string) => void, progress: (progress: number) => void) {
+      const formData = new FormData()
+      formData.append('file', blobInfo.blob(), blobInfo.filename())
+      axios.post('/images', formData, {
+        onUploadProgress: function (progressEvent) {
+          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+          progress(percent)
+        }
+      }).then((res) => {
+        success(res.data.url)
+      }).catch((error) => {
+        console.log(error)
+        failure(error.message)
+      })
+    }
   }
 
   mounted() {
