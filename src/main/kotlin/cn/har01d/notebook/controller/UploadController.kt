@@ -17,7 +17,6 @@ import java.io.File
 import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletResponse
 
-
 @RestController
 @RequestMapping("/files")
 class UploadController(

@@ -15,6 +15,15 @@
               <label>账号密码</label>
               <input type="password" name="password" v-model="account.password" placeholder="账号密码">
             </div>
+            <div class="required field" v-if="captcha">
+              <label>验证码</label>
+              <div class="ui input">
+                <input type="text" name="captcha" v-model="account.captcha" placeholder="验证码">
+                <a title="点击刷新验证码" @click="t=new Date().getTime()">
+                  <img alt="验证码" :src="'/captcha?name='+account.username+'&t='+t">
+                </a>
+              </div>
+            </div>
             <div class="field">
               <div class="ui checkbox">
                 <input type="checkbox" name="remember" v-model="account.rememberMe">
@@ -25,7 +34,7 @@
               登录成功
             </div>
             <div class="ui error message">
-              <p>{{error}}</p>
+              <p>{{ error }}</p>
             </div>
             <button class="ui primary button" :disabled="success" @click.prevent="submit">登录</button>
           </form>
@@ -40,53 +49,74 @@
 </template>
 
 <script lang="ts">
-  import {Component, Vue} from 'vue-property-decorator'
-  import accountService from '@/services/account.service'
-  import configService from '@/services/config.service'
+import {Component, Vue} from 'vue-property-decorator'
+import accountService from '@/services/account.service'
+import configService from '@/services/config.service'
 
-  @Component
-  export default class Login extends Vue {
-    error: string = ''
-    success: boolean = false
-    account = {
-      username: '',
-      password: '',
-      rememberMe: localStorage.getItem('rememberMe') === 'true',
-    }
-
-    mounted() {
-      configService.setTitle('用户登录')
-    }
-
-    get enableSignup() {
-      return configService.siteConfig.enableSignup
-    }
-
-    submit() {
-      this.error = ''
-      if (this.account.username.length < 6) {
-        this.error = '账号长度至少6位'
-        return
-      }
-      if (this.account.password.length < 8) {
-        this.error = '密码长度至少8位'
-        return
-      }
-      localStorage.setItem('rememberMe', this.account.rememberMe + '')
-      accountService.login(this.account.username, this.account.password, this.account.rememberMe).then(() => {
-        this.success = true
-        const back = (this.$route.query.redirect as string) || '/'
-        setTimeout(() => this.$router.push(back), 500)
-      }, ({response}) => {
-        this.error = response.data.message
-      })
-    }
+@Component
+export default class Login extends Vue {
+  error: string = ''
+  success: boolean = false
+  captcha: boolean = false
+  t: number = 0
+  account = {
+    username: '',
+    password: '',
+    captcha: '',
+    rememberMe: localStorage.getItem('rememberMe') === 'true',
   }
+
+  mounted() {
+    configService.setTitle('用户登录')
+  }
+
+  get enableSignup() {
+    return configService.siteConfig.enableSignup
+  }
+
+  submit() {
+    this.error = ''
+    if (this.account.username.length < 6) {
+      this.error = '账号长度至少6位'
+      return
+    }
+    if (this.account.password.length < 8) {
+      this.error = '密码长度至少8位'
+      return
+    }
+    if (this.captcha && !this.account.captcha) {
+      this.error = '请填写验证码'
+      return
+    }
+
+    localStorage.setItem('rememberMe', this.account.rememberMe + '')
+    accountService.login(this.account.username, this.account.password, this.account.rememberMe, this.account.captcha).then(() => {
+      this.success = true
+      const back = (this.$route.query.redirect as string) || '/'
+      setTimeout(() => this.$router.push(back), 500)
+    }, (error) => {
+      if (error.message === '验证码错误') {
+        this.captcha = true
+      } else {
+        this.t = new Date().getTime()
+      }
+      this.error = error.message
+
+      if (error.message === '登录失败次数太多') {
+        this.t = new Date().getTime()
+        if (this.captcha) {
+          this.error = '用户或密码错误'
+        }
+        this.captcha = true
+      }
+    })
+  }
+}
 </script>
 
 <style scoped>
-  .ui.card {
-    max-width: 450px;
-    margin: 96px auto;
-  }
+.ui.card {
+  max-width: 450px;
+  margin: 96px auto;
+}
 </style>

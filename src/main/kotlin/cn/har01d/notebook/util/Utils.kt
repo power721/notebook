@@ -1,5 +1,7 @@
 package cn.har01d.notebook.util
 
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import java.io.InputStream
 import java.io.OutputStream
 import java.time.LocalDate
@@ -33,4 +35,24 @@ fun wordCount(context: String): Int {
     }
 
     return cnWordsCount + nonCnWordsCount
+}
+
+fun getClientIp(): String? {
+    val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)!!.request
+    val ip = request.getHeader("X-Forwarded-For")
+    return if (ip != null && ip.isNotEmpty()) {
+        ip
+    } else {
+        request.remoteAddr
+    }
+}
+
+fun getUserAgent(): String? {
+    val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)!!.request
+    return request.getHeader("User-Agent")
+}
+
+fun getReferer(): String? {
+    val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)!!.request
+    return request.getHeader("Referer")
 }

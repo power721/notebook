@@ -45,11 +45,12 @@ class AccountService {
     })
   }
 
-  login(username: string, password: string, rememberMe: boolean) {
+  login(username: string, password: string, rememberMe: boolean, captcha: string) {
     return axios.post('/accounts/login', {
       username,
       password,
-      rememberMe
+      rememberMe,
+      captcha
     }).then(({data}) => {
       localStorage.setItem('token', data.token)
       this.getInfo()

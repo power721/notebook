@@ -17,6 +17,11 @@ module.exports = {
         ws: true,
         changeOrigin: true
       },
+      '/captcha': {
+        target: API,
+        ws: true,
+        changeOrigin: true
+      },
       '/users': {
         target: API,
         ws: true,

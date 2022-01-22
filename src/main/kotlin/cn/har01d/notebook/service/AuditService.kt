@@ -5,11 +5,12 @@ import cn.har01d.notebook.core.ActionType
 import cn.har01d.notebook.core.Const
 import cn.har01d.notebook.core.SiteConfig
 import cn.har01d.notebook.entity.*
+import cn.har01d.notebook.util.getClientIp
+import cn.har01d.notebook.util.getReferer
+import cn.har01d.notebook.util.getUserAgent
 import cn.har01d.notebook.vo.toVO
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 
 @Service
 class AuditService(private val auditRepository: AuditRepository, private val configService: ConfigService) {
@@ -242,25 +243,5 @@ class AuditService(private val auditRepository: AuditRepository, private val con
         }
         val audit = Audit(user, ActionType.UPLOAD_FILE, "上传文件：${url}", 0, getUserAgent(), getClientIp(), getReferer())
         auditRepository.save(audit)
-    }
-
-    private fun getClientIp(): String? {
-        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)!!.request
-        val ip = request.getHeader("X-Forwarded-For")
-        return if (ip != null && ip.isNotEmpty()) {
-            ip
-        } else {
-            request.remoteAddr
-        }
-    }
-
-    private fun getUserAgent(): String? {
-        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)!!.request
-        return request.getHeader("User-Agent")
-    }
-
-    private fun getReferer(): String? {
-        val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)!!.request
-        return request.getHeader("Referer")
     }
 }

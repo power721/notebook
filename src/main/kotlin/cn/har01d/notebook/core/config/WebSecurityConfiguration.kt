@@ -38,6 +38,7 @@ class WebSecurityConfiguration : WebSecurityConfigurerAdapter() {
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .antMatchers(HttpMethod.GET, "/config/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/menus").permitAll()
+                .antMatchers(HttpMethod.POST, "/accounts/login", "/accounts/logout").permitAll()
                 .antMatchers(HttpMethod.POST, "/categories").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/categories/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/categories/**").hasRole("ADMIN")
