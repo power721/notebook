@@ -14,8 +14,8 @@ import java.io.File
 class QiniuService(private val configService: ConfigService) {
     private val log = LoggerFactory.getLogger(QiniuService::class.java)
 
-    fun uploadImage(prefix: String, name: String, file: File): UploadResponse {
-        val key = "$prefix/$name"
+    fun uploadImage(prefix: String, file: File): UploadResponse {
+        val key = "$prefix/${file.name}"
         val qiniuProperties = configService.getQiniuProperties()
         val cfg = Configuration()
         val uploadManager = UploadManager(cfg)
@@ -35,7 +35,7 @@ class QiniuService(private val configService: ConfigService) {
         file.delete()
 
         val url = qiniuProperties.domain + "/" + key
-        return UploadResponse(name, url)
+        return UploadResponse(file.name, url)
     }
 
 }
