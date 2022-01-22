@@ -29,31 +29,31 @@
       <div class="field">
         <div class="ui toggle checkbox">
           <input type="checkbox" name="showViews" v-model="siteConfig.showViews">
-          <label>为游客显示阅读量</label>
+          <label>游客显示阅读量</label>
         </div>
       </div>
       <div class="field">
         <div class="ui toggle checkbox">
           <input type="checkbox" name="showWords" v-model="siteConfig.showWords">
-          <label>显示字数</label>
-        </div>
-      </div>
-      <div class="field">
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="enableAudit" v-model="siteConfig.enableAudit">
-          <label>开启审计</label>
-        </div>
-      </div>
-      <div class="field">
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="enableSignup" v-model="siteConfig.enableSignup">
-          <label>允许注册</label>
+          <label>笔记显示字数</label>
         </div>
       </div>
       <div class="field">
         <div class="ui toggle checkbox">
           <input type="checkbox" name="enableComment" v-model="siteConfig.enableComment">
-          <label>允许评论</label>
+          <label>笔记允许评论</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="ui toggle checkbox">
+          <input type="checkbox" name="enableSignup" v-model="siteConfig.enableSignup">
+          <label>开启用户注册</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="ui toggle checkbox">
+          <input type="checkbox" name="enableAudit" v-model="siteConfig.enableAudit">
+          <label>开启操作日志</label>
         </div>
       </div>
       <button class="ui button" @click.prevent="save">保存</button>

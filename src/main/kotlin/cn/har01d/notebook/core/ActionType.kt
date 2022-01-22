@@ -12,6 +12,7 @@ enum class ActionType {
     CREATE_MENU,
     UPDATE_MENU,
     DELETE_MENU,
+    UPLOAD_FILE,
     CREATE_NOTE,
     UPDATE_NOTE,
     DELETE_NOTE,

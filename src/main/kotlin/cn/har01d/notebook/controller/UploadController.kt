@@ -1,5 +1,6 @@
 package cn.har01d.notebook.controller
 
+import cn.har01d.notebook.service.AuditService
 import cn.har01d.notebook.service.UserService
 import cn.har01d.notebook.util.IdUtils
 import cn.har01d.notebook.util.copy
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/files")
-class UploadController(private val userService: UserService) {
+class UploadController(private val userService: UserService, private val auditService: AuditService) {
     private val baseDir = "upload/files"
 
     @PostConstruct
@@ -26,13 +27,16 @@ class UploadController(private val userService: UserService) {
 
     @PostMapping
     fun upload(@RequestParam(value = "file") file: MultipartFile): UploadResponse {
-        val prefix = IdUtils.encode(userService.requireCurrentUser().id!! + IdUtils.USER_OFFSET)
+        val user = userService.requireCurrentUser()
+        val prefix = IdUtils.encode(user.id!! + IdUtils.USER_OFFSET)
         val dir = File(baseDir, prefix)
         dir.mkdirs()
         val localFile = File(dir, file.originalFilename ?: file.name)
         localFile.createNewFile()
         FileCopyUtils.copy(file.bytes, localFile)
-        return UploadResponse(localFile.name, "/files/${prefix}/" + localFile.name)
+        val url = "/files/${prefix}/" + localFile.name
+        auditService.auditUpload(user, url)
+        return UploadResponse(localFile.name, url)
     }
 
     @GetMapping("/{prefix}/{name}")

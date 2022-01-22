@@ -19,7 +19,7 @@
         <tr v-for="audit of audits" :key="audit.id">
           <td>{{audit.id}}</td>
           <td>{{audit.type}}</td>
-          <td>{{audit.content}}</td>
+          <td class="content">{{audit.content}}</td>
           <td>
             <router-link :to="'/users/'+audit.operator.id">{{audit.operator.username}}</router-link>
           </td>
@@ -71,5 +71,7 @@
 </script>
 
 <style scoped>
-
+td.content {
+  word-break: break-all;
+}
 </style>

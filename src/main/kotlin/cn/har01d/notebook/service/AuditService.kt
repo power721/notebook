@@ -236,6 +236,14 @@ class AuditService(private val auditRepository: AuditRepository, private val con
         auditRepository.save(audit)
     }
 
+    fun auditUpload(user: User, url: String) {
+        if (disabled()) {
+            return
+        }
+        val audit = Audit(user, ActionType.UPLOAD_FILE, "上传文件：${url}", 0, getUserAgent(), getClientIp(), getReferer())
+        auditRepository.save(audit)
+    }
+
     private fun getClientIp(): String? {
         val request = (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?)!!.request
         val ip = request.getHeader("X-Forwarded-For")
