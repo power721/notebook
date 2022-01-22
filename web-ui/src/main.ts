@@ -36,6 +36,7 @@ import 'tinymce/plugins/quickbars'
 import '@npkg/tinymce-plugins/attachment'
 import '@npkg/tinymce-plugins/table'
 import '@npkg/tinymce-plugins/imagetools'
+import '@npkg/tinymce-plugins/axupimgs'
 import '@npkg/tinymce-plugins/upfile'
 
 import '@/assets/langs/zh_CN'

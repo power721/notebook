@@ -150,6 +150,7 @@ interface BlobInfo {
   base64: () => string;
   blobUri: () => string;
   uri: () => string | undefined;
+  file?: File;
 }
 
 @Component({
@@ -176,11 +177,17 @@ export default class EditNote extends Vue {
     branding: false,
     language: 'zh_CN',
     plugins: [
-      'autolink link media table advlist lists hr upfile attachment',
+      'autolink link media table advlist lists hr upfile attachment axupimgs',
       'code codesample charmap image imagetools quickbars preview fullscreen',
       'insertdatetime toc paste wordcount help searchreplace emoticons'
     ],
-    relative_urls : false,
+    menu: {
+      insert: {
+        title: 'Insert',
+        items: 'image axupimgs link media upfile attachment template codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime'
+      },
+    },
+    relative_urls: false,
     emoticons_database_url: '/emojis.js',
     default_link_target: '_blank',
     codesample_global_prismjs: true,
@@ -203,7 +210,7 @@ export default class EditNote extends Vue {
     content_css: [],
     toolbar:
       'formatselect | bold italic backcolor | \
-      alignleft aligncenter alignright alignjustify | link image media upfile attachment | \
+      alignleft aligncenter alignright alignjustify | link image axupimgs media upfile attachment | \
       bullist numlist outdent indent | charmap emoticons codesample | removeformat code preview fullscreen | help',
     file_callback: function (file: File, callback: (url: string, details: unknown) => void) {
       const formData = new FormData();
@@ -232,11 +239,17 @@ export default class EditNote extends Vue {
     },
     images_upload_handler: function (blobInfo: BlobInfo, success: (url: string) => void, failure: (error: string) => void, progress: (progress: number) => void) {
       const formData = new FormData()
-      formData.append('file', blobInfo.blob(), blobInfo.filename())
+      let name: string
+      if (blobInfo.file) {
+        name = blobInfo.file.name
+      } else {
+        name = blobInfo.filename()
+      }
+      formData.append('file', blobInfo.blob(), name)
       axios.post('/images', formData, {
         onUploadProgress: function (progressEvent) {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          progress(percent)
+          progress && progress(percent)
         }
       }).then((res) => {
         success(res.data.url)

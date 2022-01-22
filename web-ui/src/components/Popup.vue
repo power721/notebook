@@ -76,34 +76,30 @@ export default class Popup extends Vue {
 
   computePopupStyle(positions: string) {
     const style: Style = {position: 'fixed', top: 'auto', bottom: 'auto', left: 'auto', right: 'auto'}
-
-    const {pageYOffset, pageXOffset} = window
     const {clientWidth, clientHeight} = document.documentElement
-
     const trigger = this.$refs.trigger as HTMLElement
     const triggerCoords = trigger.getBoundingClientRect()
-
     const popup = this.$refs.popup as HTMLElement
     const popupCoords = popup.getBoundingClientRect()
 
     if (positions.includes('right')) {
-      style.right = Math.round(clientWidth - (triggerCoords.right + pageXOffset))
+      style.right = Math.round(clientWidth - triggerCoords.right)
     } else if (positions.includes('left')) {
-      style.left = Math.round(triggerCoords.left + pageXOffset)
+      style.left = Math.round(triggerCoords.left)
     } else {
       // if not left nor right, we are horizontally centering the element
       const xOffset = (popupCoords.width - triggerCoords.width) / 2
-      style.left = Math.round(triggerCoords.left + pageXOffset - xOffset)
+      style.left = Math.round(triggerCoords.left - xOffset)
     }
 
     if (positions.includes('top')) {
-      style.bottom = Math.round(clientHeight - (triggerCoords.top + pageYOffset)) + 4
+      style.bottom = Math.round(clientHeight - triggerCoords.top) + 4
     } else if (positions.includes('bottom')) {
-      style.top = Math.round(triggerCoords.bottom + pageYOffset) + 4
+      style.top = Math.round(triggerCoords.bottom) + 4
     } else {
       // if not top nor bottom, we are vertically centering the element
       const yOffset = (popupCoords.height) / 2
-      style.top = Math.round(triggerCoords.bottom + pageYOffset - yOffset)
+      style.top = Math.round(triggerCoords.bottom - yOffset)
 
       const xOffset = triggerCoords.width;
       if (positions.includes('right')) {
