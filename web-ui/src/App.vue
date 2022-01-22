@@ -205,12 +205,7 @@
   margin: 0 6px;
 }
 
-#config .ui.popup {
-  margin-top: -52px;
-  margin-right: 24px;
-}
-
-.trigger {
+#config .trigger {
   position: absolute;
   bottom: 24px;
   right: 24px;

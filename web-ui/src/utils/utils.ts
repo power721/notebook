@@ -25,6 +25,16 @@ export function createElement<K extends keyof HTMLElementTagNameMap>(tagName: K,
     delete options['classList']
   }
 
+  if (options.style) {
+    for (const style of options.style.split(';')) {
+      const array = style.split(':')
+      if (array.length == 2) {
+        element.style[array[0].trim()] = array[1].trim()
+      }
+    }
+    delete options['style']
+  }
+
   Object.assign(element, options)
 
   element.append(...children)

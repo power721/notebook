@@ -1,6 +1,6 @@
 <template>
   <div class="ui left aligned fluid container">
-    <div class="ui breadcrumb">
+    <div id="breadcrumb" class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
       <router-link class="section" to="/trash-notes" v-if="note.deleted">回收站</router-link>
@@ -14,7 +14,7 @@
     </div>
     <div class="ui divider"></div>
 
-    <div class="ui center aligned raised segment">
+    <div id="title" class="ui center aligned raised segment">
       <div class="ui active inverted dimmer" v-if="loading">
         <div class="ui text loader">加载中</div>
       </div>
@@ -50,6 +50,15 @@
           <a class="item" @click="showMove" v-if="!note.deleted">移动笔记</a>
           <a class="item" @click="revert=true" v-if="note.deleted">恢复笔记</a>
         </Dropdown>
+        <Popup position="bottom right" trigger="hover">
+          <template slot="trigger">
+            <i class="share link icon"></i>
+          </template>
+          <div class="share">
+             <p style="margin: 0">微信扫一扫分享</p>
+            <canvas id="qrcode"></canvas>
+          </div>
+        </Popup>
       </div>
     </div>
 
@@ -119,10 +128,12 @@
 
 <script lang="ts">
   import axios from 'axios'
+  import QRCode from 'qrcode'
   import {toPng} from 'html-to-image'
   import {Component} from 'vue-property-decorator'
   import Dropdown from '@/components/Dropdown.vue'
   import Modal from '@/components/Modal.vue'
+  import Popup from "@/components/Popup.vue";
   import {Note} from '@/models/Note'
   import {Notebook} from '@/models/Notebook'
   import {EntityView} from "@/components/EntityView";
@@ -143,6 +154,7 @@
     components: {
       Dropdown,
       Modal,
+      Popup,
     },
     watch: {
       '$route'(to, from) {
@@ -201,6 +213,9 @@
           });
           // eslint-disable-next-line
           (window as any).Prism.highlightAll()
+
+          const qrcode = document.getElementById('qrcode') as HTMLElement
+          QRCode.toCanvas(qrcode, window.location.href, {width: 150})
 
           const toc = document.querySelector('.mce-toc')
           if (toc) {
@@ -273,6 +288,8 @@
 
     exportPng() {
       const toc = document.querySelector('.mce-toc')
+      const qrcode = createElement('canvas', {style: 'position: absolute;right: 5px;bottom: 0;'})
+      QRCode.toCanvas(qrcode, window.location.href, {width: 90})
       const link = window.location.origin + '/#/notes/' + (this.note.slug || this.note.id)
       const info = createDiv({},
         createDiv({}, '标题：', this.note.title),
@@ -280,13 +297,11 @@
         createDiv({}, '链接：', createLink(link, link))
       )
       const divider = this.note.tags.length ? createDiv({classList: 'ui divider'}) : createElement('p')
-      const div = createDiv({}, divider, info)
+      const div = createDiv({}, divider, info, qrcode)
       const content = document.getElementById('content') as HTMLElement
       content.append(div)
 
-      if (toc) {
-        toc.classList.add('hide')
-      }
+      if (toc) toc.classList.add('hide')
 
       toPng(content)
         .then((dataUrl) => {
@@ -311,5 +326,10 @@
 
   #content {
     margin-top: 0;
+  }
+
+  #qrcode {
+    width: 150px;
+    height: 150px;
   }
 </style>
