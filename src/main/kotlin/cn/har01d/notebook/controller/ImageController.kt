@@ -50,7 +50,7 @@ class ImageController(
         FileCopyUtils.copy(file.bytes, localFile)
 
         val response: UploadResponse = if (configService.get(Const.QINIU_ENABLED, false)) {
-            qiniuService.uploadImage("images/${prefix}/" + localFile.name, localFile)
+            qiniuService.uploadImage("images/${prefix}", localFile.name, localFile)
         } else {
             val url = "/images/${prefix}/" + localFile.name
             UploadResponse(localFile.name, url)

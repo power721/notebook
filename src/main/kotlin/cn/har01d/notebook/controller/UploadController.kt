@@ -8,7 +8,6 @@ import cn.har01d.notebook.service.QiniuService
 import cn.har01d.notebook.service.UserService
 import cn.har01d.notebook.util.IdUtils
 import cn.har01d.notebook.util.copy
-import cn.har01d.notebook.util.generateFileName
 import cn.har01d.notebook.vo.UploadResponse
 import org.springframework.http.MediaType
 import org.springframework.util.FileCopyUtils
@@ -50,7 +49,7 @@ class UploadController(
         FileCopyUtils.copy(file.bytes, localFile)
 
         val response: UploadResponse = if (configService.get(Const.QINIU_ENABLED, false)) {
-            qiniuService.uploadImage("files/${prefix}/" + localFile.name, localFile)
+            qiniuService.uploadImage("files/${prefix}", localFile.name, localFile)
         } else {
             val url = "/files/${prefix}/" + localFile.name
             UploadResponse(localFile.name, url)
