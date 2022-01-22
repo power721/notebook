@@ -10,5 +10,11 @@ object Const {
     const val SHOW_WORDS = "show_words"  // 显示字数
     const val ENABLE_AUDIT = "enable_audit"  // 开启审计
     const val ENABLE_SIGNUP = "enable_signup"  // 允许用户注册
+    const val ENABLE_UPLOAD = "enable_upload"  // 允许文件上传
     const val ENABLE_COMMENT = "enable_comment"  // 允许评论
+    const val QINIU_ENABLED = "qiniu_enabled"
+    const val QINIU_ACCESS_KEY = "qiniu_access_key"
+    const val QINIU_SECRET_KEY = "qiniu_secret_Key"
+    const val QINIU_BUCKET = "qiniu_bucket"
+    const val QINIU_DOMAIN = "qiniu_domain"
 }

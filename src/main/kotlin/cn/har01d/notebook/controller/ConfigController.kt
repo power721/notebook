@@ -5,6 +5,7 @@ import cn.har01d.notebook.entity.Config
 import cn.har01d.notebook.entity.Menu
 import cn.har01d.notebook.service.ConfigService
 import cn.har01d.notebook.service.MenuService
+import cn.har01d.notebook.vo.toVo
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -14,7 +15,7 @@ class ConfigController(private val configService: ConfigService, private val men
     fun findAll(): List<Config> = configService.findAll()
 
     @GetMapping("/site")
-    fun getSiteConfig() = configService.getSiteConfig()
+    fun getSiteConfig() = configService.getSiteConfig().toVo()
 
     @PutMapping("/site")
     fun updateSiteConfig(@RequestBody siteConfig: SiteConfig) = configService.updateSiteConfig(siteConfig)

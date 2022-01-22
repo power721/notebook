@@ -1,5 +1,7 @@
 package cn.har01d.notebook.core
 
+import cn.har01d.notebook.core.config.QiniuProperties
+
 data class SiteConfig(
         val siteName: String,
         val brandColor: String,
@@ -10,5 +12,7 @@ data class SiteConfig(
         val showWords: Boolean,
         val enableAudit: Boolean,
         val enableComment: Boolean,
-        val enableSignup: Boolean
+        val enableUpload: Boolean,
+        val enableSignup: Boolean,
+        val qiniu: QiniuProperties,
 )

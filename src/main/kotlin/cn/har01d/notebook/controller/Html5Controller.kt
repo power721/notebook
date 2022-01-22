@@ -28,7 +28,7 @@ class Html5Controller(
         private val menuService: MenuService,
 ) {
     @ModelAttribute("siteConfig")
-    fun siteConfig() = configService.getSiteConfig()
+    fun siteConfig() = configService.getSiteConfig().toVo()
 
     @ModelAttribute("menus")
     fun menus() = menuService.getMenus()

@@ -1,9 +1,14 @@
 package cn.har01d.notebook.controller
 
+import cn.har01d.notebook.core.Const
+import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.service.AuditService
+import cn.har01d.notebook.service.ConfigService
+import cn.har01d.notebook.service.QiniuService
 import cn.har01d.notebook.service.UserService
 import cn.har01d.notebook.util.IdUtils
 import cn.har01d.notebook.util.copy
+import cn.har01d.notebook.util.generateFileName
 import cn.har01d.notebook.vo.UploadResponse
 import org.springframework.http.MediaType
 import org.springframework.util.FileCopyUtils
@@ -16,7 +21,12 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/files")
-class UploadController(private val userService: UserService, private val auditService: AuditService) {
+class UploadController(
+    private val userService: UserService,
+    private val auditService: AuditService,
+    private val configService: ConfigService,
+    private val qiniuService: QiniuService,
+) {
     private val baseDir = "upload/files"
 
     @PostConstruct
@@ -27,6 +37,10 @@ class UploadController(private val userService: UserService, private val auditSe
 
     @PostMapping
     fun upload(@RequestParam(value = "file") file: MultipartFile): UploadResponse {
+        if (!configService.get(Const.ENABLE_UPLOAD, true)) {
+            throw AppForbiddenException("未开启文件上传功能")
+        }
+
         val user = userService.requireCurrentUser()
         val prefix = IdUtils.encode(user.id!! + IdUtils.USER_OFFSET)
         val dir = File(baseDir, prefix)
@@ -34,9 +48,16 @@ class UploadController(private val userService: UserService, private val auditSe
         val localFile = File(dir, file.originalFilename ?: file.name)
         localFile.createNewFile()
         FileCopyUtils.copy(file.bytes, localFile)
-        val url = "/files/${prefix}/" + localFile.name
-        auditService.auditUpload(user, url)
-        return UploadResponse(localFile.name, url)
+
+        val response: UploadResponse = if (configService.get(Const.QINIU_ENABLED, false)) {
+            qiniuService.uploadImage("files/${prefix}/" + localFile.name, localFile)
+        } else {
+            val url = "/files/${prefix}/" + localFile.name
+            UploadResponse(localFile.name, url)
+        }
+
+        auditService.auditUpload(user, response.url)
+        return response
     }
 
     @GetMapping("/{prefix}/{name}")

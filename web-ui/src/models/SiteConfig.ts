@@ -1,3 +1,11 @@
+export class QiniuProperties {
+  enabled: boolean = false
+  accessKey: string = ''
+  secretKey: string = ''
+  bucket: string = ''
+  domain: string = ''
+}
+
 export class SiteConfig {
   siteName: string = 'Notebook'
   brandColor: string = 'teal'
@@ -8,5 +16,7 @@ export class SiteConfig {
   showWords: boolean = false
   enableAudit: boolean = true
   enableComment: boolean = true
+  enableUpload: boolean = true
   enableSignup: boolean = true
+  qiniu: QiniuProperties = new QiniuProperties()
 }

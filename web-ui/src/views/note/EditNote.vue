@@ -177,7 +177,7 @@ export default class EditNote extends Vue {
     branding: false,
     language: 'zh_CN',
     plugins: [
-      'autolink link media table advlist lists hr upfile attachment axupimgs',
+      'autolink link media table advlist lists hr' + (configService.siteConfig.enableUpload ? ' upfile attachment axupimgs' : ''),
       'code codesample charmap image imagetools quickbars preview fullscreen',
       'insertdatetime toc paste wordcount help searchreplace emoticons'
     ],
@@ -188,6 +188,7 @@ export default class EditNote extends Vue {
       },
     },
     relative_urls: false,
+    image_uploadtab: configService.siteConfig.enableUpload,
     emoticons_database_url: '/emojis.js',
     default_link_target: '_blank',
     codesample_global_prismjs: true,
@@ -222,19 +223,19 @@ export default class EditNote extends Vue {
       })
     },
     attachment_max_size: 104857600,
-    attachment_upload_handler: function (file: File, succFun: (url: string) => void, failFun: (error: string) => void, progressCallback: (progress: number) => void) {
+    attachment_upload_handler: function (file: File, success: (url: string) => void, failure: (error: string) => void, progress: (progress: number) => void) {
       const formData = new FormData()
       formData.append("file", file)
       axios.post('/files', formData, {
         onUploadProgress: function (progressEvent) {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          progressCallback(percent)
+          progress(percent)
         }
       }).then((res) => {
-        succFun(res.data.url)
+        success(res.data.url)
       }).catch((error) => {
         console.log(error)
-        failFun(error.message)
+        failure(error.message)
       })
     },
     images_upload_handler: function (blobInfo: BlobInfo, success: (url: string) => void, failure: (error: string) => void, progress: (progress: number) => void) {
@@ -450,7 +451,7 @@ export default class EditNote extends Vue {
     if (this.noteCache.title !== this.note.title
       || this.noteCache.slug !== this.note.slug
       || this.noteCache.content !== this.note.content) {
-      console.log(new Date(), '草稿保存中')
+      console.log(new Date(), this.note.id, '草稿保存中')
       const note = Object.assign({}, this.note, {updatedTime: new Date().getTime()})
       localStorage.setItem(DRAFT_KEY + this.note.id, JSON.stringify(note))
       this.$toasted.success('草稿保存中。。。', {duration: 1000})

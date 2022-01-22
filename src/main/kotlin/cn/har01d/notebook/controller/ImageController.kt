@@ -1,6 +1,10 @@
 package cn.har01d.notebook.controller
 
+import cn.har01d.notebook.core.Const
+import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.service.AuditService
+import cn.har01d.notebook.service.ConfigService
+import cn.har01d.notebook.service.QiniuService
 import cn.har01d.notebook.service.UserService
 import cn.har01d.notebook.util.IdUtils
 import cn.har01d.notebook.util.copy
@@ -17,7 +21,12 @@ import javax.servlet.http.HttpServletResponse
 
 @RestController
 @RequestMapping("/images")
-class ImageController(private val userService: UserService, private val auditService: AuditService) {
+class ImageController(
+    private val userService: UserService,
+    private val auditService: AuditService,
+    private val configService: ConfigService,
+    private val qiniuService: QiniuService,
+) {
     private val baseDir = "upload/images"
 
     @PostConstruct
@@ -28,6 +37,10 @@ class ImageController(private val userService: UserService, private val auditSer
 
     @PostMapping
     fun upload(@RequestParam(value = "file") file: MultipartFile): UploadResponse {
+        if (!configService.get(Const.ENABLE_UPLOAD, true)) {
+            throw AppForbiddenException("未开启图片上传功能")
+        }
+
         val user = userService.requireCurrentUser()
         val prefix = IdUtils.encode(user.id!! + IdUtils.USER_OFFSET)
         val dir = File(baseDir, prefix)
@@ -35,9 +48,16 @@ class ImageController(private val userService: UserService, private val auditSer
         val localFile = File(dir, generateFileName())
         localFile.createNewFile()
         FileCopyUtils.copy(file.bytes, localFile)
-        val url = "/images/${prefix}/" + localFile.name
-        auditService.auditUpload(user, url)
-        return UploadResponse(file.originalFilename ?: file.name, url)
+
+        val response: UploadResponse = if (configService.get(Const.QINIU_ENABLED, false)) {
+            qiniuService.uploadImage("images/${prefix}/" + localFile.name, localFile)
+        } else {
+            val url = "/images/${prefix}/" + localFile.name
+            UploadResponse(localFile.name, url)
+        }
+
+        auditService.auditUpload(user, response.url)
+        return response
     }
 
     @GetMapping("/{prefix}/{name}")

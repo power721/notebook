@@ -2,6 +2,7 @@ package cn.har01d.notebook.service
 
 import cn.har01d.notebook.core.Const
 import cn.har01d.notebook.core.SiteConfig
+import cn.har01d.notebook.core.config.QiniuProperties
 import cn.har01d.notebook.entity.Config
 import cn.har01d.notebook.entity.ConfigRepository
 import cn.har01d.notebook.entity.ConfigType
@@ -14,18 +15,28 @@ class ConfigService(private val repository: ConfigRepository) {
 
     fun getSiteConfig(): SiteConfig {
         return SiteConfig(
-                get(Const.SITE_NAME, "Notebook"),
-                get(Const.BRAND_COLOR, "teal"),
-                get(Const.QR_CODE, ""),
-                get(Const.ICP_BEIAN, ""),
-                get(Const.GOV_BEIAN, ""),
-                get(Const.SHOW_VIEWS, true),
-                get(Const.SHOW_WORDS, true),
-                get(Const.ENABLE_AUDIT, true),
-                get(Const.ENABLE_COMMENT, true),
-                get(Const.ENABLE_SIGNUP, true),
+            get(Const.SITE_NAME, "Notebook"),
+            get(Const.BRAND_COLOR, "teal"),
+            get(Const.QR_CODE, ""),
+            get(Const.ICP_BEIAN, ""),
+            get(Const.GOV_BEIAN, ""),
+            get(Const.SHOW_VIEWS, true),
+            get(Const.SHOW_WORDS, true),
+            get(Const.ENABLE_AUDIT, true),
+            get(Const.ENABLE_COMMENT, true),
+            get(Const.ENABLE_UPLOAD, true),
+            get(Const.ENABLE_SIGNUP, true),
+            getQiniuProperties(),
         )
     }
+
+    fun getQiniuProperties() = QiniuProperties(
+        get(Const.QINIU_ENABLED, false),
+        get(Const.QINIU_ACCESS_KEY, ""),
+        get(Const.QINIU_SECRET_KEY, ""),
+        get(Const.QINIU_BUCKET, ""),
+        get(Const.QINIU_DOMAIN, ""),
+    )
 
     fun updateSiteConfig(dto: SiteConfig): SiteConfig {
         save(Const.SITE_NAME, dto.siteName)
@@ -37,8 +48,18 @@ class ConfigService(private val repository: ConfigRepository) {
         save(Const.SHOW_WORDS, dto.showWords)
         save(Const.ENABLE_AUDIT, dto.enableAudit)
         save(Const.ENABLE_COMMENT, dto.enableComment)
+        save(Const.ENABLE_UPLOAD, dto.enableUpload)
         save(Const.ENABLE_SIGNUP, dto.enableSignup)
+        saveQiniuProperties(dto.qiniu)
         return getSiteConfig()
+    }
+
+    fun saveQiniuProperties(qiniu: QiniuProperties) {
+        save(Const.QINIU_ENABLED, qiniu.enabled)
+        save(Const.QINIU_ACCESS_KEY, qiniu.accessKey)
+        save(Const.QINIU_SECRET_KEY, qiniu.secretKey)
+        save(Const.QINIU_BUCKET, qiniu.bucket)
+        save(Const.QINIU_DOMAIN, qiniu.domain)
     }
 
     fun get(name: String) = repository.findByIdOrNull(name)

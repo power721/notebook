@@ -17,6 +17,18 @@ export function loadJs(url: string) {
   console.log('load javascript file: ' + url)
 }
 
+export function isValidHttpUrl(text: string): boolean {
+  let url
+
+  try {
+    url = new URL(text)
+  } catch (_) {
+    return false
+  }
+
+  return url.protocol === "http:" || url.protocol === "https:"
+}
+
 export function createElement<K extends keyof HTMLElementTagNameMap>(tagName: K, options: any = {}, ...children: (Node | string)[]): HTMLElementTagNameMap[K] {
   const element = document.createElement(tagName)
 
