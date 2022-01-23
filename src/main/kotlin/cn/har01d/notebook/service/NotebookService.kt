@@ -20,11 +20,11 @@ import javax.transaction.Transactional
 
 @Service
 class NotebookService(
-        private val notebookRepository: NotebookRepository,
-        private val noteRepository: NoteRepository,
-        private val userService: UserService,
-        private val configService: ConfigService,
-        private val auditService: AuditService,
+    private val notebookRepository: NotebookRepository,
+    private val noteRepository: NoteRepository,
+    private val userService: UserService,
+    private val configService: ConfigService,
+    private val auditService: AuditService,
 ) {
     fun list(q: String?, pageable: Pageable): Page<Notebook> {
         val user = userService.getCurrentUser()
@@ -82,7 +82,8 @@ class NotebookService(
         if (dto.slug != null && dto.slug.isNotEmpty() && notebookRepository.existsBySlug(dto.slug)) {
             throw AppException("slug重复")
         }
-        val notebook = Notebook(dto.name, dto.description, user, dto.slug, dto.access ?: Access.PUBLIC)
+        val slug = if (dto.slug == "") null else dto.slug
+        val notebook = Notebook(dto.name, dto.description, user, slug, dto.access ?: Access.PUBLIC)
         return notebookRepository.save(notebook).also { auditService.auditNotebookCreate(user, notebook) }
     }
 

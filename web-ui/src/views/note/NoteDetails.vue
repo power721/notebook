@@ -116,12 +116,15 @@
           <label>笔记本</label>
           <el-select v-model="notebookId"
                      filterable
+                     size="medium"
                      placeholder="请选择">
             <el-option
               v-for="item in notebooks"
               :key="item.id"
               :label="item.name"
               :value="item.id">
+              <span style="float: left">{{ item.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.access }}</span>
             </el-option>
           </el-select>
         </div>
@@ -244,7 +247,9 @@ export default class NoteDetails extends EntityView {
         }
 
         const el = document.getElementById('content') as HTMLElement
-        new Viewer(el, {navbar: false, title: false})
+        new Viewer(el, {navbar: false, title: false, filter(image: HTMLElement) {
+            return image.className !== 'emoji'
+        }})
 
         setTimeout(() => {
           const anchor = this.$route.query.anchor as string || ''

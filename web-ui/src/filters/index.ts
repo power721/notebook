@@ -88,7 +88,7 @@ export function fromNow(value: number | string) {
     }
   } else {
     const y = Math.floor(diff / year)
-    if (diff === y * year) {
+    if (y > 1) {
       return y + '年前'
     } else {
       return Math.floor(diff / day) + '天前'
