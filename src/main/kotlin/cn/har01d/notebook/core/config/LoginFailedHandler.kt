@@ -2,6 +2,7 @@ package cn.har01d.notebook.core.config
 
 import cn.har01d.notebook.core.exception.AppUnauthorizedException
 import cn.har01d.notebook.entity.UserRepository
+import cn.har01d.notebook.service.AuditService
 import cn.har01d.notebook.service.CaptchaService
 import cn.har01d.notebook.util.getClientIp
 import cn.spark2fire.auth.dto.LoginDto
@@ -14,7 +15,8 @@ import java.util.concurrent.TimeUnit
 @Component
 class LoginFailedHandler(
     private val userRepository: UserRepository,
-    private val captchaService: CaptchaService
+    private val captchaService: CaptchaService,
+    private val auditService: AuditService,
 ) : UserAuthHandler() {
     private val cache: Cache<String, Int> =
         Caffeine.newBuilder().maximumSize(10_000).expireAfterWrite(1, TimeUnit.MINUTES).build()
@@ -35,6 +37,9 @@ class LoginFailedHandler(
         val user = userRepository.findByUsername(username)
         val key = if (user == null) "$ip" else "${user.id}-$ip"
         cache.invalidate(key)
+        user?.let {
+            auditService.auditLogin(it)
+        }
     }
 
     override fun onLoginFail(username: String) {
@@ -46,6 +51,13 @@ class LoginFailedHandler(
         cache.put(key, count + 1)
         if (count >= 5) {
             throw AppUnauthorizedException("登录失败次数太多")
+        }
+    }
+
+    override fun onLogoutSuccess(username: String) {
+        val user = userRepository.findByUsername(username)
+        user?.let {
+            auditService.auditLogout(it)
         }
     }
 }

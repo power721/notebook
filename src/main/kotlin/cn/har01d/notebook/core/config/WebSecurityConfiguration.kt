@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.bind.annotation.CrossOrigin
 import javax.servlet.http.HttpServletResponse
 
-
 @Configuration
 @CrossOrigin
 @EnableWebSecurity
@@ -36,29 +35,29 @@ class WebSecurityConfiguration(private val tokenFilter: TokenFilter) : WebSecuri
 
     override fun configure(http: HttpSecurity) {
         http
-                .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers(HttpMethod.GET, "/config/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/menus").permitAll()
-                .antMatchers(HttpMethod.POST, "/accounts/login", "/accounts/logout", "/accounts/signup").permitAll()
-                .antMatchers(HttpMethod.POST, "/categories").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/categories/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/categories/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/tags/**").hasRole("ADMIN")
-                .antMatchers("/menus").hasRole("ADMIN")
-                .antMatchers("/admin").hasRole("ADMIN")
-                .antMatchers("/config").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST).authenticated()
-                .antMatchers(HttpMethod.PUT).authenticated()
-                .antMatchers(HttpMethod.PATCH).authenticated()
-                .antMatchers(HttpMethod.DELETE).authenticated()
-                .anyRequest().permitAll()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .csrf().disable()
-                .formLogin().disable()
-                .logout().disable()
-        http.addFilterBefore(tokenFilter, BasicAuthenticationFilter::class.java)
+            .authorizeRequests()
+            .antMatchers(HttpMethod.OPTIONS).permitAll()
+            .antMatchers(HttpMethod.GET, "/config/**").permitAll()
+            .antMatchers(HttpMethod.GET, "/menus").permitAll()
+            .antMatchers(HttpMethod.POST, "/accounts/login", "/accounts/logout", "/accounts/signup").permitAll()
+            .antMatchers(HttpMethod.POST, "/categories").hasRole("ADMIN")
+            .antMatchers(HttpMethod.PUT, "/categories/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.DELETE, "/categories/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.DELETE, "/tags/**").hasRole("ADMIN")
+            .antMatchers("/menus").hasRole("ADMIN")
+            .antMatchers("/admin").hasRole("ADMIN")
+            .antMatchers("/config").hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST).authenticated()
+            .antMatchers(HttpMethod.PUT).authenticated()
+            .antMatchers(HttpMethod.PATCH).authenticated()
+            .antMatchers(HttpMethod.DELETE).authenticated()
+            .anyRequest().permitAll()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .csrf().disable()
+            .formLogin().disable()
+            .logout().disable()
+            .addFilterBefore(tokenFilter, BasicAuthenticationFilter::class.java)
     }
 }

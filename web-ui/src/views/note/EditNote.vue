@@ -44,7 +44,13 @@
       </div>
       <div class="field">
         <label>slug</label>
-        <input type="text" name="slug" autocomplete="off" v-model="note.slug" @change="clear" placeholder="slug">
+        <div class="ui action input" v-if="note.access==='SECRET'">
+          <input type="text" name="slug" autocomplete="off" v-model="note.slug" @change="clear" placeholder="slug">
+          <button class="ui icon button" data-tooltip="生成随机slug" @click.prevent="generateSlug">
+            <i class="shield alternate icon"></i>
+          </button>
+        </div>
+        <input v-else type="text" name="slug" autocomplete="off" v-model="note.slug" @change="clear" placeholder="slug">
       </div>
       <div class="fields">
         <div class="required field">
@@ -141,6 +147,7 @@ import configService from '@/services/config.service'
 import {ToastObject} from "vue-toasted";
 
 const DRAFT_KEY = 'noteDraft-'
+const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
 interface BlobInfo {
   id: () => string;
@@ -457,6 +464,14 @@ export default class EditNote extends Vue {
       this.$toasted.success('草稿保存中。。。', {duration: 1000})
       this.noteCache = Object.assign({}, this.note)
     }
+  }
+
+  generateSlug() {
+    let text = ''
+    for (let i = 0; i < 32; i++) {
+      text = text + CHARS[Math.floor(Math.random() * CHARS.length)]
+    }
+    this.note.slug = text
   }
 }
 </script>
