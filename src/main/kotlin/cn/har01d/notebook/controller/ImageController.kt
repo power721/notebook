@@ -37,7 +37,7 @@ class ImageController(
 
     @PostMapping
     fun upload(@RequestParam(value = "file") file: MultipartFile): UploadResponse {
-        if (!configService.get(Const.ENABLE_UPLOAD, true)) {
+        if (!configService.get(Const.ENABLE_IMAGE_UPLOAD, true)) {
             throw AppForbiddenException("未开启图片上传功能")
         }
 

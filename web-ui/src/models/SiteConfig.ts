@@ -16,7 +16,8 @@ export class SiteConfig {
   showWords: boolean = false
   enableAudit: boolean = true
   enableComment: boolean = true
-  enableUpload: boolean = true
+  enableFileUpload: boolean = true
+  enableImageUpload: boolean = true
   enableSignup: boolean = true
   qiniu: QiniuProperties = new QiniuProperties()
 }

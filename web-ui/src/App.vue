@@ -81,7 +81,7 @@
           </div>
         </template>
         <div class="actions">
-          <div class="font">
+          <div class="font" v-if="note">
             <button class="ui icon tiny basic button" data-tooltip="减小字体" @click="decFontSize"><i class="font icon"></i>-
             </button>
             <span class="size" data-tooltip="笔记内容字体大小">{{fontSize}}</span>
@@ -134,6 +134,10 @@
 
     get admin(): boolean {
       return this.$store.state.user.role == Role[Role.ROLE_ADMIN]
+    }
+
+    get note(): boolean {
+      return this.$route.name === 'NoteDetails' || this.$route.name === 'ArticleDetails'
     }
 
     get menus(): Menu[] {

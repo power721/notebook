@@ -56,16 +56,18 @@
                      v-if="author&&!note.deleted">
           <i class="edit icon"></i>
         </router-link>
-        <Dropdown icon="bars" position="top right" :pointing="true" v-if="author">
-          <a class="item" @click="exportPng">存为图片</a>
-          <router-link class="item" :to="'/notes/'+(note.slug?note.slug:note.id)+'/edit'" v-if="!note.deleted">编辑笔记
+        <Dropdown icon="bars" position="top right" class="icon" :pointing="true" v-if="author">
+          <div class="item" @click="exportPng"><i class="images icon"></i>存为图片</div>
+          <router-link class="item" :to="'/notes/'+(note.slug?note.slug:note.id)+'/edit'" v-if="!note.deleted">
+            <i class="edit icon"></i>编辑笔记
           </router-link>
           <router-link class="item" :to="'/notes/'+(note.slug?note.slug:note.id)+'/history'" v-if="note.version>1">
-            历史记录
+            <i class="history icon"></i>历史记录
           </router-link>
-          <a class="item" @click="confirm=true">删除笔记</a>
-          <a class="item" @click="showMove" v-if="!note.deleted">移动笔记</a>
-          <a class="item" @click="revert=true" v-if="note.deleted">恢复笔记</a>
+          <div class="divider"></div>
+          <div class="item" @click="showMove" v-if="!note.deleted"><i class="move icon"></i>移动笔记</div>
+          <div class="item" @click="revert=true" v-if="note.deleted"><i class="redo icon"></i>恢复笔记</div>
+          <div class="item" @click="confirm=true"><i class="trash icon"></i>删除笔记</div>
         </Dropdown>
       </div>
     </div>
@@ -139,7 +141,7 @@
 
 <script lang="ts">
 import axios from 'axios'
-import QRCode from 'qrcode'
+import {toCanvas} from 'qrcode'
 import Viewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
 import {toPng} from 'html-to-image'
@@ -228,7 +230,7 @@ export default class NoteDetails extends EntityView {
         (window as any).Prism.highlightAll()
 
         const qrcode = document.getElementById('qrcode') as HTMLElement
-        QRCode.toCanvas(qrcode, window.location.href, {width: 150})
+        toCanvas(qrcode, window.location.href, {width: 150})
 
         const toc = document.querySelector('.mce-toc')
         if (toc) {
@@ -307,7 +309,7 @@ export default class NoteDetails extends EntityView {
   exportPng() {
     const toc = document.querySelector('.mce-toc')
     const qrcode = createElement('canvas', {style: 'position: absolute;right: 5px;bottom: 0;'})
-    QRCode.toCanvas(qrcode, window.location.href, {width: 90})
+    toCanvas(qrcode, window.location.href, {width: 90})
     const link = window.location.origin + '/#/notes/' + (this.note.slug || this.note.id)
     const info = createDiv({},
       createDiv({}, '标题：', this.note.title),

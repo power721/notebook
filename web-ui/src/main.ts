@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
 import {Option, Radio, RadioGroup, Select} from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 import Toasted from 'vue-toasted'
 import App from './App.vue'
 import './filters'
@@ -41,6 +40,7 @@ import '@npkg/tinymce-plugins/upfile'
 
 import '@/assets/langs/zh_CN'
 
+import 'element-ui/lib/theme-chalk/index.css'
 import 'semantic-ui-css/semantic.min.css'
 
 Vue.config.productionTip = false
@@ -114,9 +114,5 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
-const info =
-  '<<<<<<<<< Notebook >>>>>>>>>\n\n'
-  + '    Powered by Har01d\n'
-  + '    https://har01d.cn/\n'
-  + '\n<<<<<<<<< Notebook >>>>>>>>>\n'
-console.info(info)
+const info = '\n %c Notebook %c https://har01d.cn/ \n'
+console.info(info, 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;')

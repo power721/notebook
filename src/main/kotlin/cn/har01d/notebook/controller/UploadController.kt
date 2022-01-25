@@ -35,7 +35,7 @@ class UploadController(
 
     @PostMapping
     fun upload(@RequestParam(value = "file") file: MultipartFile): UploadResponse {
-        if (!configService.get(Const.ENABLE_UPLOAD, true)) {
+        if (!configService.get(Const.ENABLE_FILE_UPLOAD, true)) {
             throw AppForbiddenException("未开启文件上传功能")
         }
 

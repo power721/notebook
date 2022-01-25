@@ -146,7 +146,7 @@ import {Notebook} from '@/models/Notebook'
 import {Category} from '@/models/Category'
 import accountService from '@/services/account.service'
 import configService from '@/services/config.service'
-import {ToastObject} from "vue-toasted";
+import {ToastObject} from 'vue-toasted'
 
 const DRAFT_KEY = 'noteDraft-'
 const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
@@ -181,12 +181,14 @@ export default class EditNote extends Vue {
   note: Note = new Note()
   noteCache: Note = new Note()
   draftHandler: number = 0
+  private fileUpload = configService.siteConfig.enableFileUpload ? ' upfile attachment' : ''
+  private imageUpload = configService.siteConfig.enableImageUpload ? '  axupimgs' : ''
   config = {
     height: document.body.clientHeight - 530,
     branding: false,
     language: 'zh_CN',
     plugins: [
-      'autolink link media table advlist lists hr' + (configService.siteConfig.enableUpload ? ' upfile attachment axupimgs' : ''),
+      'autolink link media table advlist lists hr' + this.fileUpload + this.imageUpload,
       'code codesample charmap image imagetools quickbars preview fullscreen',
       'insertdatetime toc paste wordcount help searchreplace emoticons'
     ],
@@ -197,7 +199,7 @@ export default class EditNote extends Vue {
       },
     },
     relative_urls: false,
-    image_uploadtab: configService.siteConfig.enableUpload,
+    image_uploadtab: configService.siteConfig.enableImageUpload,
     emoticons_database_url: '/emojis.js',
     default_link_target: '_blank',
     codesample_global_prismjs: true,
@@ -223,8 +225,8 @@ export default class EditNote extends Vue {
       alignleft aligncenter alignright alignjustify | link image axupimgs media upfile attachment | \
       bullist numlist outdent indent | charmap emoticons codesample | removeformat code preview fullscreen | help',
     file_callback: function (file: File, callback: (url: string, details: unknown) => void) {
-      const formData = new FormData();
-      formData.append("file", file);
+      const formData = new FormData()
+      formData.append('file', file)
       axios.post('/files', formData).then((res) => {
         callback(res.data.url, {text: res.data.name})
       }).catch((error) => {
@@ -234,7 +236,7 @@ export default class EditNote extends Vue {
     attachment_max_size: 104857600,
     attachment_upload_handler: function (file: File, success: (url: string) => void, failure: (error: string) => void, progress: (progress: number) => void) {
       const formData = new FormData()
-      formData.append("file", file)
+      formData.append('file', file)
       axios.post('/files', formData, {
         onUploadProgress: function (progressEvent) {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)

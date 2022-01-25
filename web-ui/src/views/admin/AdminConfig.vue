@@ -47,8 +47,14 @@
       </div>
       <div class="field">
         <div class="ui toggle checkbox">
-          <input type="checkbox" name="enableUpload" v-model="siteConfig.enableUpload">
+          <input type="checkbox" name="enableFileUpload" v-model="siteConfig.enableFileUpload">
           <label>开启文件上传</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="ui toggle checkbox">
+          <input type="checkbox" name="enableImageUpload" v-model="siteConfig.enableImageUpload">
+          <label>开启图片上传</label>
         </div>
       </div>
       <div class="field">
@@ -64,26 +70,26 @@
         </div>
       </div>
 
-      <h4 class="ui dividing header" v-show="siteConfig.enableUpload">七牛云</h4>
-      <div class="field" v-show="siteConfig.enableUpload">
+      <h4 class="ui dividing header" v-show="enableUpload">七牛云</h4>
+      <div class="field" v-show="enableUpload">
         <div class="ui toggle checkbox">
           <input type="checkbox" name="enabled" v-model="siteConfig.qiniu.enabled">
           <label>启用</label>
         </div>
       </div>
-      <div class="required field" v-show="siteConfig.enableUpload&&siteConfig.qiniu.enabled">
+      <div class="required field" v-show="enableUpload&&siteConfig.qiniu.enabled">
         <label>Access Key</label>
         <input type="text" name="accessKey" v-model="siteConfig.qiniu.accessKey">
       </div>
-      <div class="required field" v-show="siteConfig.enableUpload&&siteConfig.qiniu.enabled">
+      <div class="required field" v-show="enableUpload&&siteConfig.qiniu.enabled">
         <label>Secret Key</label>
         <input type="text" name="secretKey" v-model="siteConfig.qiniu.secretKey">
       </div>
-      <div class="required field" v-show="siteConfig.enableUpload&&siteConfig.qiniu.enabled">
+      <div class="required field" v-show="enableUpload&&siteConfig.qiniu.enabled">
         <label>空间</label>
         <input type="text" name="bucket" v-model="siteConfig.qiniu.bucket">
       </div>
-      <div class="required field" v-show="siteConfig.enableUpload&&siteConfig.qiniu.enabled">
+      <div class="required field" v-show="enableUpload&&siteConfig.qiniu.enabled">
         <label>域名</label>
         <input type="url" name="domain" v-model="siteConfig.qiniu.domain">
       </div>
@@ -97,8 +103,8 @@
 import {Component, Vue} from 'vue-property-decorator'
 import {SiteConfig} from '@/models/SiteConfig'
 import configService from '@/services/config.service'
-import axios from "axios";
-import {isValidHttpUrl} from "@/utils/utils";
+import axios from 'axios'
+import {isValidHttpUrl} from '@/utils/utils'
 
 @Component
 export default class AdminConfig extends Vue {
@@ -116,6 +122,10 @@ export default class AdminConfig extends Vue {
     {id: 'pink', name: '粉色'},
     {id: 'brown', name: '棕色'},
   ]
+
+  get enableUpload() {
+    return this.siteConfig.enableFileUpload || this.siteConfig.enableImageUpload
+  }
 
   mounted() {
     configService.setTitle('站点设置')

@@ -16,4 +16,4 @@ data class SiteConfigVo(
     val enableSignup: Boolean,
 )
 
-fun SiteConfig.toVo() = SiteConfigVo(siteName, brandColor, qrCode, icpBeian, govBeian, showViews, showWords, enableAudit, enableComment, enableUpload, enableSignup)
+fun SiteConfig.toVo() = SiteConfigVo(siteName, brandColor, qrCode, icpBeian, govBeian, showViews, showWords, enableAudit, enableComment, enableFileUpload, enableSignup)

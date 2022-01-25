@@ -12,7 +12,8 @@ data class SiteConfig(
         val showWords: Boolean,
         val enableAudit: Boolean,
         val enableComment: Boolean,
-        val enableUpload: Boolean,
+        val enableFileUpload: Boolean,
+        val enableImageUpload: Boolean,
         val enableSignup: Boolean,
         val qiniu: QiniuProperties,
 )
