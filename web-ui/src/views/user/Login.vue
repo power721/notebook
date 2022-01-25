@@ -36,7 +36,7 @@
             <div class="ui error message">
               <p>{{ error }}</p>
             </div>
-            <button class="ui primary button" :disabled="success" @click.prevent="submit">登录</button>
+            <button class="ui primary button" :disabled="success||blocked" @click.prevent="submit">登录</button>
           </form>
         </div>
       </div>
@@ -57,6 +57,7 @@ import configService from '@/services/config.service'
 export default class Login extends Vue {
   error: string = ''
   success: boolean = false
+  blocked: boolean = false
   captcha: boolean = false
   t: number = 0
   account = {
@@ -96,14 +97,21 @@ export default class Login extends Vue {
       const back = (this.$route.query.redirect as string) || '/'
       setTimeout(() => this.$router.push(back), 500)
     }, (error) => {
+      if (error.code === 10003) {
+        this.blocked = true
+        this.error = error.message
+        setTimeout(() => this.$router.push('/'), 2000)
+        return
+      }
+
+      if (this.captcha) {
+        this.t = new Date().getTime()
+        this.account.captcha = ''
+      }
       if (error.code === 10001) {
         this.captcha = true
       } else if (error.code === 10002) {
-        this.t = new Date().getTime()
-        this.account.captcha = ''
         this.captcha = true
-      } else {
-        this.t = new Date().getTime()
       }
       this.error = error.message
     })

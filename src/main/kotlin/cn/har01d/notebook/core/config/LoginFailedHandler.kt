@@ -13,7 +13,8 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit
 
-private const val RETRY_MAX = 5
+private const val CAPTCHA_THRESHOLD = 5
+private const val RETRY_MAX = 10
 
 @Component
 class LoginFailedHandler(
@@ -21,8 +22,9 @@ class LoginFailedHandler(
     private val captchaService: CaptchaService,
     private val auditService: AuditService,
 ) : UserAuthHandler() {
+    // TODO: redis support
     private val cache: Cache<String, Int> =
-        Caffeine.newBuilder().maximumSize(1000).expireAfterWrite(1, TimeUnit.MINUTES).build()
+        Caffeine.newBuilder().maximumSize(1000).expireAfterWrite(5, TimeUnit.MINUTES).build()
 
     override fun preLogin(account: LoginDto) {
         val ip = getClientIp()
@@ -30,7 +32,10 @@ class LoginFailedHandler(
         val key = if (user == null) "$ip" else "${user.id}-$ip"
         val count = cache.getIfPresent(key) ?: 0
 
-        if (count > RETRY_MAX && !captchaService.validate(account.username, account.captcha)) {
+        if (count > RETRY_MAX) {
+            throw AppUnauthorizedException("请5分钟后再尝试", Error.LOGIN_FAILED_MAX)
+        } else if (count > CAPTCHA_THRESHOLD && !captchaService.validate(account.username, account.captcha)) {
+            cache.put(key, count + 1)
             throw AppUnauthorizedException("验证码错误", Error.CAPTCHA_ERROR)
         }
     }
@@ -52,8 +57,8 @@ class LoginFailedHandler(
 
         val count = cache.getIfPresent(key) ?: 0
         cache.put(key, count + 1)
-        if (count >= RETRY_MAX) {
-            throw AppUnauthorizedException("用户或密码错误", Error.LOGIN_FAILED_MAX)
+        if (count >= CAPTCHA_THRESHOLD) {
+            throw AppUnauthorizedException("用户或密码错误", Error.CAPTCHA_THRESHOLD)
         }
     }
 

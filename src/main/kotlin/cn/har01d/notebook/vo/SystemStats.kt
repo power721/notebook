@@ -21,4 +21,5 @@ data class NoteStats(
 data class UserStats(
         val total: Long,
         val online: Long,
+        val anonymous: Int,
 )

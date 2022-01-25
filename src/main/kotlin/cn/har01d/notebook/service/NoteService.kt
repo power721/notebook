@@ -12,6 +12,7 @@ import cn.har01d.notebook.util.IdUtils
 import cn.har01d.notebook.util.IdUtils.CATEGORY_OFFSET
 import cn.har01d.notebook.util.IdUtils.NOTEBOOK_OFFSET
 import cn.har01d.notebook.util.wordCount
+import cn.har01d.notebook.vo.NoteStats
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import org.jsoup.Jsoup
@@ -325,6 +326,15 @@ class NoteService(
         noteRepository.deleteAllByAuthorAndDeletedTrue(user)
         auditService.auditCleanTrash(user)
     }
+
+    fun stats() = NoteStats(
+        noteRepository.countByDeleted(false),
+        noteRepository.countByDeleted(true),
+        noteRepository.views(),
+        noteRepository.countByAccess(Access.PUBLIC),
+        noteRepository.countByAccess(Access.SECRET),
+        noteRepository.countByAccess(Access.PRIVATE),
+    )
 
     private fun getTags(tags: List<TagDto>?): List<Tag> {
         if (tags == null) {

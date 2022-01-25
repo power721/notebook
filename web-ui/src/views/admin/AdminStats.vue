@@ -70,6 +70,22 @@
             在线用户
           </div>
         </div>
+        <div class="statistic">
+          <div class="value">
+            {{stats.user.online - stats.user.anonymous}}
+          </div>
+          <div class="label">
+            登录用户
+          </div>
+        </div>
+        <div class="statistic">
+          <div class="value">
+            {{stats.user.anonymous}}
+          </div>
+          <div class="label">
+            匿名用户
+          </div>
+        </div>
       </div>
       <div class="ui statistics">
         <div class="statistic">

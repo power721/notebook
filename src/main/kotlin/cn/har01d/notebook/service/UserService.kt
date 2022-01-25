@@ -13,19 +13,28 @@ import cn.har01d.notebook.entity.User
 import cn.har01d.notebook.entity.UserRepository
 import cn.har01d.notebook.util.IdUtils
 import cn.har01d.notebook.util.IdUtils.USER_OFFSET
+import cn.har01d.notebook.util.getClientIp
+import cn.har01d.notebook.vo.UserStats
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.concurrent.TimeUnit
 
 @Service
 class UserService(
-        private val repository: UserRepository,
-        private val passwordEncoder: PasswordEncoder,
-        private val notebookRepository: NotebookRepository,
-        private val configService: ConfigService,
-        private val auditService: AuditService,
+    private val repository: UserRepository,
+    private val passwordEncoder: PasswordEncoder,
+    private val notebookRepository: NotebookRepository,
+    private val configService: ConfigService,
+    private val auditService: AuditService,
 ) {
+    // TODO: redis support
+    private val cache: Cache<String, Boolean> =
+        Caffeine.newBuilder().maximumSize(10000).expireAfterWrite(1, TimeUnit.MINUTES).build()
+
     fun getCurrentUser(): User? {
         val authentication = SecurityContextHolder.getContext().authentication
         if (authentication != null) {
@@ -85,4 +94,18 @@ class UserService(
         }
         return repository.save(user).also { auditService.auditUserUpdate(it) }
     }
+
+    fun heartbeat() {
+        val user = getCurrentUser()
+        if (user != null) {
+            cache.put(user.id.toString(), true)
+        } else {
+            val ip = getClientIp()
+            if (ip != null) {
+                cache.put(ip, false)
+            }
+        }
+    }
+
+    fun stats() = UserStats(repository.count(), cache.estimatedSize(), cache.asMap().filterValues { it == false }.size)
 }

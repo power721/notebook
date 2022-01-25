@@ -114,5 +114,9 @@ new Vue({
   render: h => h(App)
 }).$mount('#app')
 
+setInterval(() => {
+  axios.post('/accounts/heartbeat').then()
+}, 60000)
+
 const info = '\n %c Notebook %c https://har01d.cn/ \n'
 console.info(info, 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;')

@@ -10,6 +10,7 @@ export class NoteStats {
 export class UserStats {
   total: number = 0
   online: number = 0
+  anonymous: number = 0
 }
 
 export class SystemStats {

@@ -39,7 +39,7 @@ class WebSecurityConfiguration(private val tokenFilter: TokenFilter) : WebSecuri
             .antMatchers(HttpMethod.OPTIONS).permitAll()
             .antMatchers(HttpMethod.GET, "/config/**").permitAll()
             .antMatchers(HttpMethod.GET, "/menus").permitAll()
-            .antMatchers(HttpMethod.POST, "/accounts/login", "/accounts/logout", "/accounts/signup").permitAll()
+            .antMatchers(HttpMethod.POST, "/accounts/login", "/accounts/logout", "/accounts/signup", "/accounts/heartbeat").permitAll()
             .antMatchers(HttpMethod.POST, "/categories").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/categories/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.DELETE, "/categories/**").hasRole("ADMIN")
