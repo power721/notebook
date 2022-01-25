@@ -9,11 +9,11 @@
           <form class="ui form" :class="{error: error, success: success}">
             <div class="required field">
               <label>用户账号</label>
-              <input type="text" name="username" v-model="account.username" placeholder="用户账号">
+              <input type="text" name="username" autocomplete="username" v-model="account.username" placeholder="用户账号">
             </div>
             <div class="required field">
               <label>账号密码</label>
-              <input type="password" name="password" v-model="account.password" placeholder="账号密码">
+              <input type="password" name="password" autocomplete="current-password" v-model="account.password" placeholder="账号密码">
             </div>
             <div class="required field" v-if="captcha">
               <label>验证码</label>
@@ -60,7 +60,7 @@ export default class Login extends Vue {
   captcha: boolean = false
   t: number = 0
   account = {
-    username: '',
+    username: localStorage.getItem('username') || '',
     password: '',
     captcha: '',
     rememberMe: localStorage.getItem('rememberMe') === 'true',
@@ -89,26 +89,23 @@ export default class Login extends Vue {
       return
     }
 
+    localStorage.setItem('username', this.account.username)
     localStorage.setItem('rememberMe', this.account.rememberMe + '')
     accountService.login(this.account.username, this.account.password, this.account.rememberMe, this.account.captcha).then(() => {
       this.success = true
       const back = (this.$route.query.redirect as string) || '/'
       setTimeout(() => this.$router.push(back), 500)
     }, (error) => {
-      if (error.message === '验证码错误') {
+      if (error.code === 10001) {
+        this.captcha = true
+      } else if (error.code === 10002) {
+        this.t = new Date().getTime()
+        this.account.captcha = ''
         this.captcha = true
       } else {
         this.t = new Date().getTime()
       }
       this.error = error.message
-
-      if (error.message === '登录失败次数太多') {
-        this.t = new Date().getTime()
-        if (this.captcha) {
-          this.error = '用户或密码错误'
-        }
-        this.captcha = true
-      }
     })
   }
 }

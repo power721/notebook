@@ -9,11 +9,11 @@
           <form class="ui form" :class="{error: error, success: success}">
             <div class="required field">
               <label>用户账号</label>
-              <input type="text" name="username" v-model="account.username" placeholder="用户账号">
+              <input type="text" name="username" autocomplete="username" v-model="account.username" placeholder="用户账号">
             </div>
             <div class="required field">
               <label>账号密码</label>
-              <input type="password" name="password" v-model="account.password" placeholder="账号密码">
+              <input type="password" name="password" autocomplete="new-password" v-model="account.password" placeholder="账号密码">
             </div>
             <div class="required field">
               <label>确认密码</label>

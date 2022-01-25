@@ -1,5 +1,6 @@
 package cn.har01d.notebook.core.exception
 
+import cn.har01d.notebook.core.Error
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.error.ErrorAttributeOptions
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes
@@ -15,19 +16,32 @@ class ExceptionConfiguration {
 
     @Bean
     fun errorAttributes() = object : DefaultErrorAttributes() {
-        override fun getErrorAttributes(webRequest: WebRequest, options: ErrorAttributeOptions): MutableMap<String, Any> {
+        override fun getErrorAttributes(
+            webRequest: WebRequest,
+            options: ErrorAttributeOptions
+        ): MutableMap<String, Any> {
             val error = getError(webRequest)
             val errorAttributes = super.getErrorAttributes(webRequest, options)
-            if (error is DataAccessException) {
-                errorAttributes["message"] = "数据库异常"
-            } else if (error is HttpMessageConversionException) {
-                errorAttributes["message"] = "数据转换异常"
+            errorAttributes["code"] = Error.GENERAL_ERROR.code
+
+            when (error) {
+                is DataAccessException -> {
+                    errorAttributes["message"] = "数据库异常"
+                }
+                is HttpMessageConversionException -> {
+                    errorAttributes["message"] = "数据转换异常"
+                }
+                is AppException -> {
+                    errorAttributes["code"] = error.code
+                }
             }
+
             if (error != null) {
                 logger.warn("", error)
             } else {
                 logger.warn("{}", errorAttributes["message"])
             }
+
             return errorAttributes
         }
     }
