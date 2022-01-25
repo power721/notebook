@@ -32,9 +32,9 @@ export function isValidHttpUrl(text: string): boolean {
 export function createElement<K extends keyof HTMLElementTagNameMap>(tagName: K, options: any = {}, ...children: (Node | string)[]): HTMLElementTagNameMap[K] {
   const element = document.createElement(tagName)
 
-  if (options.classList) {
-    element.classList.add(...options.classList.split(' '))
-    delete options['classList']
+  if (options.class) {
+    element.classList.add(...options.class.split(' '))
+    delete options['class']
   }
 
   if (options.style) {
@@ -64,4 +64,8 @@ export function createLink(text: string = '', href: string = '', download: strin
 
 export function createDiv(options: any = {}, ...children: (Node | string)[]): HTMLElement {
   return createElement('div', options, ...children)
+}
+
+export function createImg(src: string, options: any = {}, ...children: (Node | string)[]): HTMLElement {
+  return createElement('img', {...options, src: src}, ...children)
 }

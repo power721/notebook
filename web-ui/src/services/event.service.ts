@@ -59,7 +59,7 @@ class EventService {
 
 const eventService = new EventService()
 
-const events = ['click', 'touchend', 'scroll']
+const events = ['click', 'touchend', 'scroll', 'mousemove', 'keypress']
 events.forEach(type => {
   document.addEventListener(type, (event) => {
     eventService.handle(event)

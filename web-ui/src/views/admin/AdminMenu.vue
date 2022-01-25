@@ -14,7 +14,7 @@
           <th>顺序</th>
           <th>父菜单ID</th>
           <th>登录后显示</th>
-          <th>管理员权限</th>
+          <th>仅管理员可见</th>
           <th>操作</th>
         </tr>
         </thead>
@@ -59,8 +59,8 @@
           <input name="order" placeholder="顺序" type="number" v-model="menu.order">
         </div>
         <div class="field">
-          <label>图标</label>
-          <input name="icon" placeholder="图标" type="text" autocomplete="off" v-model="menu.icon">
+          <label><a href="https://semantic-ui.com/elements/icon.html" target="_blank">图标</a></label>
+          <input name="icon" placeholder="semantic-ui图标class" type="text" autocomplete="off" v-model="menu.icon">
         </div>
         <div class="field">
           <label>父菜单</label>
@@ -68,14 +68,14 @@
         </div>
         <div class="field">
           <div class="ui toggle checkbox">
-            <input name="auth" placeholder="登录后显示" type="checkbox" v-model="menu.auth">
+            <input name="auth" type="checkbox" v-model="menu.auth">
             <label>登录后显示</label>
           </div>
         </div>
         <div class="field">
           <div class="ui toggle checkbox">
-            <input name="admin" placeholder="管理员权限" type="checkbox" v-model="menu.admin">
-            <label>管理员权限</label>
+            <input name="admin" type="checkbox" v-model="menu.admin">
+            <label>仅管理员可见</label>
           </div>
         </div>
       </form>
@@ -91,7 +91,6 @@
           <li>/notes/:id 支持别名 /articles/:id</li>
           <li>图标查看<a href="https://semantic-ui.com/elements/icon.html" target="_blank">semantic-ui</a></li>
           <li>图标可以为空</li>
-          <li>管理员权限： 仅对管理员显示</li>
         </ul>
       </div>
     </Modal>

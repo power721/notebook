@@ -316,7 +316,7 @@ export default class NoteDetails extends EntityView {
       createDiv({}, '作者：', createLink(this.note.author.username)),
       createDiv({}, '链接：', createLink(link, link))
     )
-    const divider = this.note.tags.length ? createDiv({classList: 'ui divider'}) : createElement('p')
+    const divider = this.note.tags.length ? createDiv({class: 'ui divider'}) : createElement('p')
     const div = createDiv({}, divider, info, qrcode)
     const content = document.getElementById('content') as HTMLElement
     content.append(div)

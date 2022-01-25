@@ -6,8 +6,9 @@ import App from './App.vue'
 import './filters'
 import router from './router'
 import store from './store'
-import auth from './services/account.service'
+import auth from '@/services/account.service'
 import UserMenu from '@/views/user/UserMenu.vue'
+import '@/services/heartbeat'
 
 import 'tinymce/tinymce'
 import 'tinymce/icons/default'
@@ -42,7 +43,6 @@ import '@/assets/langs/zh_CN'
 
 import 'element-ui/lib/theme-chalk/index.css'
 import 'semantic-ui-css/semantic.min.css'
-import configService from '@/services/config.service'
 
 Vue.config.productionTip = false
 
@@ -114,12 +114,6 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
-
-setInterval(() => {
-  if (configService.siteConfig.enableHeartbeat) {
-    axios.post('/accounts/heartbeat').then()
-  }
-}, 60000)
 
 const info = '\n %c Notebook %c https://har01d.cn/ \n'
 console.info(info, 'color: #fadfa3; background: #030307; padding:5px 0;', 'background: #fadfa3; padding:5px 0;')

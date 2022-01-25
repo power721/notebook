@@ -14,6 +14,11 @@
         <a class="item" :class="{active:sort==='content.title,asc'}" @click="sorted('content.title,asc')">标题(升序)</a>
       </Dropdown>
       <div class="ui divided items">
+        <div class="ui warning message" v-if="notes.length===0">
+          还没有笔记。
+          <router-link to="/notes/-/new">创建</router-link>
+          一个？
+        </div>
         <div class="item" v-for="note in notes" :key="note.id">
           <div class="content">
             <a class="link" data-tooltip="只有你可以访问" v-if="note.access==='PRIVATE'"><i class="lock icon"></i></a>
