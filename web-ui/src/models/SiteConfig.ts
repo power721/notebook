@@ -19,5 +19,6 @@ export class SiteConfig {
   enableFileUpload: boolean = true
   enableImageUpload: boolean = true
   enableSignup: boolean = true
+  enableHeartbeat: boolean = true
   qiniu: QiniuProperties = new QiniuProperties()
 }

@@ -27,6 +27,7 @@ class ConfigService(private val repository: ConfigRepository) {
             get(Const.ENABLE_FILE_UPLOAD, true),
             get(Const.ENABLE_IMAGE_UPLOAD, true),
             get(Const.ENABLE_SIGNUP, true),
+            get(Const.ENABLE_HEARTBEAT, true),
             getQiniuProperties(),
         )
     }
@@ -52,6 +53,7 @@ class ConfigService(private val repository: ConfigRepository) {
         save(Const.ENABLE_FILE_UPLOAD, dto.enableFileUpload)
         save(Const.ENABLE_IMAGE_UPLOAD, dto.enableImageUpload)
         save(Const.ENABLE_SIGNUP, dto.enableSignup)
+        save(Const.ENABLE_HEARTBEAT, dto.enableHeartbeat)
         saveQiniuProperties(dto.qiniu)
         return getSiteConfig()
     }

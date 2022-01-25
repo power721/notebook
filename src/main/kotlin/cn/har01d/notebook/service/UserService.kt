@@ -96,9 +96,9 @@ class UserService(
     }
 
     fun heartbeat() {
-        val user = getCurrentUser()
-        if (user != null) {
-            cache.put(user.id.toString(), true)
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication != null) {
+            cache.put(authentication.name, true)
         } else {
             val ip = getClientIp()
             if (ip != null) {

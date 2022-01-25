@@ -27,46 +27,62 @@
         <input type="text" v-model="siteConfig.govBeian" name="govBeian">
       </div>
 
-      <div class="field">
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="showViews" v-model="siteConfig.showViews">
-          <label>游客显示阅读量</label>
+      <div class="ui equal width grid">
+        <div class="column">
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="showViews" v-model="siteConfig.showViews">
+              <label>游客显示阅读量</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="showWords" v-model="siteConfig.showWords">
+              <label>笔记显示字数</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="enableComment" v-model="siteConfig.enableComment">
+              <label>笔记允许评论</label>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="field">
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="showWords" v-model="siteConfig.showWords">
-          <label>笔记显示字数</label>
+        <div class="column">
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="enableFileUpload" v-model="siteConfig.enableFileUpload">
+              <label>开启文件上传</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="enableImageUpload" v-model="siteConfig.enableImageUpload">
+              <label>开启图片上传</label>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="field">
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="enableComment" v-model="siteConfig.enableComment">
-          <label>笔记允许评论</label>
+        <div class="column">
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="enableSignup" v-model="siteConfig.enableSignup">
+              <label>开启用户注册</label>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="enableHeartbeat" v-model="siteConfig.enableHeartbeat">
+              <label>开启用户心跳</label>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="field">
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="enableFileUpload" v-model="siteConfig.enableFileUpload">
-          <label>开启文件上传</label>
-        </div>
-      </div>
-      <div class="field">
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="enableImageUpload" v-model="siteConfig.enableImageUpload">
-          <label>开启图片上传</label>
-        </div>
-      </div>
-      <div class="field">
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="enableSignup" v-model="siteConfig.enableSignup">
-          <label>开启用户注册</label>
-        </div>
-      </div>
-      <div class="field">
-        <div class="ui toggle checkbox">
-          <input type="checkbox" name="enableAudit" v-model="siteConfig.enableAudit">
-          <label>开启操作日志</label>
+        <div class="column">
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="enableAudit" v-model="siteConfig.enableAudit">
+              <label>开启操作日志</label>
+            </div>
+          </div>
         </div>
       </div>
 
