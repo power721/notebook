@@ -80,6 +80,7 @@
       }
       accountService.signup(this.account.username, this.account.password).then(() => {
         this.success = true
+        localStorage.setItem('username', this.account.username)
         setTimeout(() => this.$router.push('/login'), 1000)
       }, ({response}) => {
         this.error = response.data.message

@@ -16,7 +16,7 @@ class AccountController(val userService: UserService) {
     fun info() = userService.requireCurrentUser().toVo()
 
     @PostMapping("/heartbeat")
-    fun heartbeat() = userService.heartbeat()
+    fun heartbeat() = userService.heartbeat().toVo()
 
     @PostMapping("/info")
     fun update(@RequestBody dto: UserDto) = userService.update(dto).toVo()

@@ -2,6 +2,7 @@ package cn.har01d.notebook.service
 
 import cn.har01d.notebook.core.Const
 import cn.har01d.notebook.core.Role
+import cn.har01d.notebook.core.SiteConfig
 import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppUnauthorizedException
@@ -95,7 +96,7 @@ class UserService(
         return repository.save(user).also { auditService.auditUserUpdate(it) }
     }
 
-    fun heartbeat() {
+    fun heartbeat(): SiteConfig {
         val authentication = SecurityContextHolder.getContext().authentication
         if (authentication != null && authentication.name != "anonymousUser") {
             cache.put(authentication.name, true)
@@ -105,6 +106,7 @@ class UserService(
                 cache.put(ip, false)
             }
         }
+        return configService.getSiteConfig()
     }
 
     fun stats() = UserStats(repository.count(), cache.estimatedSize(), cache.asMap().filterValues { it == false }.size)

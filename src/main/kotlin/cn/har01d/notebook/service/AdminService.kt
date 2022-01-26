@@ -18,7 +18,7 @@ class AdminService(
         private val userService: UserService,
         private val auditService: AuditService,
 ) {
-    fun getSiteConfig() = configService.getSiteConfig()
+    fun getSiteConfig() = configService.getSiteConfig(true)
 
     fun updateSiteConfig(dto: SiteConfig): SiteConfig {
         val old = configService.getSiteConfig()

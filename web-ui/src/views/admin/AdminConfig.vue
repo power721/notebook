@@ -83,6 +83,12 @@
               <label>开启操作日志</label>
             </div>
           </div>
+          <div class="field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" name="enableEncrypt" v-model="siteConfig.enableEncrypt">
+              <label>开启数据加密</label>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -153,24 +159,24 @@ export default class AdminConfig extends Vue {
   save() {
     const data = this.siteConfig.qiniu
 
-    if (!data.bucket) {
+    if (data.enabled && !data.bucket) {
       this.$toasted.error('七牛云 空间名 不能为空')
       return
     }
-    if (!data.accessKey) {
+    if (data.enabled && !data.accessKey) {
       this.$toasted.error('七牛云 accessKey 不能为空')
       return
     }
-    if (!data.secretKey) {
+    if (data.enabled && !data.secretKey) {
       this.$toasted.error('七牛云 secretKey 不能为空')
       return
     }
     const domain = data.domain
-    if (!domain) {
+    if (data.enabled && !domain) {
       this.$toasted.error('七牛云 域名 不能为空')
       return
     }
-    if (!isValidHttpUrl(domain)) {
+    if (data.enabled && !isValidHttpUrl(domain)) {
       this.$toasted.error('七牛云 域名 不正确')
       return
     }

@@ -7,12 +7,21 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 open class AppException : RuntimeException {
     val code: Int
+
     constructor(message: String, code: Int = Error.GENERAL_ERROR.code) : super(message) {
         this.code = code
     }
 
+    constructor(message: String, error: Error) : super(message) {
+        this.code = error.code
+    }
+
     constructor(message: String, code: Int, cause: Throwable?) : super(message, cause) {
         this.code = code
+    }
+
+    constructor(message: String, error: Error, cause: Throwable?) : super(message, cause) {
+        this.code = error.code
     }
 }
 

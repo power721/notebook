@@ -1,6 +1,7 @@
 package cn.har01d.notebook.core.exception
 
 import cn.har01d.notebook.core.Error
+import cn.spark2fire.auth.exception.UserUnauthorizedException
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.error.ErrorAttributeOptions
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes
@@ -32,6 +33,9 @@ class ExceptionConfiguration {
                     errorAttributes["message"] = "数据转换异常"
                 }
                 is AppException -> {
+                    errorAttributes["code"] = error.code
+                }
+                is UserUnauthorizedException -> {
                     errorAttributes["code"] = error.code
                 }
             }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 class ConfigService(private val repository: ConfigRepository) {
     fun findAll(): List<Config> = repository.findAll()
 
-    fun getSiteConfig(): SiteConfig {
+    fun getSiteConfig(admin: Boolean = false): SiteConfig {
         return SiteConfig(
             get(Const.SITE_NAME, "Notebook"),
             get(Const.BRAND_COLOR, "teal"),
@@ -28,7 +28,9 @@ class ConfigService(private val repository: ConfigRepository) {
             get(Const.ENABLE_IMAGE_UPLOAD, true),
             get(Const.ENABLE_SIGNUP, true),
             get(Const.ENABLE_HEARTBEAT, true),
-            getQiniuProperties(),
+            get(Const.ENABLE_ENCRYPT, false),
+            get(Const.SECRET_KEY, ""),
+            if (admin) getQiniuProperties() else QiniuProperties(),
         )
     }
 
@@ -54,6 +56,7 @@ class ConfigService(private val repository: ConfigRepository) {
         save(Const.ENABLE_IMAGE_UPLOAD, dto.enableImageUpload)
         save(Const.ENABLE_SIGNUP, dto.enableSignup)
         save(Const.ENABLE_HEARTBEAT, dto.enableHeartbeat)
+        save(Const.ENABLE_ENCRYPT, dto.enableEncrypt)
         saveQiniuProperties(dto.qiniu)
         return getSiteConfig()
     }

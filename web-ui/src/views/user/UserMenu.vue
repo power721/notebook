@@ -45,7 +45,7 @@
 
     logout() {
       accountService.logout()
-      if (this.$route.meta.auth) {
+      if (this.$route.meta.auth || this.$route.meta.admin) {
         setTimeout(() => this.$router.push('/'), 200)
       }
     }

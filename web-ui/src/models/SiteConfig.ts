@@ -20,5 +20,12 @@ export class SiteConfig {
   enableImageUpload: boolean = true
   enableSignup: boolean = true
   enableHeartbeat: boolean = true
+  enableEncrypt: boolean = false
+  secretKey: string = ''
   qiniu: QiniuProperties = new QiniuProperties()
+}
+
+export class DveConfig {
+  developer: string = 'Har01d'
+  version: string = '0.1.0'
 }

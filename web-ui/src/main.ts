@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import axios from 'axios'
 import {Option, Radio, RadioGroup, Select} from 'element-ui'
 import Toasted from 'vue-toasted'
 import App from './App.vue'
@@ -9,6 +8,7 @@ import store from './store'
 import auth from '@/services/account.service'
 import UserMenu from '@/views/user/UserMenu.vue'
 import '@/services/heartbeat'
+import '@/services/axios.interceptors'
 
 import 'tinymce/tinymce'
 import 'tinymce/icons/default'
@@ -57,28 +57,6 @@ Vue.use(Toasted, {
   theme: 'outline',
   position: 'top-right',
   duration: 5000
-})
-
-axios.interceptors.request.use(function (config) {
-  if (auth.getToken()) {
-    config.headers.common['X-ACCESS-TOKEN'] = auth.getToken()
-  }
-  return config
-}, function (error) {
-  return Promise.reject(error)
-})
-
-axios.interceptors.response.use(function (response) {
-  return response
-}, function (error) {
-  const data = error.response.data
-  if (error.response.status === 401 && data.message === 'Token失效') {
-    auth.clean()
-    router.push('/?_t=' + (new Date().getTime()))
-  } else {
-    Vue.toasted.error(data.message)
-  }
-  return Promise.reject(data)
 })
 
 auth.getInfo()

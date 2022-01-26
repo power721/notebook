@@ -1,9 +1,10 @@
 import axios from 'axios'
-import {SiteConfig} from '@/models/SiteConfig'
+import {DveConfig, SiteConfig} from '@/models/SiteConfig'
 import store from '@/store'
 
 export class ConfigService {
   siteConfig: SiteConfig = new SiteConfig()
+  devConfig: DveConfig = new DveConfig()
 
   getSiteConfig() {
     return axios.get('/config/site').then(({data}) => {

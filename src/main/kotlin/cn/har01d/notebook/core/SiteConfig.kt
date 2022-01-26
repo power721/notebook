@@ -16,5 +16,7 @@ data class SiteConfig(
         val enableImageUpload: Boolean,
         val enableSignup: Boolean,
         val enableHeartbeat: Boolean,
+        val enableEncrypt: Boolean,
+        val secretKey: String,
         val qiniu: QiniuProperties,
 )
