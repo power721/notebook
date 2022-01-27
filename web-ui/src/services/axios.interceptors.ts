@@ -6,6 +6,7 @@ import CryptoJS from 'crypto-js'
 import configService from '@/services/config.service'
 
 const bypass = ['/accounts/info', '/config/site', '/config/menus']
+let timeDiff = 0
 
 function md5(data: string) {
   return btoa(CryptoJS.MD5(data).toString())
@@ -23,6 +24,7 @@ function encrypt(data: string, time: number): string {
 function decrypt(config: AxiosRequestConfig, data: string, sign: string): string {
   const hash = md5(configService.devConfig.developer + '-' + data)
   if (hash !== sign) {
+    Vue.toasted.error('数据校验错误，请刷新页面！')
     throw new Error('数据校验错误，请刷新页面！')
   }
   console.log(config.url)
@@ -40,7 +42,7 @@ axios.interceptors.request.use(function (config) {
   if (auth.getToken()) {
     config.headers.common['X-ACCESS-TOKEN'] = auth.getToken()
   }
-  const time = new Date().getTime()
+  const time = new Date().getTime() + timeDiff
   config.headers.common['time'] = time
   if (config.data && configService.siteConfig.secretKey && !(config.data instanceof FormData)) {
     const data = encrypt(JSON.stringify(config.data), time)
@@ -56,12 +58,14 @@ axios.interceptors.request.use(function (config) {
 })
 
 axios.interceptors.response.use(function (response) {
+  timeDiff = new Date(response.headers['date']).getTime() - Math.floor(new Date().getTime() / 1000) * 1000
   if (response.data && response.headers['sign']) {
     try {
       const data = JSON.parse(decrypt(response.config, response.data, response.headers['sign']))
       return Object.assign({}, response, {data})
     } catch (e) {
       console.error(e)
+      Vue.toasted.error('数据解析错误，请刷新页面！')
       throw new Error('数据解析错误，请刷新页面！')
     }
   }
@@ -72,6 +76,7 @@ axios.interceptors.response.use(function (response) {
       response.data = JSON.parse(decrypt(response.config, response.data, response.headers['sign']))
     } catch (e) {
       console.error(e)
+      Vue.toasted.error('数据解析错误，请刷新页面！')
       throw new Error('数据解析错误，请刷新页面！')
     }
   }

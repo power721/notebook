@@ -53,6 +53,9 @@
     }
 
     mounted() {
+      if (this.$store.state.authenticated) {
+        this.$router.push('/')
+      }
       configService.setTitle('用户注册')
       this.check()
     }

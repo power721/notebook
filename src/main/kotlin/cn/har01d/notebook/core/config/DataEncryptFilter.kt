@@ -5,9 +5,9 @@ import cn.har01d.notebook.service.ConfigService
 import cn.har01d.notebook.service.EncryptService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.slf4j.LoggerFactory
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
-import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.multipart.MultipartResolver
@@ -28,7 +28,7 @@ class DataEncryptFilter(
     private val encryptService: EncryptService,
     private val multipartResolver: MultipartResolver,
 ) : OncePerRequestFilter() {
-    private val specialUrls = arrayOf("/accounts/info", "/config/site", "/config/menus")
+    private val logger = LoggerFactory.getLogger(DataEncryptFilter::class.java)
 
     init {
         Security.addProvider(BouncyCastleProvider())
@@ -48,25 +48,19 @@ class DataEncryptFilter(
         if (enableEncrypt && request.getHeader("encrypted") == "true") {
             val data = objectMapper.readValue(requestWrapper.body, RequestDataWrapper::class.java)
             requestWrapper.body = encryptService.decrypt(data.data, sign, time)
+        } else {
+//            val uri = request.requestURI + if (request.queryString != null) "?" + request.queryString else ""
+//            if (encryptService.sign(uri, time) != sign) {
+//                logger.warn("请求校验失败 $uri")
+//            }
         }
 
         val responseWrapper = ResponseWrapper(response)
 
         filterChain.doFilter(requestWrapper, responseWrapper)
 
-        if (responseWrapper.data.isNotEmpty()) {
-            val data =
-                if (enableEncrypt && response.contentType.contains(APPLICATION_JSON_VALUE)) {
-                    val special = specialUrls.contains(request.requestURI)
-                    val encryptedData = encryptService.encrypt(special, responseWrapper.data, sign, time)
-                    response.setHeader("sign", encryptService.sign(encryptedData, Const.DEVELOPER))
-                    objectMapper.writeValueAsBytes(encryptedData)
-                } else {
-                    responseWrapper.data
-                }
-            response.setIntHeader("x-process-time", (System.currentTimeMillis() - start).toInt())
-            response.outputStream.write(data)
-        }
+        response.setIntHeader("x-process-time", (System.currentTimeMillis() - start).toInt())
+        response.outputStream.write(responseWrapper.data)
     }
 
     private fun wrapper(request: HttpServletRequest): RequestWrapper {

@@ -10,6 +10,7 @@ import CategoryDetails from '@/views/category/CategoryDetails.vue'
 import About from '@/views/About.vue'
 import TagNotes from '@/views/tag/TagNotes.vue'
 import TagList from '@/views/tag/TagList.vue'
+import auth from '@/services/account.service'
 
 Vue.use(VueRouter)
 
@@ -184,3 +185,26 @@ const router = new VueRouter({
 })
 
 export default router
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.admin && !auth.isAdmin()) {
+    if (auth.isAuth()) {
+      Vue.toasted.error('无权操作')
+      next('/')
+    } else {
+      next({
+        path: '/login',
+        query: {redirect: to.fullPath}
+      })
+    }
+  } else if (to.meta.auth && !auth.getToken()) {
+    next({
+      path: '/login',
+      query: {redirect: to.fullPath}
+    })
+  } else if (to.meta.guest && auth.isAuth()) {
+    next('/')
+  } else {
+    next()
+  }
+})

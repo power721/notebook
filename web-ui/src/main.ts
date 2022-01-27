@@ -61,32 +61,6 @@ Vue.use(Toasted, {
 
 auth.getInfo()
 
-router.beforeEach((to, from, next) => {
-  // if (from.fullPath !== '/login' && from.fullPath !== '/signup') {
-  //   config.back = from.fullPath;
-  // }
-  if (to.meta.admin && !auth.isAdmin()) {
-    if (auth.isAuth()) {
-      Vue.toasted.error('无权操作')
-      next('/')
-    } else {
-      next({
-        path: '/login',
-        query: {redirect: to.fullPath}
-      })
-    }
-  } else if (to.meta.auth && !auth.getToken()) {
-    next({
-      path: '/login',
-      query: {redirect: to.fullPath}
-    })
-  } else if (to.meta.guest && auth.isAuth()) {
-    next('/')
-  } else {
-    next()
-  }
-})
-
 new Vue({
   router,
   store,

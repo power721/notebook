@@ -112,7 +112,6 @@
   import FloatingActions from '@/views/FloatingActions.vue'
   import {Menu} from '@/models/Menu'
   import AppMenu from '@/components/AppMenu.vue'
-  import {Role} from '@/models/Account'
 
   @Component({
     components: {
@@ -133,7 +132,7 @@
     }
 
     get admin(): boolean {
-      return this.$store.state.user.role == Role[Role.ROLE_ADMIN]
+      return this.$store.state.admin
     }
 
     get note(): boolean {

@@ -10,7 +10,7 @@
         <div class="item" @click.stop="logout">退出登录</div>
       </div>
     </div>
-    <router-link v-else to="/login">登录</router-link>
+    <router-link v-else :to="'/login?redirect='+$route.path">登录</router-link>
   </div>
 </template>
 

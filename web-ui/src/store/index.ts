@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {AppState} from '@/models/state'
-import {Account} from '@/models/Account'
+import {Account, Role} from '@/models/Account'
 import {SiteConfig} from '@/models/SiteConfig'
 import configService from '@/services/config.service'
 import {Menu} from '@/models/Menu'
@@ -12,6 +12,7 @@ export default new Vuex.Store({
   state: {
     user: new Account(),
     authenticated: false,
+    admin: false,
     siteConfig: new SiteConfig(),
     menus: [
       new Menu(1, '笔记', '/notes', 'home'),
@@ -25,10 +26,12 @@ export default new Vuex.Store({
     login(state: AppState, user: Account) {
       state.user = user
       state.authenticated = true
+      state.admin = user.role == Role[Role.ROLE_ADMIN]
     },
     logout(state: AppState) {
       state.user = new Account()
       state.authenticated = false
+      state.admin = false
     },
     authenticate(state: AppState, authenticated: boolean) {
       state.authenticated = authenticated

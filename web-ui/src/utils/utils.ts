@@ -29,6 +29,10 @@ export function isValidHttpUrl(text: string): boolean {
   return url.protocol === "http:" || url.protocol === "https:"
 }
 
+export function sleep(time: number) {
+  return new Promise((resolve) => setTimeout(resolve, time * 1000));
+}
+
 export function createElement<K extends keyof HTMLElementTagNameMap>(tagName: K, options: any = {}, ...children: (Node | string)[]): HTMLElementTagNameMap[K] {
   const element = document.createElement(tagName)
 

@@ -13,7 +13,8 @@
             </div>
             <div class="required field">
               <label>账号密码</label>
-              <input type="password" name="password" autocomplete="current-password" v-model="account.password" placeholder="账号密码">
+              <input type="password" name="password" autocomplete="current-password" v-model="account.password"
+                     placeholder="账号密码">
             </div>
             <div class="required field" v-if="captcha">
               <label>验证码</label>
@@ -53,7 +54,16 @@ import {Component, Vue} from 'vue-property-decorator'
 import accountService from '@/services/account.service'
 import configService from '@/services/config.service'
 
-@Component
+@Component({
+  watch: {
+    '$store.state.authenticated': function (value) {
+      if (value) {
+        const back = (this.$route.query.redirect as string) || '/'
+        this.$router.push(back)
+      }
+    }
+  }
+})
 export default class Login extends Vue {
   error: string = ''
   success: boolean = false
@@ -68,6 +78,10 @@ export default class Login extends Vue {
   }
 
   mounted() {
+    if (this.$store.state.authenticated) {
+      const back = (this.$route.query.redirect as string) || '/'
+      this.$router.push(back)
+    }
     configService.setTitle('用户登录')
   }
 
