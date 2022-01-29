@@ -1,3 +1,13 @@
+export const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+
+export function generateSlug() {
+  let text = ''
+  for (let i = 0; i < 32; i++) {
+    text = text + CHARS[Math.floor(Math.random() * CHARS.length)]
+  }
+  return text
+}
+
 export function goTop(top = 60) {
   if (window.scrollY <= top) {
     return
@@ -7,6 +17,15 @@ export function goTop(top = 60) {
     left: 0,
     behavior: 'smooth'
   })
+}
+
+export function loadCss(url: string) {
+  const link = document.createElement( "link" )
+  link.href = url
+  link.type = "text/css"
+  link.rel = "stylesheet"
+  document.head.appendChild(link)
+  return link
 }
 
 export function loadJs(url: string) {
@@ -26,11 +45,11 @@ export function isValidHttpUrl(text: string): boolean {
     return false
   }
 
-  return url.protocol === "http:" || url.protocol === "https:"
+  return url.protocol === 'http:' || url.protocol === 'https:'
 }
 
 export function sleep(time: number) {
-  return new Promise((resolve) => setTimeout(resolve, time * 1000));
+  return new Promise((resolve) => setTimeout(resolve, time * 1000))
 }
 
 export function createElement<K extends keyof HTMLElementTagNameMap>(tagName: K, options: any = {}, ...children: (Node | string)[]): HTMLElementTagNameMap[K] {
@@ -62,7 +81,9 @@ export function createLink(text: string = '', href: string = '', download: strin
   const a = document.createElement('a')
   a.href = href
   a.text = text
-  a.download = download
+  if (download) {
+    a.download = download
+  }
   return a
 }
 

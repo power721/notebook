@@ -110,6 +110,12 @@ const routes: Array<RouteConfig> = [
         meta: {auth: true}
       },
       {
+        path: 'security',
+        name: 'UserSecurity',
+        component: () => import(/* webpackChunkName: "user" */ '@/views/user/UserSecurity.vue'),
+        meta: {auth: true}
+      },
+      {
         path: 'info',
         name: 'UserInfo',
         component: () => import(/* webpackChunkName: "user" */ '@/views/user/UserInfo.vue'),

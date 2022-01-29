@@ -8,6 +8,7 @@ import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppUnauthorizedException
 import cn.har01d.notebook.dto.AccountDto
 import cn.har01d.notebook.dto.UserDto
+import cn.har01d.notebook.dto.UserInfoDto
 import cn.har01d.notebook.entity.Notebook
 import cn.har01d.notebook.entity.NotebookRepository
 import cn.har01d.notebook.entity.User
@@ -93,6 +94,14 @@ class UserService(
             }
             user.password = passwordEncoder.encode(dto.newPassword)
         }
+        return repository.save(user).also { auditService.auditUserUpdate(it) }
+    }
+
+    fun updateInfo(dto: UserInfoDto): User {
+        val user = requireCurrentUser()
+        user.editorMode = dto.editorMode
+        user.mdTheme = dto.mdTheme
+        user.signature = dto.signature
         return repository.save(user).also { auditService.auditUserUpdate(it) }
     }
 

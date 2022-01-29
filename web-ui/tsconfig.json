@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -11,6 +11,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "typeRoots": [
       "node_modules/@types",
@@ -23,7 +24,7 @@
       "@/*": [
         "src/*"
       ],
-      "qrcode": ["./src/types/qrcode"]
+      "qrcode": ["./src/types/qrcode"],
     },
     "lib": [
       "esnext",
@@ -37,7 +38,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
   ],
   "exclude": [
     "node_modules",

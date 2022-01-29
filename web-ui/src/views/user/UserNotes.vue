@@ -69,7 +69,7 @@
   @Component<Pageable>({
     components: {
       Pagination,
-      Dropdown
+      Dropdown,
     },
     watch: {
       '$route'(to) {

@@ -2,6 +2,7 @@ package cn.har01d.notebook.controller
 
 import cn.har01d.notebook.core.Const
 import cn.har01d.notebook.core.exception.AppForbiddenException
+import cn.har01d.notebook.entity.User
 import cn.har01d.notebook.service.AuditService
 import cn.har01d.notebook.service.ConfigService
 import cn.har01d.notebook.service.QiniuService
@@ -35,6 +36,16 @@ class ImageController(
         file.mkdirs()
     }
 
+    @PostMapping("/multiple")
+    fun uploadImages(@RequestParam(value = "file") files: List<MultipartFile>): List<UploadResponse> {
+        if (!configService.get(Const.ENABLE_IMAGE_UPLOAD, true)) {
+            throw AppForbiddenException("未开启图片上传功能")
+        }
+
+        val user = userService.requireCurrentUser()
+        return files.map { uploadImage(user, it) }
+    }
+
     @PostMapping
     fun upload(@RequestParam(value = "file") file: MultipartFile): UploadResponse {
         if (!configService.get(Const.ENABLE_IMAGE_UPLOAD, true)) {
@@ -42,6 +53,10 @@ class ImageController(
         }
 
         val user = userService.requireCurrentUser()
+        return uploadImage(user, file)
+    }
+
+    private fun uploadImage(user: User, file: MultipartFile): UploadResponse {
         val prefix = IdUtils.encode(user.id!! + IdUtils.USER_OFFSET)
         val dir = File(baseDir, prefix)
         dir.mkdirs()
@@ -49,7 +64,7 @@ class ImageController(
         localFile.createNewFile()
         FileCopyUtils.copy(file.bytes, localFile)
 
-        val response: UploadResponse = if (configService.get(Const.QINIU_ENABLED, false)) {
+        val response = if (configService.get(Const.QINIU_ENABLED, false)) {
             qiniuService.uploadImage("images/${prefix}", localFile)
         } else {
             UploadResponse(localFile.name, "/images/${prefix}/" + localFile.name)
@@ -60,7 +75,7 @@ class ImageController(
     }
 
     @GetMapping("/{prefix}/{name}")
-    fun getFile(@PathVariable prefix: String, @PathVariable name: String, response: HttpServletResponse) {
+    fun getImage(@PathVariable prefix: String, @PathVariable name: String, response: HttpServletResponse) {
         val localFile = File("$baseDir/$prefix", name)
         response.contentType = MediaType.IMAGE_PNG_VALUE
         response.setHeader(HttpHeaders.CACHE_CONTROL, "max-age=31536000")

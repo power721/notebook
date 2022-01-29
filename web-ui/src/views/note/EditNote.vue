@@ -118,7 +118,8 @@
 
       <div class="required field">
         <label>内容</label>
-        <Editor :init="config" v-model="note.content" @change="clear"></Editor>
+        <Editor v-if="editorMode==='html'" :init="config" v-model="note.content" @change="clear"></Editor>
+        <MdEditor v-else v-model="note.content" @change="clear"></MdEditor>
       </div>
       <div class="right floated">
         <button class="ui button" @click.prevent="cancel">取消</button>
@@ -138,33 +139,25 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import axios from 'axios'
 import {Component, Vue} from 'vue-property-decorator'
+import {ToastObject} from 'vue-toasted'
 import Editor from '@tinymce/tinymce-vue'
 import Multiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import {Note, Tag} from '@/models/Note'
 import {Notebook} from '@/models/Notebook'
 import {Category} from '@/models/Category'
+import {mceConfig} from '@/models/mceConfig'
 import accountService from '@/services/account.service'
 import configService from '@/services/config.service'
-import {ToastObject} from 'vue-toasted'
+import MdEditor from '@/components/MdEditor.vue'
+import {generateSlug} from '@/utils/utils'
 
 const DRAFT_KEY = 'noteDraft-'
-const CHARS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
-
-interface BlobInfo {
-  id: () => string;
-  name: () => string;
-  filename: () => string;
-  blob: () => Blob;
-  base64: () => string;
-  blobUri: () => string;
-  uri: () => string | undefined;
-  file?: File;
-}
 
 @Component({
   components: {
     Editor,
+    MdEditor,
     Multiselect
   }
 })
@@ -181,96 +174,8 @@ export default class EditNote extends Vue {
   note: Note = new Note()
   noteCache: Note = new Note()
   draftHandler: number = 0
-  private fileUpload = configService.siteConfig.enableFileUpload ? ' upfile attachment' : ''
-  private imageUpload = configService.siteConfig.enableImageUpload ? '  axupimgs' : ''
-  config = {
-    height: document.body.clientHeight - 530,
-    branding: false,
-    language: 'zh_CN',
-    plugins: [
-      'autolink link media table advlist lists hr' + this.fileUpload + this.imageUpload,
-      'code codesample charmap image imagetools quickbars preview fullscreen',
-      'insertdatetime toc paste wordcount help searchreplace emoticons'
-    ],
-    menu: {
-      insert: {
-        title: 'Insert',
-        items: 'image axupimgs link media upfile attachment template codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime'
-      },
-    },
-    relative_urls: false,
-    image_uploadtab: configService.siteConfig.enableImageUpload,
-    emoticons_database_url: '/emojis.js',
-    default_link_target: '_blank',
-    codesample_global_prismjs: true,
-    codesample_languages: [
-      {text: 'Java', value: 'java'},
-      {text: 'JavaStacktrace', value: 'javastacktrace'},
-      {text: 'Kotlin', value: 'kotlin'},
-      {text: 'JavaScript', value: 'javascript'},
-      {text: 'Typescript', value: 'typescript'},
-      {text: 'CSS', value: 'css'},
-      {text: 'Docker', value: 'docker'},
-      {text: 'Bash', value: 'bash'},
-      {text: 'Regex', value: 'regex'},
-      {text: 'Nginx', value: 'nginx'},
-      {text: 'SQL', value: 'sql'},
-      {text: 'JSON', value: 'json'},
-      {text: 'XML', value: 'xml'},
-      {text: 'YAML', value: 'yaml'},
-    ],
-    content_css: [],
-    toolbar:
-      'formatselect | bold italic backcolor | \
-      alignleft aligncenter alignright alignjustify | link image axupimgs media upfile attachment | \
-      bullist numlist outdent indent | charmap emoticons codesample | removeformat code preview fullscreen | help',
-    file_callback: function (file: File, callback: (url: string, details: unknown) => void) {
-      const formData = new FormData()
-      formData.append('file', file)
-      axios.post('/files', formData).then((res) => {
-        callback(res.data.url, {text: res.data.name})
-      }).catch((error) => {
-        console.error(error)
-      })
-    },
-    attachment_max_size: 104857600,
-    attachment_upload_handler: function (file: File, success: (url: string) => void, failure: (error: string) => void, progress: (progress: number) => void) {
-      const formData = new FormData()
-      formData.append('file', file)
-      axios.post('/files', formData, {
-        onUploadProgress: function (progressEvent) {
-          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          progress(percent)
-        }
-      }).then((res) => {
-        success(res.data.url)
-      }).catch((error) => {
-        console.log(error)
-        failure(error.message)
-      })
-    },
-    images_upload_handler: function (blobInfo: BlobInfo, success: (url: string) => void, failure: (error: string) => void, progress: (progress: number) => void) {
-      const formData = new FormData()
-      let name: string
-      if (blobInfo.file) {
-        name = blobInfo.file.name
-      } else {
-        name = blobInfo.filename()
-      }
-      formData.append('file', blobInfo.blob(), name)
-      axios.post('/images', formData, {
-        onUploadProgress: function (progressEvent) {
-          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          progress && progress(percent)
-        }
-      }).then((res) => {
-        success(res.data.url)
-      }).catch((error) => {
-        console.log(error)
-        failure(error.message)
-      })
-    }
-  }
+  editorMode = this.$store.state.user.editorMode || 'markdown'
+  config = mceConfig
 
   mounted() {
     this.id = this.$route.params.id || ''
@@ -288,6 +193,7 @@ export default class EditNote extends Vue {
       configService.setTitle('编辑笔记')
       this.loadNote().then(() => this.loadDraft())
     } else {
+      this.note.markdown = this.editorMode === 'markdown'
       configService.setTitle('创建笔记')
       this.loadDraft()
     }
@@ -380,6 +286,7 @@ export default class EditNote extends Vue {
         this.$toasted.error('用户无权操作')
         this.$router.push('/')
       }
+      this.editorMode = this.note.markdown ? 'markdown' : 'html'
       configService.setTitle(this.note.title + ' - 编辑')
     }, () => {
       this.noteLoading = false
@@ -471,11 +378,7 @@ export default class EditNote extends Vue {
   }
 
   generateSlug() {
-    let text = ''
-    for (let i = 0; i < 32; i++) {
-      text = text + CHARS[Math.floor(Math.random() * CHARS.length)]
-    }
-    this.note.slug = text
+    this.note.slug = generateSlug()
   }
 }
 </script>

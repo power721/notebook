@@ -5,4 +5,7 @@ export class User {
   username: string = ''
   role: string = Role[Role.ROLE_USER]
   createdTime: string = ''
+  editorMode: string = ''
+  mdTheme: string = ''
+  signature: string = ''
 }

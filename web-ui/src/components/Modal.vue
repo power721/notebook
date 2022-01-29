@@ -23,12 +23,7 @@
 <script lang="ts">
   import {Component, Prop, Vue} from 'vue-property-decorator'
 
-  @Component
-  export class Super extends Vue {
-    show: boolean = false
-  }
-
-  @Component<Super>({
+  @Component<Modal>({
     model: {
       prop: 'open',
       event: 'changed'
@@ -39,13 +34,15 @@
       }
     }
   })
-  export default class Modal extends Super {
+  export default class Modal extends Vue {
     @Prop() private open!: boolean
     @Prop({default: true}) private closable!: boolean
     @Prop() private title!: string
     @Prop() private size!: string
     @Prop({default: '确认'}) private okText!: string
     @Prop({default: '取消'}) private cancelText!: string
+
+    show: boolean = false
 
     get sizeClass() {
       return {

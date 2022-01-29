@@ -1,5 +1,5 @@
 <template>
-  <div class="ui left aligned fluid container">
+  <div id="top" class="ui left aligned fluid container">
     <div id="breadcrumb" class="ui breadcrumb">
       <router-link class="section" :exact="true" to="/">首页</router-link>
       <i class="right chevron icon divider"></i>
@@ -17,7 +17,7 @@
     </div>
     <div class="ui divider"></div>
 
-    <div id="title" class="ui center aligned raised segment">
+    <div id="note_title" class="ui center aligned raised segment">
       <div class="ui active inverted dimmer" v-if="loading">
         <div class="ui text loader">加载中</div>
       </div>
@@ -84,14 +84,17 @@
         </template>
         <template v-else>本文编写于 {{ note.createdTime | fromNow }}，其中某些信息可能已经过时。</template>
       </div>
-      <div class="article content" v-html="note.content"></div>
-      <div class="footer">
-        <div class="ui divider"></div>
-        <div class="ui blue tag labels">
+      <MdViewer v-if="note.markdown" :content="content"></MdViewer>
+      <div v-else class="article content markdown-body" v-html="note.content"></div>
+      <div id="footer" class="footer">
+        <div class="ui divider" v-if="note.tags.length"></div>
+        <div id="tags" class="ui blue tag labels" v-if="note.tags.length">
           <router-link :to="'/tags/'+tag.name" class="ui label" :key="tag.name" v-for="tag of note.tags">
             {{ tag.name }}
           </router-link>
         </div>
+        <div class="ui divider" v-if="note.author.signature"></div>
+        <MdViewer :content="signature"></MdViewer>
       </div>
     </div>
 
@@ -145,22 +148,26 @@ import {toCanvas} from 'qrcode'
 import Viewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
 import {toPng} from 'html-to-image'
-import {Component} from 'vue-property-decorator'
+import {Component, Vue} from 'vue-property-decorator'
+import hljs from 'highlight.js'
+import {Note} from '@/models/Note'
+import {Emoji} from '@/types/twemoji'
 import Dropdown from '@/components/Dropdown.vue'
 import Modal from '@/components/Modal.vue'
-import Popup from "@/components/Popup.vue";
-import {Note} from '@/models/Note'
+import Popup from '@/components/Popup.vue'
 import {Notebook} from '@/models/Notebook'
-import {EntityView} from "@/components/EntityView";
+import MdViewer from '@/components/MdViewer.vue'
 import accountService from '@/services/account.service'
 import configService from '@/services/config.service'
-import {createDiv, createElement, createLink} from "@/utils/utils";
+import {createDiv, createElement, createLink} from '@/utils/utils'
+
+declare const twemoji: Emoji
 
 function goAnchor(anchor: string) {
   if (anchor) {
     const element = document.getElementById(anchor)
     if (element) {
-      window.scrollTo(0, element.offsetTop)
+      element.scrollIntoView()
     }
   }
 }
@@ -170,6 +177,7 @@ function goAnchor(anchor: string) {
     Dropdown,
     Modal,
     Popup,
+    MdViewer,
   },
   watch: {
     '$route'(to, from) {
@@ -182,7 +190,8 @@ function goAnchor(anchor: string) {
     }
   }
 })
-export default class NoteDetails extends EntityView {
+export default class NoteDetails extends Vue {
+  id: string = ''
   notebookId: string = ''
   old: boolean = false
   loading: boolean = false
@@ -199,6 +208,18 @@ export default class NoteDetails extends EntityView {
 
   get showWords(): boolean {
     return this.$store.state.siteConfig.showWords
+  }
+
+  get signature(): string {
+    const signature = this.note.author.signature
+    if (signature) {
+      const theme = this.note.author.mdTheme ? `---\ntheme: ${this.note.author.mdTheme}\n---\n` : ''
+      return theme + '>' + signature
+    } else return ''
+  }
+
+  get content(): string {
+    return (this.note.author.mdTheme ? `---\ntheme: ${this.note.author.mdTheme}\n---\n` : '') + this.note.content
   }
 
   mounted() {
@@ -221,13 +242,15 @@ export default class NoteDetails extends EntityView {
       this.$router.push('/')
     }).then(() => {
       this.$nextTick(() => {
-        document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
         document.querySelectorAll('.article').forEach(node => {
-          // eslint-disable-next-line
-          (window as any).twemoji.parse(node, {'size': 72})
-        });
-        // eslint-disable-next-line
-        (window as any).Prism.highlightAll()
+          twemoji.parse(node as HTMLElement, {size: 72})
+        })
+
+        if (!this.note.markdown) {
+          document.querySelectorAll('pre[class*=language-] code').forEach(el => {
+            hljs.highlightElement(el as HTMLElement)
+          })
+        }
 
         const qrcode = document.getElementById('qrcode') as HTMLElement
         toCanvas(qrcode, window.location.href, {width: 150})
@@ -235,7 +258,13 @@ export default class NoteDetails extends EntityView {
         const toc = document.querySelector('.mce-toc')
         if (toc) {
           const origin = window.location.origin + '/#'
-          const url = '/#/notes/' + (this.note.slug || this.note.id)
+          const url = window.location.origin + '/#/notes/' + (this.note.slug || this.note.id)
+          const li = createElement('li', {}, createLink(this.note.title, url + '?anchor=top'))
+          const ul = toc.querySelector('ul')
+          ul.insertBefore(li, ul.firstChild)
+          if (this.note.tags.length) {
+            ul.append(createElement('li', {}, createLink('标签', url + '?anchor=tags')))
+          }
           for (const a of toc.querySelectorAll('a')) {
             if (!a.href.includes('?anchor=')) {
               a.href = url + '?anchor=' + a.href.replace(origin, '')
@@ -249,9 +278,11 @@ export default class NoteDetails extends EntityView {
         }
 
         const el = document.getElementById('content') as HTMLElement
-        new Viewer(el, {navbar: false, title: false, filter(image: HTMLElement) {
+        new Viewer(el, {
+          navbar: false, title: false, filter(image: HTMLElement) {
             return image.className !== 'emoji'
-        }})
+          }
+        })
 
         setTimeout(() => {
           const anchor = this.$route.query.anchor as string || ''

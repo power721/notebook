@@ -23,6 +23,9 @@ export default new Vuex.Store({
     ],
   } as AppState,
   mutations: {
+    user(state: AppState, user: Account) {
+      state.user = user
+    },
     login(state: AppState, user: Account) {
       state.user = user
       state.authenticated = true

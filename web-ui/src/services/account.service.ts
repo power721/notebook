@@ -34,7 +34,7 @@ class AccountService {
   update(account: AccountDto) {
     return axios.post('/accounts/info', account).then(({data}) => {
       Object.assign(this.account, data)
-      store.commit('login', data)
+      store.commit('user', data)
     })
   }
 

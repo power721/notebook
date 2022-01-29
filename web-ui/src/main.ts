@@ -44,6 +44,10 @@ import '@/assets/langs/zh_CN'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'semantic-ui-css/semantic.min.css'
 
+import 'bytemd/dist/index.min.css'
+
+import 'juejin-markdown-themes'
+
 Vue.config.productionTip = false
 
 Vue.component(Select.name, Select)

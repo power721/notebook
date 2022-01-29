@@ -8,6 +8,9 @@ export class Account {
   id: string = ''
   username: string = ''
   email: string = ''
+  signature: string = ''
+  mdTheme: string = ''
+  editorMode: string = ''
   role: string = Role[Role.ROLE_USER]
   createdTime: string = ''
 }

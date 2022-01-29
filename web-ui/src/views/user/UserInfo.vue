@@ -1,107 +1,94 @@
 <template>
-  <div class="ui container">
-    <div class="ui cards">
-      <div class="card">
-        <div class="content">
-          <div class="header">用户信息</div>
-          <div class="description">
-            <form class="ui form" :class="{error: error, success: success}">
-              <div class="field">
-                <label>用户账号</label>
-                <input type="text" name="username" v-model="account.username" readonly>
-              </div>
-              <div class="field">
-                <label>用户邮箱</label>
-                <input type="email" name="email" v-model="account.email" placeholder="邮箱">
-              </div>
-              <div class="field">
-                <label>原始密码</label>
-                <input type="password" name="password" v-model="account.password" placeholder="原始密码">
-              </div>
-              <div class="field">
-                <label>新的密码</label>
-                <input type="password" name="newPassword" v-model="account.newPassword" placeholder="新的密码">
-              </div>
-              <div class="field">
-                <label>确认密码</label>
-                <input type="password" name="confirm" v-model="account.confirm" placeholder="确认密码">
-              </div>
-              <div class="ui success message" v-if="success">
-                更新成功
-              </div>
-              <div class="ui error message">
-                <p>{{error}}</p>
-              </div>
-              <button class="ui primary button" :disabled="success" @click.prevent="submit">更新</button>
-            </form>
-          </div>
+  <div class="ui left aligned container">
+    <form class="ui form">
+      <div class="required field">
+        <label>编辑器模式</label>
+        <el-radio-group v-model="editorMode">
+          <el-radio label="html" data-tooltip="TinyMCE">HTML</el-radio>
+          <el-radio label="markdown" data-tooltip="ByteMD">Markdown</el-radio>
+        </el-radio-group>
+      </div>
+      <div class="required field">
+        <label>Markdown主题</label>
+        <el-select v-model="mdTheme" filterable>
+          <el-option key="" label="默认" value="">
+          </el-option>
+          <el-option
+            v-for="item in themes"
+            :key="item"
+            :label="item"
+            :value="item">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="required field">
+        <label>个性签名</label>
+        <input type="text" placeholder="输入个性签名" maxlength="100" v-model="signature">
+        <div class="ui segment">
+          <MdViewer :content="content"></MdViewer>
         </div>
       </div>
-    </div>
+      <div class="right floated">
+        <button class="ui primary button" @click.prevent="submit">更新</button>
+      </div>
+    </form>
   </div>
 </template>
 
 <script lang="ts">
-  import {Component, Vue} from 'vue-property-decorator'
-  import accountService from '@/services/account.service'
-  import {Account} from '@/models/Account'
-  import configService from '@/services/config.service'
+import {Component, Vue} from 'vue-property-decorator'
+import axios from 'axios'
+import store from '@/store'
+import configService from '@/services/config.service'
+import MdViewer from '@/components/MdViewer.vue'
+import {themes} from '@/models/themes'
 
-  @Component
-  export default class UserInfo extends Vue {
-    error: string = ''
-    success: boolean = false
-    account = {
-      email: this.user.email || '',
-      username: this.user.username,
-      password: '',
-      newPassword: '',
-      confirm: ''
-    }
-
-    get user(): Account {
-      return this.$store.state.user
-    }
-
-    mounted() {
-      configService.setTitle('用户设置')
-    }
-
-    submit() {
-      this.error = ''
-      if (this.account.newPassword) {
-        if (this.account.newPassword.length < 8) {
-          this.error = '密码长度至少8位'
-          return
-        }
-        if (this.account.newPassword !== this.account.confirm) {
-          this.error = '密码不匹配'
-          return
-        }
-      }
-
-      const account = {
-        email: this.account.email,
-        password: this.account.password,
-        newPassword: this.account.newPassword,
-      }
-      accountService.update(account).then(() => {
-        this.success = true
-        this.account.password = ''
-        this.account.newPassword = ''
-        this.account.confirm = ''
-        this.$toasted.success('更新成功')
-        setTimeout(() => this.success = false, 2000)
-      }, (error) => {
-        this.error = error.message
-      })
+@Component({
+  components: {MdViewer},
+  computed: {
+    content: function () {
+      const theme = this.mdTheme ? `---\ntheme: ${this.mdTheme}\n---\n` : ''
+      return theme
+        + '## Markdown主题预览\n'
+        + '这是一个 **粗体文本**， 这是一个 *斜体文本*。'
+        + '打开~~CMD~~ Terminal， 输入命令： `nano`。\n'
+        + '```ts\n' +
+        'export function loadJs(url: string) {\n' +
+        '  const script = document.createElement(\'script\')\n' +
+        '  script.type = \'text/javascript\'\n' +
+        '  script.src = url\n' +
+        '  document.head.appendChild(script)\n' +
+        '}\n' +
+        '```\n'
+        + '1. 前端开发\n'
+        + '2. 后端开发\n'
+        + '3. 全栈开发\n'
+        + '[Google](https://google.com/)\n'
+        + (this.signature ? '>' + this.signature : '')
     }
   }
+})
+export default class UserInfo extends Vue {
+  editorMode = this.$store.state.user.editorMode || 'markdown'
+  mdTheme = this.$store.state.user.mdTheme || ''
+  signature = this.$store.state.user.signature || ''
+  themes = themes
+
+  mounted() {
+    configService.setTitle('用户设置')
+  }
+
+  submit() {
+    const data = {editorMode: this.editorMode, mdTheme: this.mdTheme, signature: this.signature}
+    axios.post('/users/-/info', data).then(({data}) => {
+      store.commit('user', data)
+      this.$toasted.show('更新成功')
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+}
 </script>
 
-<style scoped>
-  .ui.cards {
-    max-width: 450px;
-    margin: 96px auto;
-  }
+<style>
 </style>
