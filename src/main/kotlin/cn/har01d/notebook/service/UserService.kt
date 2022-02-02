@@ -33,16 +33,25 @@ class UserService(
     private val configService: ConfigService,
     private val auditService: AuditService,
 ) {
+    private val userHolder: ThreadLocal<User> = ThreadLocal()
+
     // TODO: redis support
     private val cache: Cache<String, Boolean> =
         Caffeine.newBuilder().maximumSize(10000).expireAfterWrite(1, TimeUnit.MINUTES).build()
 
     fun getCurrentUser(): User? {
+        var user = userHolder.get()
+        if (user != null) {
+            return user
+        }
+
         val authentication = SecurityContextHolder.getContext().authentication
         if (authentication != null) {
-            return repository.findByUsername(authentication.name)
+            user = repository.findByUsername(authentication.name)
+            userHolder.set(user)
         }
-        return null
+
+        return user
     }
 
     fun getUser(id: Int): User? {

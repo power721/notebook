@@ -28,16 +28,18 @@ import javax.transaction.Transactional
 
 @Service
 class NoteService(
-        private val noteRepository: NoteRepository,
-        private val notebookRepository: NotebookRepository,
-        private val contentRepository: NoteContentRepository,
-        private val categoryRepository: CategoryRepository,
-        private val tagRepository: TagRepository,
-        private val userService: UserService,
-        private val auditService: AuditService,
-        private val configService: ConfigService,
+    private val noteRepository: NoteRepository,
+    private val notebookRepository: NotebookRepository,
+    private val contentRepository: NoteContentRepository,
+    private val categoryRepository: CategoryRepository,
+    private val tagRepository: TagRepository,
+    private val userService: UserService,
+    private val auditService: AuditService,
+    private val configService: ConfigService,
 ) {
-    private val viewCache: Cache<String, Boolean> = Caffeine.newBuilder().maximumSize(10_000).expireAfterWrite(1, TimeUnit.DAYS).build()
+    private val viewCache: Cache<String, Boolean> =
+        Caffeine.newBuilder().maximumSize(10_000).expireAfterWrite(1, TimeUnit.DAYS).build()
+
     fun list(q: String?, pageable: Pageable): Page<Note> {
         if (q != null && q.isNotEmpty()) {
             return search(q, pageable)
@@ -77,15 +79,14 @@ class NoteService(
 
     fun get(id: String): Note {
         val note = noteRepository.findByRid(id) ?: noteRepository.findBySlug(id) ?: throw AppNotFoundException("笔记不存在")
+        val user = userService.getCurrentUser()
         if (note.deleted) {
-            val user = userService.getCurrentUser()
             if (user == null || note.author.id != user.id) {
                 throw AppNotFoundException("笔记不存在")
             }
         }
 
         if (note.access == Access.PRIVATE) {
-            val user = userService.getCurrentUser()
             if (user == null || note.author.id != user.id) {
                 throw AppForbiddenException("用户无权操作")
             }
@@ -151,8 +152,12 @@ class NoteService(
             }
         }
 
-        val note = noteRepository.save(Note(user, notebook, category, getTags(dto.tags), access = dto.access
-                ?: notebook.access, rid = rid))
+        val note = noteRepository.save(
+            Note(
+                user, notebook, category, getTags(dto.tags), access = dto.access
+                    ?: notebook.access, rid = rid
+            )
+        )
         if (dto.slug != null && dto.slug.isNotEmpty()) {
             note.slug = dto.slug
         }
@@ -245,7 +250,8 @@ class NoteService(
         note.updatedTime = Instant.now()
         note.notebook.updatedTime = Instant.now()
         notebookRepository.save(note.notebook)
-        return noteRepository.save(note).also { auditService.auditNoteUpdate(user, note, "移动笔记：${note.content?.title}到${notebook.name}") }
+        return noteRepository.save(note)
+            .also { auditService.auditNoteUpdate(user, note, "移动笔记：${note.content?.title}到${notebook.name}") }
     }
 
     fun getNoteHistory(id: String): List<NoteContent> {
@@ -275,7 +281,8 @@ class NoteService(
         val content = contentRepository.findByNoteAndVersion(note, version) ?: throw AppNotFoundException("版本不存在")
         note.content = content
         note.updatedTime = Instant.now()
-        return noteRepository.save(note).also { auditService.auditNoteUpdate(user, note, "恢复笔记：${note.content?.title}版本$version:") }
+        return noteRepository.save(note)
+            .also { auditService.auditNoteUpdate(user, note, "恢复笔记：${note.content?.title}版本$version:") }
     }
 
     @Transactional
@@ -316,7 +323,8 @@ class NoteService(
         }
 
         note.deleted = false
-        return noteRepository.save(note).also { auditService.auditNoteUpdate(user, note, "恢复笔记：${note.content?.title}") }
+        return noteRepository.save(note)
+            .also { auditService.auditNoteUpdate(user, note, "恢复笔记：${note.content?.title}") }
     }
 
     @Transactional
@@ -346,8 +354,8 @@ class NoteService(
     }
 
     private fun getNotebook(id: String) = notebookRepository.findByIdOrNull(IdUtils.decode(id) - NOTEBOOK_OFFSET)
-            ?: throw AppNotFoundException("笔记本不存在")
+        ?: throw AppNotFoundException("笔记本不存在")
 
     private fun getCategory(id: String) = categoryRepository.findByIdOrNull(IdUtils.decode(id) - CATEGORY_OFFSET)
-            ?: throw AppNotFoundException("分类不存在")
+        ?: throw AppNotFoundException("分类不存在")
 }

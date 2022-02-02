@@ -38,6 +38,6 @@ data class NoteVO2(
 )
 
 fun Note.toVo() = NoteVO(rid, content!!.title, slug, content!!.content, author.toVo4(), notebook.toVo2(), category.toVo2(), tags.map { TagDto(it.name) }, content!!.markdown, access, content!!.version, views, deleted, createdTime, updatedTime, words)
-fun Note.toVo2() = NoteVO2(rid, content!!.title, slug, author.toVo2(), notebook.toVo2(), category.toVo2(), access, content!!.version, createdTime, updatedTime)
+fun Note.toVo2() = NoteVO2(if (slug!=null) "" else rid, content!!.title, slug, author.toVo2(), notebook.toVo2(), category.toVo2(), access, content!!.version, createdTime, updatedTime)
 
 fun String.truncate(limit: Int = 100) = if (length > limit) substring(0, limit) + "..." else this

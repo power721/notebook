@@ -2,6 +2,7 @@ package cn.har01d.notebook.controller
 
 import cn.har01d.notebook.dto.NoteDto
 import cn.har01d.notebook.service.NoteService
+import cn.har01d.notebook.service.UserService
 import cn.har01d.notebook.vo.toVo
 import cn.har01d.notebook.vo.toVo2
 import org.springframework.data.domain.Pageable
@@ -11,7 +12,7 @@ import javax.transaction.Transactional
 
 @RequestMapping("/notes")
 @RestController
-class NoteController(private val service: NoteService) {
+class NoteController(private val service: NoteService, private val userService: UserService) {
     @GetMapping
     fun list(q: String?, pageable: Pageable) = service.list(q, pageable).map { it.toVo2() }
 
@@ -21,7 +22,15 @@ class NoteController(private val service: NoteService) {
     @Transactional
     @GetMapping("{id}")
     fun get(@PathVariable id: String, view: Boolean, request: HttpServletRequest) = service.get(id).also {
-        if (view) service.updateViews(it, request)
+        if (view)  {
+            service.updateViews(it, request)
+            if (it.slug != null) {
+                val user = userService.getCurrentUser()
+                if (user == null || it.author.id != user.id) {
+                    it.rid = ""
+                }
+            }
+        }
     }.toVo()
 
     @DeleteMapping("{id}")
