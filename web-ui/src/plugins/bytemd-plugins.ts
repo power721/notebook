@@ -17,7 +17,7 @@ export const plugins = [
   gfm({locale: zhGfm}),
   breaks(),
   frontmatter(),
-  footnotes(),
+  // footnotes(),
   highlight(),
   gemoji(),
   math({locale: zhMath}),

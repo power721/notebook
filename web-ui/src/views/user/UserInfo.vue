@@ -21,7 +21,7 @@
           </el-option>
         </el-select>
       </div>
-      <div class="required field">
+      <div class="field">
         <label>个性签名</label>
         <input type="text" placeholder="输入个性签名" maxlength="100" v-model="signature">
         <div class="ui segment">

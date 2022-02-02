@@ -248,9 +248,15 @@ export default class NoteDetails extends Vue {
 
         if (!this.note.markdown) {
           document.querySelectorAll('pre[class*=language-] code').forEach(el => {
+            el.classList.add(el.parentElement.className)
             hljs.highlightElement(el as HTMLElement)
           })
         }
+
+        (window as any).highlightJsBadge({
+          copyIconClass: "copy outline icon",
+          checkIconClass: "check circle icon"
+        })
 
         const qrcode = document.getElementById('qrcode') as HTMLElement
         toCanvas(qrcode, window.location.href, {width: 150})
