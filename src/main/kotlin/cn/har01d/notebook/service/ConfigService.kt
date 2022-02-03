@@ -6,11 +6,14 @@ import cn.har01d.notebook.core.config.QiniuProperties
 import cn.har01d.notebook.entity.Config
 import cn.har01d.notebook.entity.ConfigRepository
 import cn.har01d.notebook.entity.ConfigType
+import com.github.benmanes.caffeine.cache.Cache
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class ConfigService(private val repository: ConfigRepository) {
+class ConfigService(private val repository: ConfigRepository, cacheService: CacheService) {
+    private val cache: Cache<String, String> = cacheService.localCache()
+
     fun findAll(): List<Config> = repository.findAll()
 
     fun getSiteConfig(admin: Boolean = false): SiteConfig {
@@ -58,7 +61,7 @@ class ConfigService(private val repository: ConfigRepository) {
         save(Const.ENABLE_HEARTBEAT, dto.enableHeartbeat)
         save(Const.ENABLE_ENCRYPT, dto.enableEncrypt)
         saveQiniuProperties(dto.qiniu)
-        return getSiteConfig()
+        return getSiteConfig(true)
     }
 
     fun saveQiniuProperties(qiniu: QiniuProperties) {
@@ -72,54 +75,83 @@ class ConfigService(private val repository: ConfigRepository) {
     fun get(name: String) = repository.findByIdOrNull(name)
 
     fun get(name: String, default: String): String {
+        val value = cache.getIfPresent(name)
+        if (value != null) {
+            return value
+        }
+
         var config = repository.findByIdOrNull(name)
         if (config == null) {
             config = repository.save(Config(name, default))
         }
+        cache.put(name, config.value)
         return config.value
     }
 
     fun get(name: String, default: Boolean): Boolean {
+        val value = cache.getIfPresent(name)
+        if (value != null) {
+            return value.toBoolean()
+        }
+
         var config = repository.findByIdOrNull(name)
         if (config == null) {
             config = repository.save(Config(name, default.toString(), ConfigType.BOOLEAN))
         }
+        cache.put(name, config.value)
         return config.value == "true"
     }
 
     fun get(name: String, default: Int): Int {
+        val value = cache.getIfPresent(name)
+        if (value != null) {
+            return value.toInt()
+        }
+
         var config = repository.findByIdOrNull(name)
         if (config == null) {
             config = repository.save(Config(name, default.toString(), ConfigType.INT))
         }
+        cache.put(name, config.value)
         return config.value.toInt()
     }
 
     fun get(name: String, default: Long): Long {
+        val value = cache.getIfPresent(name)
+        if (value != null) {
+            return value.toLong()
+        }
+
         var config = repository.findByIdOrNull(name)
         if (config == null) {
             config = repository.save(Config(name, default.toString(), ConfigType.LONG))
         }
+        cache.put(name, config.value)
         return config.value.toLong()
     }
 
     fun save(config: Config): Config {
+        cache.put(config.name, config.value)
         return repository.save(config)
     }
 
     fun save(name: String, value: String): Config {
+        cache.put(name, value)
         return repository.save(Config(name, value))
     }
 
     fun save(name: String, value: Boolean): Config {
+        cache.put(name, value.toString())
         return repository.save(Config(name, value.toString(), ConfigType.BOOLEAN))
     }
 
     fun save(name: String, value: Int): Config {
+        cache.put(name, value.toString())
         return repository.save(Config(name, value.toString(), ConfigType.INT))
     }
 
     fun save(name: String, value: Long): Config {
+        cache.put(name, value.toString())
         return repository.save(Config(name, value.toString(), ConfigType.LONG))
     }
 }

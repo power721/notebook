@@ -50,7 +50,8 @@
       <template slot="title">
         版本{{history.version}}： {{history.title}}
       </template>
-      <div class="article content" v-html="history.content"></div>
+      <MdViewer v-if="history.markdown" :content="content"></MdViewer>
+      <div v-else class="article content markdown-body" v-html="history.content"></div>
       <template slot="actions">
         <button @click="modal=false" class="ui cancel button">取消</button>
         <button @click="deleteVersion" class="ui negative button" data-tooltip="删除此版本" v-if="note.version!==history.version">
@@ -67,15 +68,17 @@
 <script lang="ts">
   import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
+  import Modal from '@/components/Modal.vue'
+  import MdViewer from '@/components/MdViewer.vue'
   import {Note, NoteHistory} from '@/models/Note'
   import {ResponseError} from '@/models/ResponseError'
   import accountService from '@/services/account.service'
-  import Modal from '@/components/Modal.vue'
   import configService from '@/services/config.service'
 
   @Component({
     components: {
-      Modal
+      Modal,
+      MdViewer,
     }
   })
   export default class NoteHistoryList extends Vue {
@@ -85,6 +88,10 @@
     list: NoteHistory[] = []
     history: NoteHistory = new NoteHistory()
     note: Note = new Note()
+
+    get content(): string {
+      return (this.note.author.mdTheme ? `---\ntheme: ${this.note.author.mdTheme}\n---\n` : '') + this.history.content
+    }
 
     mounted() {
       this.id = this.$route.params.id

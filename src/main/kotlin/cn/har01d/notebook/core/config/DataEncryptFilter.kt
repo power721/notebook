@@ -43,9 +43,8 @@ class DataEncryptFilter(
         val sign = request.getHeader("sign") ?: ""
         val time = request.getHeader("time") ?: ""
         val requestWrapper = wrapper(request)
-        val enableEncrypt = configService.get(Const.ENABLE_ENCRYPT, false)
 
-        if (enableEncrypt && request.getHeader("encrypted") == "true") {
+        if (request.getHeader("encrypted") == "true") {
             val data = objectMapper.readValue(requestWrapper.body, RequestDataWrapper::class.java)
             requestWrapper.body = encryptService.decrypt(data.data, sign, time)
         } else {

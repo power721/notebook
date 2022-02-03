@@ -92,7 +92,7 @@
         </div>
       </div>
 
-      <h4 class="ui dividing header" v-show="enableUpload">七牛云</h4>
+      <h4 class="ui dividing header" v-show="enableUpload">七牛云<sub>对象存储</sub></h4>
       <div class="field" v-show="enableUpload">
         <div class="ui toggle checkbox">
           <input type="checkbox" name="enabled" v-model="siteConfig.qiniu.enabled">

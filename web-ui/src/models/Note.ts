@@ -39,4 +39,5 @@ export class NoteHistory {
   content: string = ''
   version: number = 0
   createdTime: string = ''
+  markdown: boolean = false
 }

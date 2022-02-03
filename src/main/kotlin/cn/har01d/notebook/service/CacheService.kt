@@ -33,33 +33,32 @@ class CacheService(private val redisTemplate: StringRedisTemplate) {
 
     fun cache(name: String, expiration: Duration? = null, maximumSize: Long? = null): Cache<String, String> {
         return if (redisEnabled) {
-            StringRedisCache(name, redisTemplate, expiration, maximumSize)
+            StringRedisCache(name, redisTemplate, expiration)
         } else {
-            localCache(name, expiration, maximumSize)
+            localCache(expiration, maximumSize)
         }
     }
 
     fun intCache(name: String, expiration: Duration? = null, maximumSize: Long? = null): Cache<String, Int> {
         return if (redisEnabled) {
-            IntRedisCache(name, redisTemplate, expiration, maximumSize)
+            IntRedisCache(name, redisTemplate, expiration)
         } else {
-            localCache(name, expiration, maximumSize)
+            localCache(expiration, maximumSize)
         }
     }
 
     fun boolCache(name: String, expiration: Duration? = null, maximumSize: Long? = null): Cache<String, Boolean> {
         return if (redisEnabled) {
-            BoolRedisCache(name, redisTemplate, expiration, maximumSize)
+            BoolRedisCache(name, redisTemplate, expiration)
         } else {
-            localCache(name, expiration, maximumSize)
+            localCache(expiration, maximumSize)
         }
     }
 
-    fun <String, V> localCache(
-        name: String,
+    fun <K, V> localCache(
         expiration: Duration? = null,
         maximumSize: Long? = null
-    ): Cache<String, V> {
+    ): Cache<K, V> {
         val builder = Caffeine.newBuilder()
         if (maximumSize != null) {
             builder.maximumSize(maximumSize)
@@ -75,7 +74,6 @@ abstract class RedisCache<V>(
     name: String,
     private val redisTemplate: StringRedisTemplate,
     private val expiration: Duration? = null,
-    private val maximumSize: Long? = null,
 ) : Cache<String, V> {
     private val op = redisTemplate.opsForValue()
     private val prefix = "Notebook:$name"
@@ -173,8 +171,7 @@ class StringRedisCache(
     name: String,
     redisTemplate: StringRedisTemplate,
     expiration: Duration? = null,
-    maximumSize: Long? = null,
-) : RedisCache<String>(name, redisTemplate, expiration, maximumSize) {
+) : RedisCache<String>(name, redisTemplate, expiration) {
     override fun valueFromString(value: String) = value
 }
 
@@ -182,8 +179,7 @@ class IntRedisCache(
     name: String,
     redisTemplate: StringRedisTemplate,
     expiration: Duration? = null,
-    maximumSize: Long? = null,
-) : RedisCache<Int>(name, redisTemplate, expiration, maximumSize) {
+) : RedisCache<Int>(name, redisTemplate, expiration) {
     override fun valueFromString(value: String) = value.toInt()
 }
 
@@ -191,7 +187,6 @@ class BoolRedisCache(
     name: String,
     redisTemplate: StringRedisTemplate,
     expiration: Duration? = null,
-    maximumSize: Long? = null,
-) : RedisCache<Boolean>(name, redisTemplate, expiration, maximumSize) {
+) : RedisCache<Boolean>(name, redisTemplate, expiration) {
     override fun valueFromString(value: String) = value.toBoolean()
 }

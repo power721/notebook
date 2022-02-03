@@ -9,7 +9,7 @@ sudo mkdir -p /opt/${APPNAME}/log
 if [[ ! -f /opt/${APPNAME}/config/application-production.yaml ]]; then
 cat <<EOT > /tmp/${APPNAME}.yaml
 cn:
-  har01d:
+  spark2fire:
     auth:
       jwt:
         secretKey: "ThisIsMyJWTSecretKeyAtLeast256bit!"
