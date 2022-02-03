@@ -6,7 +6,7 @@ import store from '@/store'
 let idle: number = 0
 
 setInterval(() => {
-  if (idle < 1 && configService.siteConfig.enableHeartbeat) {
+  if (idle < 2 && configService.siteConfig.enableHeartbeat) {
     axios.post('/accounts/heartbeat').then(({data}) => {
       Object.assign(configService.siteConfig, data)
       store.commit('config', data)

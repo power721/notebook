@@ -4,14 +4,14 @@ import cn.har01d.notebook.core.Error
 import cn.har01d.notebook.core.exception.AppUnauthorizedException
 import cn.har01d.notebook.entity.UserRepository
 import cn.har01d.notebook.service.AuditService
+import cn.har01d.notebook.service.CacheService
 import cn.har01d.notebook.service.CaptchaService
 import cn.har01d.notebook.util.getClientIp
 import cn.spark2fire.auth.dto.LoginDto
 import cn.spark2fire.auth.handler.UserAuthHandler
 import com.github.benmanes.caffeine.cache.Cache
-import com.github.benmanes.caffeine.cache.Caffeine
 import org.springframework.stereotype.Component
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 
 private const val CAPTCHA_THRESHOLD = 5
 private const val RETRY_MAX = 10
@@ -21,10 +21,9 @@ class LoginFailedHandler(
     private val userRepository: UserRepository,
     private val captchaService: CaptchaService,
     private val auditService: AuditService,
+    private val cacheService: CacheService,
 ) : UserAuthHandler() {
-    // TODO: redis support
-    private val cache: Cache<String, Int> =
-        Caffeine.newBuilder().maximumSize(1000).expireAfterWrite(5, TimeUnit.MINUTES).build()
+    private val cache: Cache<String, Int> = cacheService.intCache("Login", Duration.ofMinutes(5))
 
     override fun preLogin(account: LoginDto) {
         val ip = getClientIp()

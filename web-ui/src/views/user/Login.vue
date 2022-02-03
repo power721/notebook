@@ -118,7 +118,7 @@ export default class Login extends Vue {
         return
       }
 
-      if (this.captcha) {
+      if (this.captcha && error.code !== 10002) {
         this.t = new Date().getTime()
         this.account.captcha = ''
       }

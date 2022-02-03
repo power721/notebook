@@ -14,15 +14,14 @@ import cn.har01d.notebook.util.IdUtils.NOTEBOOK_OFFSET
 import cn.har01d.notebook.util.wordCount
 import cn.har01d.notebook.vo.NoteStats
 import com.github.benmanes.caffeine.cache.Cache
-import com.github.benmanes.caffeine.cache.Caffeine
 import org.jsoup.Jsoup
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
-import java.util.concurrent.TimeUnit
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
@@ -36,9 +35,9 @@ class NoteService(
     private val userService: UserService,
     private val auditService: AuditService,
     private val configService: ConfigService,
+    private val cacheService: CacheService,
 ) {
-    private val viewCache: Cache<String, Boolean> =
-        Caffeine.newBuilder().maximumSize(10_000).expireAfterWrite(1, TimeUnit.DAYS).build()
+    private val viewCache: Cache<String, Boolean> = cacheService.boolCache("Note", Duration.ofDays(1))
 
     fun list(q: String?, pageable: Pageable): Page<Note> {
         if (q != null && q.isNotEmpty()) {

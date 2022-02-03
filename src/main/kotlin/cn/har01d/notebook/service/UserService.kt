@@ -18,12 +18,11 @@ import cn.har01d.notebook.util.IdUtils.USER_OFFSET
 import cn.har01d.notebook.util.getClientIp
 import cn.har01d.notebook.vo.UserStats
 import com.github.benmanes.caffeine.cache.Cache
-import com.github.benmanes.caffeine.cache.Caffeine
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 
 @Service
 class UserService(
@@ -32,12 +31,10 @@ class UserService(
     private val notebookRepository: NotebookRepository,
     private val configService: ConfigService,
     private val auditService: AuditService,
+    private val cacheService: CacheService,
 ) {
     private val userHolder: ThreadLocal<User> = ThreadLocal()
-
-    // TODO: redis support
-    private val cache: Cache<String, Boolean> =
-        Caffeine.newBuilder().maximumSize(10000).expireAfterWrite(1, TimeUnit.MINUTES).build()
+    private val cache: Cache<String, Boolean> = cacheService.boolCache("User", Duration.ofMinutes(1))
 
     fun getCurrentUser(): User? {
         var user = userHolder.get()

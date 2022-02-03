@@ -24,7 +24,7 @@
         <div class="ui warning message" v-if="q&&notes.length===0">
           没有找到包含“{{q}}”的笔记。
         </div>
-        <div class="item" v-for="note in notes" :key="note.id">
+        <div class="item" v-for="note in notes" :key="note.slug||note.id">
           <div class="content">
             <a class="link" data-tooltip="只有你可以访问" v-if="note.access==='PRIVATE'"><i class="lock icon"></i></a>
             <a class="link" data-tooltip="知道ID才能访问" v-if="note.access==='SECRET'"><i class="unlock alternate icon"></i></a>

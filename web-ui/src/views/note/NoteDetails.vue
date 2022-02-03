@@ -253,6 +253,7 @@ export default class NoteDetails extends Vue {
           })
         }
 
+        // eslint-disable-next-line
         (window as any).highlightJsBadge({
           copyIconClass: "copy outline icon",
           checkIconClass: "check circle icon"

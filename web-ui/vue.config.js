@@ -5,6 +5,7 @@ const API = 'http://127.0.0.1:8080'
 
 module.exports = {
   outputDir: path.resolve(__dirname, '../src/main/resources/static'),
+  productionSourceMap: false,
   devServer: {
     proxy: {
       '/admin': {
