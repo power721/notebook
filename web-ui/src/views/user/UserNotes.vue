@@ -9,12 +9,17 @@
     </div>
     <div class="ui divider"></div>
 
-    <div class="ui center aligned raised segment">
-      <h2 class="ui header">"{{user.username}}"发布的笔记</h2>
-      <div class="metadata">
-        <span :data-tooltip="user.createdTime | datetime">
-          加入于{{user.createdTime | fromNow}}
-        </span>
+    <div class="ui raised segments">
+      <div class="ui center aligned segment">
+        <h2 class="ui header">"{{user.username}}"发布的笔记</h2>
+        <div class="metadata">
+          <span :data-tooltip="user.createdTime | datetime">
+            加入于{{user.createdTime | fromNow}}
+          </span>
+        </div>
+      </div>
+      <div class="ui center aligned segment" v-if="user.signature">
+        <MdViewer :content="signature"></MdViewer>
       </div>
     </div>
 
@@ -65,11 +70,13 @@
   import Dropdown from '@/components/Dropdown.vue'
   import configService from '@/services/config.service'
   import {goTop} from '@/utils/utils'
+  import MdViewer from '@/components/MdViewer.vue'
 
   @Component<Pageable>({
     components: {
       Pagination,
       Dropdown,
+      MdViewer,
     },
     watch: {
       '$route'(to) {
@@ -85,6 +92,14 @@
 
     get authenticated(): boolean {
       return this.$store.state.authenticated
+    }
+
+    get signature(): string {
+      const signature = this.user.signature
+      if (signature) {
+        const theme = this.user.mdTheme ? `---\ntheme: ${this.user.mdTheme}\n---\n` : ''
+        return theme + '>' + signature
+      } else return ''
     }
 
     mounted() {

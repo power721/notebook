@@ -33,22 +33,15 @@ class UserService(
     private val auditService: AuditService,
     private val cacheService: CacheService,
 ) {
-    private val userHolder: ThreadLocal<User> = ThreadLocal()
     private val cache: Cache<String, Boolean> = cacheService.boolCache("User", Duration.ofMinutes(1))
 
     fun getCurrentUser(): User? {
-        var user = userHolder.get()
-        if (user != null) {
-            return user
-        }
-
         val authentication = SecurityContextHolder.getContext().authentication
         if (authentication != null) {
-            user = repository.findByUsername(authentication.name)
-            userHolder.set(user)
+            return repository.findByUsername(authentication.name)
         }
 
-        return user
+        return null
     }
 
     fun getUser(id: Int): User? {
@@ -80,7 +73,7 @@ class UserService(
             user.role = Role.ROLE_ADMIN
         }
         repository.save(user)
-        val notebook = Notebook("我的笔记本", "我的第一个笔记本", user)
+        val notebook = Notebook("${user.username}的笔记本", "${user.username}的第一个笔记本", user)
         notebookRepository.save(notebook)
         return user
     }

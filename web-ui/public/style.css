@@ -33,6 +33,10 @@ img {
     z-index: 999;
 }
 
+.segment .markdown-body blockquote {
+    margin: 0;
+}
+
 /* for block of numbers */
 .hljs-ln-numbers {
     -webkit-touch-callout: none;
