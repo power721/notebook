@@ -30,7 +30,7 @@
       <a class="ui top left attached label" data-tooltip="知道ID才能访问" v-if="note.access==='SECRET'">秘密</a>
       <a class="ui top left attached label" data-tooltip="只有你可以访问" v-if="note.access==='PRIVATE'">私有</a>
       <div class="metadata">
-        <router-link :to="'/users/'+note.author.id">@{{ note.author.username }}</router-link>
+        <UserAvatar :user="note.author"></UserAvatar>
         <span :data-tooltip="note.createdTime | datetime">
           创建于{{ note.createdTime | fromNow }}
         </span>
@@ -155,6 +155,7 @@ import {Emoji} from '@/types/twemoji'
 import Dropdown from '@/components/Dropdown.vue'
 import Modal from '@/components/Modal.vue'
 import Popup from '@/components/Popup.vue'
+import UserAvatar from '@/components/UserAvatar.vue'
 import {Notebook} from '@/models/Notebook'
 import MdViewer from '@/components/MdViewer.vue'
 import accountService from '@/services/account.service'
@@ -177,6 +178,7 @@ function goAnchor(anchor: string) {
     Dropdown,
     Modal,
     Popup,
+    UserAvatar,
     MdViewer,
   },
   watch: {

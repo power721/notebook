@@ -23,7 +23,7 @@
       <a class="ui top left attached label" data-tooltip="知道ID才能访问" v-if="notebook.access==='SECRET'">秘密</a>
       <a class="ui top left attached label" data-tooltip="只有你可以访问" v-if="notebook.access==='PRIVATE'">私有</a>
       <div class="metadata">
-        <router-link :to="'/users/'+notebook.owner.id">@{{ notebook.owner.username }}</router-link>
+        <UserAvatar :user="notebook.owner"></UserAvatar>
         <span :data-tooltip="notebook.createdTime | datetime">
           创建于{{ notebook.createdTime | fromNow }}
         </span>
@@ -64,13 +64,13 @@
         <a class="item" :class="{active:sort==='content.title,asc'}" @click="sorted('content.title,asc')">标题(升序)</a>
       </Dropdown>
       <div class="ui divided items">
-        <div class="item" v-for="note in notes" :key="note.id">
+        <div class="item" v-for="note in notes" :key="note.slug||note.id">
           <div class="content">
             <a class="link" data-tooltip="只有你可以访问" v-if="note.access==='PRIVATE'"><i class="lock icon"></i></a>
             <a class="link" data-tooltip="知道ID才能访问" v-if="note.access==='SECRET'"><i class="unlock alternate icon"></i></a>
             <router-link class="header" :to="'/notes/'+(note.slug?note.slug:note.id)">{{ note.title }}</router-link>
             <div class="meta">
-              <router-link :to="'/users/'+note.author.id">@{{ note.author.username }}</router-link>
+              <UserAvatar :user="note.author" :avatar="false" position="right center"></UserAvatar>
               <router-link class="ui small label" :to="'/categories/'+note.category.id">{{ note.category.name }}
               </router-link>
             </div>
@@ -158,6 +158,7 @@ import {Notebook} from '@/models/Notebook'
 import Modal from '@/components/Modal.vue'
 import Dropdown from '@/components/Dropdown.vue'
 import Pagination from '@/components/Pagination.vue'
+import UserAvatar from '@/components/UserAvatar.vue'
 import {Pageable} from '@/components/Pageable'
 import {goTop} from '@/utils/utils'
 import accountService from '@/services/account.service'
@@ -167,7 +168,8 @@ import configService from '@/services/config.service'
   components: {
     Modal,
     Pagination,
-    Dropdown
+    Dropdown,
+    UserAvatar,
   },
   watch: {
     '$route'(to) {

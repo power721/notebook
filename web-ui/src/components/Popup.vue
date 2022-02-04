@@ -40,17 +40,20 @@ function mapStyle(style: Style): Style {
 
 @Component
 export default class Popup extends Vue {
-  @Prop() private size!: string
-  @Prop() private position!: string
+  @Prop({default: ''}) private size!: string
+  @Prop({default: ''}) private position!: string
   @Prop({default: 'click'}) private trigger!: string
+  @Prop({default: 300}) private delay!: number
   private show: boolean = false
   private handler: number = 0
   private style: Style = {position: 'fixed', top: 'auto', bottom: 'auto', left: 'auto', right: 'auto'}
+  private showTimer = 0
+  private hideTimer = 0
 
   onClick() {
     if (this.trigger === 'click') {
       if (this.show) {
-        this.show = false
+        this.onHide()
       } else {
         this.onShow()
       }
@@ -59,27 +62,37 @@ export default class Popup extends Vue {
 
   onMouseenter() {
     if (this.trigger === 'hover') {
-      this.onShow()
+      clearTimeout(this.hideTimer)
+      this.showTimer = setTimeout(() => this.onShow(), this.delay)
     }
   }
 
   onMouseleave() {
     if (this.trigger === 'hover') {
-      this.show = false
+      clearTimeout(this.showTimer)
+      this.hideTimer = setTimeout(() => this.onHide(), this.delay)
     }
   }
 
   onShow() {
     this.show = true
     this.computePopupStyle(this.position)
+    this.$emit('show')
+  }
+
+  onHide() {
+    this.show = false
+    this.$emit('hide')
   }
 
   computePopupStyle(positions: string) {
     const style: Style = {position: 'fixed', top: 'auto', bottom: 'auto', left: 'auto', right: 'auto'}
     const {clientWidth, clientHeight} = document.documentElement
     const trigger = this.$refs.trigger as HTMLElement
+    if (!trigger) return
     const triggerCoords = trigger.getBoundingClientRect()
     const popup = this.$refs.popup as HTMLElement
+    if (!popup) return
     const popupCoords = popup.getBoundingClientRect()
 
     if (positions.includes('right')) {
@@ -123,11 +136,13 @@ export default class Popup extends Vue {
 
   mounted() {
     this.handler = eventService.on('click', () => {
-      this.show = false
+      this.onHide()
     })
   }
 
   destroyed() {
+    clearTimeout(this.showTimer)
+    clearTimeout(this.hideTimer)
     eventService.off('click', this.handler)
   }
 }

@@ -20,10 +20,10 @@ export function goTop(top = 60) {
 }
 
 export function loadCss(url: string) {
-  const link = document.createElement( "link" )
+  const link = document.createElement('link')
   link.href = url
-  link.type = "text/css"
-  link.rel = "stylesheet"
+  link.type = 'text/css'
+  link.rel = 'stylesheet'
   document.head.appendChild(link)
   return link
 }
@@ -50,6 +50,16 @@ export function isValidHttpUrl(text: string): boolean {
 
 export function sleep(time: number) {
   return new Promise((resolve) => setTimeout(resolve, time * 1000))
+}
+
+export function debounce(func, timeout = 300) {
+  let timer
+  return (...args) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, timeout)
+  }
 }
 
 export function createElement<K extends keyof HTMLElementTagNameMap>(tagName: K, options: any = {}, ...children: (Node | string)[]): HTMLElementTagNameMap[K] {

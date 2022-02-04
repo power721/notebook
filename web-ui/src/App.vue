@@ -219,7 +219,7 @@
 }
 
 #github {
-  position: absolute;
+  position: fixed;
   top: 12px;
   right: 8px;
 }

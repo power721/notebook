@@ -28,7 +28,7 @@
             <a class="link" data-tooltip="知道ID才能访问" v-if="notebook.access==='SECRET'"><i class="unlock alternate icon"></i></a>
             <router-link class="header" :to="'/notebooks/'+(notebook.slug?notebook.slug:notebook.id)">{{notebook.name}}</router-link>
             <div class="meta">
-              <router-link :to="'/users/'+notebook.owner.id">@{{notebook.owner.username}}</router-link>
+              <UserAvatar :user="notebook.owner" :avatar="false" position="right center"></UserAvatar>
             </div>
             <div class="description">
               <p>{{notebook.description}}</p>
@@ -85,13 +85,15 @@
   import Modal from '@/components/Modal.vue'
   import {goTop} from '@/utils/utils'
   import Dropdown from '@/components/Dropdown.vue'
+  import UserAvatar from '@/components/UserAvatar.vue'
   import configService from '@/services/config.service'
 
   @Component<Pageable>({
     components: {
       Modal,
       Pagination,
-      Dropdown
+      Dropdown,
+      UserAvatar,
     },
     watch: {
       '$route'(to) {

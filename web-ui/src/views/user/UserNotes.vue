@@ -21,6 +21,7 @@
       <div class="ui center aligned segment" v-if="user.signature">
         <MdViewer :content="signature"></MdViewer>
       </div>
+      <img v-if="user.avatar" alt="avatar" :src="user.avatar" class="avatar" />
     </div>
 
     <div class="ui left aligned raised segment">
@@ -140,4 +141,9 @@
 </script>
 
 <style scoped>
+.avatar {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
 </style>

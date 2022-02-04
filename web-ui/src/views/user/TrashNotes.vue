@@ -17,7 +17,7 @@
         没有删除的笔记。
       </div>
       <div class="ui divided items">
-        <div class="item" v-for="note in notes" :key="note.id">
+        <div class="item" v-for="note in notes" :key="note.slug||note.id">
           <div class="content">
             <router-link class="header" :to="'/notes/'+(note.slug?note.slug:note.id)">{{note.title}}</router-link>
             <div class="meta">

@@ -13,6 +13,7 @@ data class UserVo(
         val editorMode: String?,
         val mdTheme: String?,
         val signature: String?,
+        val avatar: String?,
         val role: Role,
         val createdTime: Instant
 )
@@ -20,6 +21,7 @@ data class UserVo(
 data class UserVo2(
         val id: String,
         val username: String,
+        val avatar: String?,
 )
 
 data class UserVo4(
@@ -27,6 +29,7 @@ data class UserVo4(
         val username: String,
         val mdTheme: String?,
         val signature: String?,
+        val avatar: String?,
 )
 
 data class UserVo3(
@@ -34,11 +37,12 @@ data class UserVo3(
         val username: String,
         val mdTheme: String?,
         val signature: String?,
+        val avatar: String?,
         val role: Role,
         val createdTime: Instant
 )
 
-fun User.toVo() = UserVo(IdUtils.encode(id!! + USER_OFFSET), username, email, editorMode, mdTheme, signature, role, createdTime)
-fun User.toVo2() = UserVo2(IdUtils.encode(id!! + USER_OFFSET), username)
-fun User.toVo4() = UserVo4(IdUtils.encode(id!! + USER_OFFSET), username, mdTheme, signature)
-fun User.toVo3() = UserVo3(IdUtils.encode(id!! + USER_OFFSET), username, mdTheme, signature, role, createdTime)
+fun User.toVo() = UserVo(IdUtils.encode(id!! + USER_OFFSET), username, email, editorMode, mdTheme, signature, avatar, role, createdTime)
+fun User.toVo2() = UserVo2(IdUtils.encode(id!! + USER_OFFSET), username, avatar)
+fun User.toVo4() = UserVo4(IdUtils.encode(id!! + USER_OFFSET), username, mdTheme, signature, avatar)
+fun User.toVo3() = UserVo3(IdUtils.encode(id!! + USER_OFFSET), username, mdTheme, signature, avatar, role, createdTime)

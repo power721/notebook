@@ -8,4 +8,5 @@ export class User {
   editorMode: string = ''
   mdTheme: string = ''
   signature: string = ''
+  avatar: string = ''
 }

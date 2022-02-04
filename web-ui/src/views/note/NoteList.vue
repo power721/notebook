@@ -30,7 +30,7 @@
             <a class="link" data-tooltip="知道ID才能访问" v-if="note.access==='SECRET'"><i class="unlock alternate icon"></i></a>
             <router-link class="header" :to="'/notes/'+(note.slug?note.slug:note.id)">{{note.title}}</router-link>
             <div class="meta">
-              <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>
+              <UserAvatar :user="note.author" :avatar="false" position="right center"></UserAvatar>
               发布于
               <router-link :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
             </div>
@@ -54,15 +54,17 @@
   import {Component} from 'vue-property-decorator'
   import {Note} from '@/models/Note'
   import {Pageable} from '@/components/Pageable'
-  import Pagination from '@/components/Pagination.vue'
-  import {goTop} from '@/utils/utils'
   import Dropdown from '@/components/Dropdown.vue'
+  import Pagination from '@/components/Pagination.vue'
+  import UserAvatar from '@/components/UserAvatar.vue'
+  import {goTop} from '@/utils/utils'
   import configService from '@/services/config.service'
 
   @Component<Pageable>({
     components: {
       Pagination,
-      Dropdown
+      Dropdown,
+      UserAvatar,
     },
     watch: {
       '$route'(to) {

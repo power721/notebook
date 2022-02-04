@@ -18,6 +18,8 @@ import cn.har01d.notebook.util.IdUtils.USER_OFFSET
 import cn.har01d.notebook.util.getClientIp
 import cn.har01d.notebook.vo.UserStats
 import com.github.benmanes.caffeine.cache.Cache
+import com.qiniu.util.Md5.md5
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.md5
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -72,6 +74,7 @@ class UserService(
         if (repository.count() == 0L) {
             user.role = Role.ROLE_ADMIN
         }
+        user.avatar = "https://cn.gravatar.com/avatar/" + md5(dto.username.toByteArray()) + "?d=identicon"
         repository.save(user)
         val notebook = Notebook("${user.username}的笔记本", "${user.username}的第一个笔记本", user)
         notebookRepository.save(notebook)
@@ -86,6 +89,7 @@ class UserService(
                 throw AppException("邮箱已被注册")
             }
             user.email = dto.email
+            user.avatar = "https://cn.gravatar.com/avatar/" + md5(dto.email.toByteArray()) + "?d=identicon"
         }
         if (dto.newPassword.isNotEmpty()) {
             if (!passwordEncoder.matches(dto.password, user.password)) {

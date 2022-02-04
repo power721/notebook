@@ -46,13 +46,14 @@
         <a class="item" :class="{active:sort==='content.title,asc'}" @click="sorted('content.title,asc')">标题(升序)</a>
       </Dropdown>
       <div class="ui divided items">
-        <div class="item" v-for="note in notes" :key="note.id">
+        <div class="item" v-for="note in notes" :key="note.slug||note.id">
           <div class="content">
             <i class="lock icon" v-if="note.access==='PRIVATE'"></i>
             <i class="unlock alternate icon" v-if="note.access==='SECRET'"></i>
             <router-link class="header" :to="'/notes/'+(note.slug?note.slug:note.id)">{{note.title}}</router-link>
             <div class="meta">
-              <router-link :to="'/users/'+note.author.id">@{{note.author.username}}</router-link>发布于
+              <UserAvatar :user="note.author" :avatar="false" position="right center"></UserAvatar>
+              发布于
               <router-link :to="'/notebooks/'+note.notebook.id">{{note.notebook.name}}</router-link>
             </div>
             <div class="extra" v-if="note.version>1">
@@ -96,11 +97,12 @@
   import {Component} from 'vue-property-decorator'
   import {Note} from '@/models/Note'
   import Modal from '@/components/Modal.vue'
+  import Dropdown from '@/components/Dropdown.vue'
   import Pagination from '@/components/Pagination.vue'
+  import UserAvatar from '@/components/UserAvatar.vue'
   import {Pageable} from '@/components/Pageable'
   import {Category} from '@/models/Category'
   import {goTop} from '@/utils/utils'
-  import Dropdown from '@/components/Dropdown.vue'
   import configService from '@/services/config.service'
   import {Role} from '@/models/Account'
 
@@ -108,7 +110,8 @@
     components: {
       Modal,
       Pagination,
-      Dropdown
+      Dropdown,
+      UserAvatar,
     },
     watch: {
       '$route'(to) {
