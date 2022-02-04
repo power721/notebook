@@ -37,6 +37,7 @@ export const mceConfig: any = {
   default_link_target: '_blank',
   codesample_global_prismjs: true,
   codesample_languages: (window as any).hljs.listLanguages().map(e => ({text: e, value: e})),
+  skin_url: 'https://cdn.jsdelivr.net/npm/tinymce@5.10.2/skins/ui/oxide',
   content_css: [],
   toolbar:
     'formatselect | bold italic backcolor | \

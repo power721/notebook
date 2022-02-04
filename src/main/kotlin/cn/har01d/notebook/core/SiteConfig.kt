@@ -18,5 +18,6 @@ data class SiteConfig(
         val enableHeartbeat: Boolean,
         val enableEncrypt: Boolean,
         val secretKey: String,
+        val github: String,
         val qiniu: QiniuProperties,
 )

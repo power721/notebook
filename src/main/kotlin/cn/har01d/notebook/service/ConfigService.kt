@@ -33,6 +33,7 @@ class ConfigService(private val repository: ConfigRepository, cacheService: Cach
             get(Const.ENABLE_HEARTBEAT, true),
             get(Const.ENABLE_ENCRYPT, false),
             get(Const.SECRET_KEY, ""),
+            get(Const.GITHUB, ""),
             if (admin) getQiniuProperties() else QiniuProperties(),
         )
     }
@@ -60,6 +61,7 @@ class ConfigService(private val repository: ConfigRepository, cacheService: Cach
         save(Const.ENABLE_SIGNUP, dto.enableSignup)
         save(Const.ENABLE_HEARTBEAT, dto.enableHeartbeat)
         save(Const.ENABLE_ENCRYPT, dto.enableEncrypt)
+        save(Const.GITHUB, dto.github)
         saveQiniuProperties(dto.qiniu)
         return getSiteConfig(true)
     }

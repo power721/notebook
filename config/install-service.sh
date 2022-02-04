@@ -3,7 +3,7 @@
 USERNAME=notebook
 APPNAME=notebook
 
-sudo useradd -r -m ${USERNAME}
+sudo adduser --system --group --no-create-home ${USERNAME}
 sudo mkdir -p /opt/${APPNAME}/config
 sudo mkdir -p /opt/${APPNAME}/log
 if [[ ! -f /opt/${APPNAME}/config/application-production.yaml ]]; then

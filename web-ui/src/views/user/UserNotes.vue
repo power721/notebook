@@ -36,7 +36,7 @@
         <a class="item" :class="{active:sort==='content.title,asc'}" @click="sorted('content.title,asc')">标题(升序)</a>
       </Dropdown>
       <div class="ui divided items">
-        <div class="item" v-for="note in notes" :key="note.id">
+        <div class="item" v-for="note in notes" :key="note.slug||note.id">
           <div class="content">
             <i class="lock icon" v-if="note.access==='PRIVATE'"></i>
             <i class="unlock alternate icon" v-if="note.access==='SECRET'"></i>

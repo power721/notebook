@@ -26,6 +26,10 @@
         <label>公安备案</label>
         <input type="text" v-model="siteConfig.govBeian" name="govBeian">
       </div>
+      <div class="field">
+        <label>GitHub</label>
+        <input type="url" v-model="siteConfig.github" name="github">
+      </div>
 
       <div class="ui equal width grid">
         <div class="column">

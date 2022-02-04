@@ -29,6 +29,9 @@
           <UserMenu class="item"/>
         </div>
       </div>
+      <a v-if="siteConfig.github" v-show="wide" id="github" :href="siteConfig.github" target="_blank">
+        <i class="large github link icon" :class="{inverted:inverted}"></i>
+      </a>
     </div>
 
     <div id="main" class="ui center aligned container" :class="{inverted:inverted,fluid:fluid}">
@@ -126,6 +129,7 @@
     fluid: boolean = false
     show: boolean = false
     fontSize: number = 16
+    wide = window.innerWidth > 1080
 
     get auth(): boolean {
       return this.$store.state.authenticated
@@ -153,6 +157,12 @@
       this.fontSize = +(localStorage.getItem('fontSize') || '16')
       this.$store.dispatch('getSiteConfig')
       this.$store.dispatch('getMenus')
+    }
+
+    mounted() {
+      window.addEventListener('resize', () => {
+        this.wide = window.innerWidth > 1080
+      })
     }
 
     search() {
@@ -206,6 +216,12 @@
 
 .font .size {
   margin: 0 6px;
+}
+
+#github {
+  position: absolute;
+  top: 12px;
+  right: 8px;
 }
 
 #config .trigger {

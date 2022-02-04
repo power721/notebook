@@ -22,6 +22,7 @@ export class SiteConfig {
   enableHeartbeat: boolean = true
   enableEncrypt: boolean = false
   secretKey: string = ''
+  github: string = ''
   qiniu: QiniuProperties = new QiniuProperties()
 }
 

@@ -16,6 +16,7 @@ data class SiteConfigVo(
     val enableImageUpload: Boolean,
     val enableSignup: Boolean,
     val enableHeartbeat: Boolean,
+    val github: String,
 )
 
 data class SiteConfigVo2(
@@ -33,6 +34,7 @@ data class SiteConfigVo2(
     val enableSignup: Boolean,
     val enableHeartbeat: Boolean,
     val secretKey: String,
+    val github: String,
 )
 
 fun SiteConfig.toVo() = if (enableEncrypt) SiteConfigVo2(
@@ -49,7 +51,8 @@ fun SiteConfig.toVo() = if (enableEncrypt) SiteConfigVo2(
     enableImageUpload,
     enableSignup,
     enableHeartbeat,
-    secretKey
+    secretKey,
+    github
 ) else SiteConfigVo(
     siteName,
     brandColor,
@@ -64,4 +67,5 @@ fun SiteConfig.toVo() = if (enableEncrypt) SiteConfigVo2(
     enableImageUpload,
     enableSignup,
     enableHeartbeat,
+    github,
 )

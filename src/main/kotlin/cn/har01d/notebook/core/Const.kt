@@ -13,6 +13,7 @@ object Const {
     const val ENABLE_HEARTBEAT = "enable_heartbeat"  // 开启用户心跳
     const val ENABLE_ENCRYPT = "enable_encrypt"  // 开启数据加密
     const val SECRET_KEY = "secret_Key"  // 数据加密密钥
+    const val GITHUB = "github"
     const val ENABLE_FILE_UPLOAD = "enable_file_upload"  // 允许文件上传
     const val ENABLE_IMAGE_UPLOAD = "enable_image_upload"  // 允许图片上传
     const val ENABLE_COMMENT = "enable_comment"  // 允许评论
