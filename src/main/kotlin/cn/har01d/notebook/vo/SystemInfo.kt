@@ -18,4 +18,5 @@ data class SystemInfo(
         val timezone: String,
         val workDir: String,
         val pid: String?,
+        val redisEnabled: Boolean,
 )

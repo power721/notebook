@@ -52,6 +52,7 @@
               <div>工作目录： {{info.workDir}}</div>
               <div>时区： {{info.timezone}}</div>
               <div>PID： {{info.pid}}</div>
+              <div>Redis： {{info.redisEnabled}}</div>
             </div>
           </div>
         </div>

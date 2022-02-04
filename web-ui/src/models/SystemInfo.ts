@@ -16,4 +16,5 @@ export class SystemInfo {
   timezone: string = ''
   workDir: string = ''
   pid: string = ''
+  redisEnabled: boolean = false
 }

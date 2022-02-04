@@ -17,6 +17,7 @@ class AdminService(
         private val configService: ConfigService,
         private val userService: UserService,
         private val auditService: AuditService,
+        private val cacheService: CacheService,
 ) {
     fun getSiteConfig() = configService.getSiteConfig(true)
 
@@ -49,6 +50,7 @@ class AdminService(
                 props.getProperty("user.timezone"),
                 props.getProperty("user.dir"),
                 props.getProperty("PID"),
+                cacheService.redisEnabled
         )
     }
 

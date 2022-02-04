@@ -18,16 +18,16 @@ import javax.annotation.PostConstruct
 @Service
 class CacheService(private val redisTemplate: StringRedisTemplate) {
     private val logger = LoggerFactory.getLogger(CacheService::class.java)
-    private var redisEnabled: Boolean = true
+    var redisEnabled: Boolean = false
 
     @PostConstruct
     fun init() {
         try {
             redisTemplate.hasKey("")
+            redisEnabled = true
             logger.info("Use Redis Cache.")
         } catch (e: RedisConnectionFailureException) {
             logger.warn("Cannot connect to Redis server, use local memory cache.")
-            redisEnabled = false
         }
     }
 
