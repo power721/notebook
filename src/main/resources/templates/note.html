@@ -2,9 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta th:replace="common :: header">
-  <link rel="stylesheet" type="text/css" href="/prism.css">
-  <script src="/prism.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/twemoji@13.0.0/dist/twemoji.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bytemd@1.10.13/dist/index.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/juejin-markdown-themes@1.24.1/dist/orange.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/styles/atom-one-light.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/highlightjs-badge@0.1.9/highlightjs-badge.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@8.13.10/dist/mermaid.min.js"></script>
+  <script src="https://power.gitee.io/twemoji/twemoji.min.js"></script>
   <title th:text="${note.title}+' - '+${siteConfig.siteName}"></title>
 </head>
 <body>
@@ -45,7 +52,12 @@
     </div>
 
     <div class="ui left aligned raised segment">
-      <div class="article content" th:utext="${note.content}"></div>
+      <div th:remove="tag" th:if="${note.markdown} == false">
+        <div class="article content markdown-body" th:utext="${note.content}"></div>
+      </div>
+      <div th:remove="tag" th:if="${note.markdown} == true">
+        <div id="markdown" class="article content markdown-body" th:text="${note.content}"></div>
+      </div>
       <div class="footer">
         <div class="ui divider"></div>
         <div class="ui blue tag labels">
@@ -60,11 +72,73 @@
 </div>
 </body>
 <script>
-  document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
   document.querySelectorAll('.article').forEach(node => {
     twemoji.parse(node, {'size': 72})
-  });
-  Prism.highlightAll()
+  })
+
+  let $markdown = document.getElementById('markdown')
+  if ($markdown) {
+    const renderer = new marked.Renderer()
+    const rcode = renderer.code.bind(renderer)
+    renderer.code = (code, language, options) => {
+      //if(code.match(/^sequenceDiagram/)||code.match(/^graph/)){
+      if(language === 'mermaid'){
+        return '<div class="mermaid">'+code+'</div>';
+      }
+      return rcode(code, language, options)
+    }
+    let originParagraph = renderer.paragraph.bind(renderer)
+    renderer.paragraph = (text) => {
+      const blockRegex = /\$\$[^\$]*\$\$/g
+      const inlineRegex = /\$[^\$]*\$/g
+      let blockExprArray = text.match(blockRegex)
+      let inlineExprArray = text.match(inlineRegex)
+      for (let i in blockExprArray) {
+        const expr = blockExprArray[i]
+        const result = renderMathsExpression(expr)
+        text = text.replace(expr, result)
+      }
+      for (let i in inlineExprArray) {
+        const expr = inlineExprArray[i]
+        const result = renderMathsExpression(expr)
+        text = text.replace(expr, result)
+      }
+      return originParagraph(text)
+    }
+    function renderMathsExpression (expr) {
+      if (expr[0] === '$' && expr[expr.length - 1] === '$') {
+        let displayStyle = false
+        expr = expr.substr(1, expr.length - 2)
+        if (expr[0] === '$' && expr[expr.length - 1] === '$') {
+          displayStyle = true
+          expr = expr.substr(1, expr.length - 2)
+        }
+        let html = null
+        try {
+          html = katex.renderToString(expr)
+        } catch (e) {
+          console.err(e)
+        }
+        if (displayStyle && html) {
+          html = html.replace(/class="katex"/g, 'class="katex katex-block" style="display: block;"')
+        }
+        return html
+      } else {
+        return null
+      }
+    }
+    marked.setOptions({renderer: renderer})
+    $markdown.innerHTML = marked.parse($markdown.textContent)
+  }
+
+  document.querySelectorAll('pre code').forEach(el => {
+    hljs.highlightElement(el)
+  })
+
+  highlightJsBadge({
+    copyIconClass: "copy outline icon",
+    checkIconClass: "check circle icon"
+  })
 
   const app = document.getElementById('app')
   if (app) {

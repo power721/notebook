@@ -33,7 +33,7 @@ export const mceConfig: any = {
   },
   relative_urls: false,
   image_uploadtab: configService.siteConfig.enableImageUpload,
-  emoticons_database_url: '/emojis.js',
+  emoticons_database_url: 'https://cdn.jsdelivr.net/npm/tinymce@5.10.2/plugins/emoticons/js/emojis.min.js',
   default_link_target: '_blank',
   codesample_global_prismjs: true,
   codesample_languages: (window as any).hljs.listLanguages().map(e => ({text: e, value: e})),

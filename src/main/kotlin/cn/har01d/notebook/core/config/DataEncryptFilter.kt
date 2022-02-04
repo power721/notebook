@@ -1,11 +1,8 @@
 package cn.har01d.notebook.core.config
 
-import cn.har01d.notebook.core.Const
-import cn.har01d.notebook.service.ConfigService
 import cn.har01d.notebook.service.EncryptService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.bouncycastle.jce.provider.BouncyCastleProvider
-import org.slf4j.LoggerFactory
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
@@ -24,11 +21,9 @@ import javax.servlet.http.HttpServletResponseWrapper
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class DataEncryptFilter(
     private val objectMapper: ObjectMapper,
-    private val configService: ConfigService,
     private val encryptService: EncryptService,
     private val multipartResolver: MultipartResolver,
 ) : OncePerRequestFilter() {
-    private val logger = LoggerFactory.getLogger(DataEncryptFilter::class.java)
 
     init {
         Security.addProvider(BouncyCastleProvider())
@@ -47,11 +42,6 @@ class DataEncryptFilter(
         if (request.getHeader("encrypted") == "true") {
             val data = objectMapper.readValue(requestWrapper.body, RequestDataWrapper::class.java)
             requestWrapper.body = encryptService.decrypt(data.data, sign, time)
-        } else {
-//            val uri = request.requestURI + if (request.queryString != null) "?" + request.queryString else ""
-//            if (encryptService.sign(uri, time) != sign) {
-//                logger.warn("请求校验失败 $uri")
-//            }
         }
 
         val responseWrapper = ResponseWrapper(response)
@@ -105,6 +95,9 @@ class DataEncryptFilter(
         }
 
         override fun getWriter(): PrintWriter {
+            if (filterOutput == null) {
+                filterOutput = FilterServletOutputStream(output)
+            }
             return PrintWriter(filterOutput!!)
         }
 
