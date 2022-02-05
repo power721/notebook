@@ -10,10 +10,18 @@
         <img alt="avatar" :src="details.avatar" v-if="details.avatar" class="right floated ui image">
         <router-link :to="'/users/'+user.id" class="header">{{ details.username }}</router-link>
         <div class="meta">
-          加入于{{ details.createdTime | fromNow }} {{details.createdTime | datetime}}
+          加入于{{ details.createdTime | fromNow }} {{ details.createdTime | datetime }}
         </div>
         <div class="description" v-if="details.signature">
           <MdViewer :content="signature"></MdViewer>
+        </div>
+        <div class="extra content" v-if="details.role==='ROLE_ADMIN'">
+          <i class="red user plus icon"></i>
+          管理员
+        </div>
+        <div class="extra content" v-if="details.role==='ROLE_STAFF'">
+          <i class="orange user icon"></i>
+          员工
         </div>
       </div>
     </div>
@@ -21,11 +29,14 @@
 </template>
 
 <script lang="ts">
+import axios from 'axios'
 import {Component, Prop, Vue} from 'vue-property-decorator'
 import Popup from '@/components/Popup.vue'
-import {User} from '@/models/User'
-import axios from 'axios'
 import MdViewer from '@/components/MdViewer.vue'
+import {Cache} from '@/models/Cache'
+import {User} from '@/models/User'
+
+const cache: Cache<string, User> = new Cache<string, User>(60_000)
 
 @Component({
   components: {
@@ -52,8 +63,14 @@ export default class UserAvatar extends Vue {
       return
     }
 
+    if (cache.has(this.user.id)) {
+      this.details = cache.get(this.user.id)
+      return
+    }
+
     axios.get('/users/' + this.user.id).then(({data}) => {
       this.details = data
+      cache.set(this.user.id, data)
     })
   }
 }
@@ -76,7 +93,7 @@ export default class UserAvatar extends Vue {
 }
 
 a {
-  color: rgba(0,0,0,.4);
+  color: rgba(0, 0, 0, .4);
 }
 
 .link {

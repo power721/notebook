@@ -1,7 +1,10 @@
 <template>
   <div class="login">
-    <div class="ui pointing dropdown active" :class="{visible: show}" v-if="account.id">
-      <div class="text" @click.stop="show=!show">{{account.username}}</div>
+    <div class="ui pointing dropdown active" :class="{visible: show}" v-if="user.id">
+      <div class="text" @click.stop="show=!show">
+        <img alt="avatar" :src="user.avatar" class="ui avatar link image" v-if="user.avatar">
+        {{user.username}}
+      </div>
       <i class="dropdown icon" @click.stop="show=!show"></i>
       <div id="user-menu" class="menu transition" :class="{visible: show}">
         <router-link class="item" to="/notes/-/new">创建笔记</router-link>
@@ -29,7 +32,7 @@
       return this.$store.state.user.role === Role[Role.ROLE_ADMIN]
     }
 
-    get account(): Account {
+    get user(): Account {
       return this.$store.state.user
     }
 

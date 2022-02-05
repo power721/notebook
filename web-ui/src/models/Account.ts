@@ -13,6 +13,7 @@ export class Account {
   editorMode: string = ''
   role: string = Role[Role.ROLE_USER]
   createdTime: string = ''
+  avatar: string = ''
 }
 
 export class AccountDto {
