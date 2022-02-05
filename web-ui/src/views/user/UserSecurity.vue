@@ -6,17 +6,17 @@
           <div class="header">账号设置</div>
           <div class="description">
             <form class="ui form" :class="{error: error, success: success}">
-              <div class="field">
+              <div class="required field">
                 <label>用户账号</label>
                 <input type="text" name="username" v-model="account.username" readonly>
               </div>
-              <div class="field">
+              <div class="required field">
                 <label>用户邮箱</label>
                 <input type="email" name="email" v-model="account.email" placeholder="邮箱">
               </div>
-              <div class="field">
-                <label>原始密码</label>
-                <input type="password" name="password" autocomplete="current-password" v-model="account.password" placeholder="原始密码">
+              <div class="required field">
+                <label>当前密码</label>
+                <input type="password" name="password" autocomplete="current-password" v-model="account.password" placeholder="当前密码">
               </div>
               <div class="field">
                 <label>新的密码</label>
@@ -69,6 +69,10 @@
 
     submit() {
       this.error = ''
+      if (this.account.password.length < 8) {
+        this.error = '密码长度至少8位'
+        return
+      }
       if (this.account.newPassword) {
         if (this.account.newPassword.length < 8) {
           this.error = '密码长度至少8位'

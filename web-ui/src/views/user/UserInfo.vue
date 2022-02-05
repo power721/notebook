@@ -1,6 +1,6 @@
 <template>
   <div class="ui left aligned container">
-    <form class="ui form">
+    <div class="ui form">
       <div class="required field">
         <label>编辑器模式</label>
         <el-radio-group v-model="editorMode">
@@ -28,10 +28,8 @@
           <MdViewer :content="content"></MdViewer>
         </div>
       </div>
-      <div class="right floated">
-        <button class="ui primary button" @click.prevent="submit">更新</button>
-      </div>
-    </form>
+      <button class="ui primary button" @click.prevent="submit">更新</button>
+    </div>
   </div>
 </template>
 

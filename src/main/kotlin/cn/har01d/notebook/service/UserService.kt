@@ -19,7 +19,6 @@ import cn.har01d.notebook.util.getClientIp
 import cn.har01d.notebook.vo.UserStats
 import com.github.benmanes.caffeine.cache.Cache
 import com.qiniu.util.Md5.md5
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.md5
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -84,6 +83,9 @@ class UserService(
     fun update(dto: UserDto): User {
         val user = requireCurrentUser()
         if (dto.email.isNotEmpty()) {
+            if (!passwordEncoder.matches(dto.password, user.password)) {
+                throw AppException("密码不正确")
+            }
             val exist = repository.findByEmail(dto.email)
             if (exist != null && exist.id != user.id) {
                 throw AppException("邮箱已被注册")
@@ -91,12 +93,14 @@ class UserService(
             user.email = dto.email
             user.avatar = "https://cn.gravatar.com/avatar/" + md5(dto.email.toByteArray()) + "?d=identicon"
         }
+
         if (dto.newPassword.isNotEmpty()) {
             if (!passwordEncoder.matches(dto.password, user.password)) {
                 throw AppException("原密码不正确")
             }
             user.password = passwordEncoder.encode(dto.newPassword)
         }
+
         return repository.save(user).also { auditService.auditUserUpdate(it) }
     }
 
