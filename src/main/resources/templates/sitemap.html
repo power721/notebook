@@ -12,6 +12,9 @@
   <url>
     <loc th:text="${base}+'/notes.html'">/notes.html</loc>
   </url>
+  <url th:each="note: ${notes}">
+    <loc th:text="${base}+'/notes/'+${note.slug?:note.id}+'.html'">/notes.html</loc>
+  </url>
   <url>
     <loc th:text="${base}+'/notebooks.html'">/notebooks.html</loc>
   </url>

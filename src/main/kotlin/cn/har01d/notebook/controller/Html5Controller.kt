@@ -18,14 +18,14 @@ import javax.transaction.Transactional
 
 @Controller
 class Html5Controller(
-        private val noteRepository: NoteRepository,
-        private val noteService: NoteService,
-        private val notebookService: NotebookService,
-        private val categoryService: CategoryService,
-        private val tagService: TagService,
-        private val userService: UserService,
-        private val configService: ConfigService,
-        private val menuService: MenuService,
+    private val noteRepository: NoteRepository,
+    private val noteService: NoteService,
+    private val notebookService: NotebookService,
+    private val categoryService: CategoryService,
+    private val tagService: TagService,
+    private val userService: UserService,
+    private val configService: ConfigService,
+    private val menuService: MenuService,
 ) {
     @ModelAttribute("siteConfig")
     fun siteConfig() = configService.getSiteConfig().toVo()
@@ -46,6 +46,7 @@ class Html5Controller(
         return "about"
     }
 
+    @Transactional
     @GetMapping("/sitemap.xml", produces = ["text/xml"])
     fun sitemap(request: HttpServletRequest, model: Model): String {
         val scheme = request.scheme
@@ -53,11 +54,13 @@ class Html5Controller(
         val port = request.serverPort
         val base = StringBuilder()
         base.append(if (port == 443) "https" else scheme).append("://").append(host)
-        if ((scheme == "http" && port != 80) || (scheme == "https" && port != 443)) {
+        if (port != 80 && port != 443) {
             base.append(":").append(port)
         }
         base.append(request.contextPath)
         model.addAttribute("base", base.toString())
+        val notes = noteService.list("", PageRequest.of(0, 100)).map { it.toVo() }
+        model.addAttribute("notes", notes.content)
         val notebooks = notebookService.list("", PageRequest.of(0, 50)).map { it.toVo() }
         model.addAttribute("notebooks", notebooks.content)
         val categories = categoryService.list("", PageRequest.of(0, 50)).map { it.toVo() }
@@ -102,7 +105,12 @@ class Html5Controller(
     }
 
     @GetMapping("/notebooks/{id}.html")
-    fun notebook(@PathVariable id: String, q: String?, @RequestParam(defaultValue = "1") page: Int, model: Model): String {
+    fun notebook(
+        @PathVariable id: String,
+        q: String?,
+        @RequestParam(defaultValue = "1") page: Int,
+        model: Model
+    ): String {
         model.addAttribute("notebook", notebookService.get(id).toVo())
         val pageable = PageRequest.of(page - 1, 20, Sort.Direction.DESC, "updatedTime")
         val notes = notebookService.getNotes(id, pageable).map { it.toVo2() }

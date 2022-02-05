@@ -6,6 +6,12 @@
           <div class="header">账号设置</div>
           <div class="description">
             <form class="ui form" :class="{error: error, success: success}">
+              <div class="ui message">
+                <ul class="list">
+                  <li>邮箱用于找回密码</li>
+                  <li>邮箱可以设置<a href="https://cn.gravatar.com/" target="_blank">头像</a></li>
+                </ul>
+              </div>
               <div class="required field">
                 <label>用户账号</label>
                 <input type="text" name="username" v-model="account.username" readonly>
@@ -18,6 +24,7 @@
                 <label>当前密码</label>
                 <input type="password" name="password" autocomplete="current-password" v-model="account.password" placeholder="当前密码">
               </div>
+              <h4 class="ui dividing header">账号安全</h4>
               <div class="field">
                 <label>新的密码</label>
                 <input type="password" name="newPassword" autocomplete="new-password" v-model="account.newPassword" placeholder="新的密码">
