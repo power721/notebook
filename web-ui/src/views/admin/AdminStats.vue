@@ -112,6 +112,14 @@
             标签
           </div>
         </div>
+        <div class="statistic">
+          <div class="value">
+            {{stats.comments}}
+          </div>
+          <div class="label">
+            评论
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -26,7 +26,7 @@ class ConfigService(private val repository: ConfigRepository, cacheService: Cach
             get(Const.SHOW_VIEWS, true),
             get(Const.SHOW_WORDS, true),
             get(Const.ENABLE_AUDIT, true),
-            get(Const.ENABLE_COMMENT, true),
+            get(Const.ENABLE_COMMENT, false),
             get(Const.ENABLE_FILE_UPLOAD, true),
             get(Const.ENABLE_IMAGE_UPLOAD, true),
             get(Const.ENABLE_SIGNUP, true),

@@ -2,9 +2,11 @@ package cn.har01d.notebook.service
 
 import cn.har01d.notebook.core.Access
 import cn.har01d.notebook.core.Const
+import cn.har01d.notebook.core.Error
 import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppNotFoundException
+import cn.har01d.notebook.dto.CommentDto
 import cn.har01d.notebook.dto.NoteDto
 import cn.har01d.notebook.dto.TagDto
 import cn.har01d.notebook.entity.*
@@ -15,6 +17,7 @@ import cn.har01d.notebook.util.wordCount
 import cn.har01d.notebook.vo.NoteStats
 import com.github.benmanes.caffeine.cache.Cache
 import org.jsoup.Jsoup
+import org.jsoup.safety.Safelist
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -28,6 +31,7 @@ import javax.transaction.Transactional
 @Service
 class NoteService(
     private val noteRepository: NoteRepository,
+    private val commentRepository: CommentRepository,
     private val notebookRepository: NotebookRepository,
     private val contentRepository: NoteContentRepository,
     private val categoryRepository: CategoryRepository,
@@ -120,8 +124,13 @@ class NoteService(
             return
         }
         viewCache.put(key, true)
-        note.views = note.views + 1
-        noteRepository.save(note)
+        noteRepository.updateViews(note.id!!)
+    }
+
+    fun String.notelink() = this.replace("\\[/notes/(.+)]".toRegex()) {
+        val nid = it.groupValues[1]
+        val n = noteRepository.findByRid(nid) ?: noteRepository.findBySlug(nid)
+        if (n != null) "<a href=\"/#/notes/$nid\" target=\"_blank\">${n.content!!.title}</a>" else it.value
     }
 
     fun create(dto: NoteDto): Note {
@@ -160,7 +169,8 @@ class NoteService(
         if (dto.slug != null && dto.slug.isNotEmpty()) {
             note.slug = dto.slug
         }
-        val content = contentRepository.save(NoteContent(dto.title, dto.content, note, dto.markdown))
+        val newcontent = dto.content.notelink()
+        val content = contentRepository.save(NoteContent(dto.title, newcontent, note, dto.markdown))
         note.content = content
         notebook.updatedTime = Instant.now()
         notebookRepository.save(notebook)
@@ -213,9 +223,10 @@ class NoteService(
         }
 
         val content = note.content!!
-        if (content.title != dto.title || content.content != dto.content) {
+        val newcontent = dto.content.notelink()
+        if (content.title != dto.title || content.content != newcontent) {
             val version = contentRepository.version(note) + 1
-            note.content = contentRepository.save(NoteContent(dto.title, dto.content, note, dto.markdown, version))
+            note.content = contentRepository.save(NoteContent(dto.title, newcontent, note, dto.markdown, version))
         }
         note.updatedTime = Instant.now()
         note.notebook.updatedTime = Instant.now()
@@ -342,6 +353,32 @@ class NoteService(
         noteRepository.countByAccess(Access.SECRET),
         noteRepository.countByAccess(Access.PRIVATE),
     )
+
+    fun getComments(id: String, pageable: Pageable): Page<Comment> {
+        if (!configService.get(Const.ENABLE_COMMENT, false)) {
+            throw AppForbiddenException("评论功能未开启", Error.COMMENT_DISABLED)
+        }
+
+        val note = noteRepository.findByRid(id) ?: noteRepository.findBySlug(id) ?: throw AppNotFoundException("笔记不存在")
+        return commentRepository.findByNote(note, pageable)
+    }
+
+    private val safelist = Safelist.simpleText().addTags("code", "del", "sub", "sup")
+
+    fun addComment(id: String, dto: CommentDto): Comment {
+        if (!configService.get(Const.ENABLE_COMMENT, false)) {
+            throw AppForbiddenException("评论功能未开启", Error.COMMENT_DISABLED)
+        }
+
+        val content = Jsoup.clean(dto.content, safelist).notelink()
+        if (content.length > 2048) {
+            throw AppException("评论内容太长", Error.COMMENT_TOO_LONG)
+        }
+        val user = userService.requireCurrentUser()
+        val note = noteRepository.findByRid(id) ?: noteRepository.findBySlug(id) ?: throw AppNotFoundException("笔记不存在")
+        val comment = Comment(user, note, content)
+        return commentRepository.save(comment)
+    }
 
     private fun getTags(tags: List<TagDto>?): List<Tag> {
         if (tags == null) {

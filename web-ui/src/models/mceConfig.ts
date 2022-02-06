@@ -23,12 +23,12 @@ export const mceConfig: any = {
   plugins: [
     'autolink link media table advlist lists hr' + fileUpload + imageUpload,
     'code codesample charmap image imagetools quickbars preview fullscreen',
-    'insertdatetime toc paste wordcount help searchreplace emoticons'
+    'insertdatetime toc paste wordcount help searchreplace emoticons textpattern notelink'
   ],
   menu: {
     insert: {
       title: 'Insert',
-      items: 'image axupimgs link media upfile attachment template codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime'
+      items: 'image axupimgs link media upfile attachment template codesample inserttable | notelink charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime'
     },
   },
   relative_urls: false,
@@ -43,6 +43,21 @@ export const mceConfig: any = {
     'formatselect | bold italic backcolor | \
     alignleft aligncenter alignright alignjustify | link image axupimgs media upfile attachment | \
     bullist numlist outdent indent | charmap emoticons codesample | removeformat code preview fullscreen | help',
+  textpattern_patterns: [
+    {start: '*', end: '*', format: 'italic'},
+    {start: '**', end: '**', format: 'bold'},
+    {start: '~~', end: '~~', format: 'strikethrough'},
+    {start: '#', format: 'h1'},
+    {start: '##', format: 'h2'},
+    {start: '###', format: 'h3'},
+    {start: '####', format: 'h4'},
+    {start: '#####', format: 'h5'},
+    {start: '######', format: 'h6'},
+    // The following text patterns require the `lists` plugin
+    {start: '1. ', cmd: 'InsertOrderedList'},
+    {start: '* ', cmd: 'InsertUnorderedList'},
+    {start: '- ', cmd: 'InsertUnorderedList' }
+  ],
   file_callback: function (file: File, callback: (url: string, details: unknown) => void) {
     const formData = new FormData()
     formData.append('file', file)
@@ -89,4 +104,35 @@ export const mceConfig: any = {
       failure(error.message)
     })
   }
+}
+
+export const tinymceConfig: any = {
+  height: 180,
+  branding: false,
+  language: 'zh_CN',
+  plugins: ['charmap code emoticons textpattern wordcount notelink fullscreen'],
+  formats: {
+    underline: {inline: 'u'},
+    strikethrough: {inline: 'del'}
+  },
+  textpattern_patterns: [
+    {start: '*', end: '*', format: 'italic'},
+    {start: '**', end: '**', format: 'bold'},
+    {start: '~~', end: '~~', format: 'strikethrough'},
+    {start: '#', format: 'h1'},
+    {start: '##', format: 'h2'},
+    {start: '###', format: 'h3'},
+    {start: '####', format: 'h4'},
+    {start: '#####', format: 'h5'},
+    {start: '######', format: 'h6'},
+    {start: '1. ', cmd: 'InsertOrderedList'},
+    {start: '* ', cmd: 'InsertUnorderedList'},
+    {start: '- ', cmd: 'InsertUnorderedList' }
+  ],
+  toolbar: 'bold italic underline strikethrough subscript superscript notelink charmap emoticons removeformat code fullscreen',
+  menubar: false,
+  contextmenu: false,
+  emoticons_database_url: 'https://cdn.jsdelivr.net/npm/tinymce@5.10.2/plugins/emoticons/js/emojis.min.js',
+  skin_url: 'https://cdn.jsdelivr.net/npm/tinymce@5.10.2/skins/ui/oxide',
+  content_css: [],
 }

@@ -33,11 +33,13 @@ import 'tinymce/plugins/wordcount'
 import 'tinymce/plugins/searchreplace'
 import 'tinymce/plugins/charmap'
 import 'tinymce/plugins/quickbars'
+import 'tinymce/plugins/textpattern'
 import '@npkg/tinymce-plugins/attachment'
 import '@npkg/tinymce-plugins/table'
 import '@npkg/tinymce-plugins/imagetools'
 import '@npkg/tinymce-plugins/axupimgs'
 import '@npkg/tinymce-plugins/upfile'
+import '@/plugins/notelink'
 
 import '@/assets/langs/zh_CN'
 

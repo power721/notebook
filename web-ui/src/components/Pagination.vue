@@ -1,7 +1,7 @@
 <template>
   <div class="pagination">
-    <div class="ui pagination menu" v-if="pages>1">
-      <a class="item" @click="go(page-1)" v-if="page>1">上一页</a>
+    <div class="ui pagination horizontal" :class="{menu:!simple,list:simple}" v-if="pages>1">
+      <a class="item" @click="go(page-1)" v-if="!simple&&page>1">上一页</a>
       <a class="item" @click="go(1)" v-if="page>=4">1</a>
       <div class="disabled item" v-if="page>4">...</div>
       <a class="item" @click="go(page-2)" v-if="page>2">{{page-2}}</a>
@@ -11,13 +11,13 @@
       <a class="item" @click="go(page+2)" v-if="page+2<=pages">{{page+2}}</a>
       <div class="disabled item" v-if="page+3<pages">...</div>
       <a class="item" @click="go(pages)" v-if="page+3<=pages">{{pages}}</a>
-      <a class="item" @click="go(page+1)" v-if="page<pages">下一页</a>
+      <a class="item" @click="go(page+1)" v-if="!simple&&page<pages">下一页</a>
     </div>
-    <div class="ui action input" v-if="pages>9">
+    <div class="ui action input" v-if="!simple&&pages>9">
       <input type="number" min="1" :max="pages" class="ui input" v-model="current">
       <button class="ui button" @click="jump">跳转</button>
     </div>
-    <span class="total" v-if="total">共 {{total}} 条</span>
+    <span class="total" v-if="!simple&&total">共 {{total}} 条</span>
   </div>
 </template>
 
@@ -34,6 +34,7 @@
     @Prop() private page!: number
     @Prop() private pages!: number
     @Prop() private total!: number
+    @Prop({default: false}) private simple!: boolean
     current: number = this.page
 
     go(page: number) {

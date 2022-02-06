@@ -25,7 +25,7 @@ class Note(
         @OneToOne var content: NoteContent? = null,
         @Column(unique = true) var slug: String? = null,
         @Enumerated(EnumType.STRING) @Column(length = 16, nullable = false) var access: Access = Access.PUBLIC,
-        @JsonProperty("id") @Column(nullable = false, unique = true) var rid: String,
+        @Column(nullable = false, unique = true) var rid: String,
         @Column(nullable = false) var views: Int = 0,
         @Column(nullable = false) var deleted: Boolean = false,
         @Column(nullable = false) var updatedTime: Instant = Instant.now(),
@@ -91,6 +91,10 @@ interface NoteRepository : JpaRepository<Note, Int> {
 
     @Query("SELECT n from Note n where ?1 MEMBER OF n.tags and (n.access='PUBLIC' or n.author=?2) and n.deleted=false")
     fun findByTagAndPublicOrOwn(tag: Tag, user: User, pageable: Pageable): Page<Note>
+
+    @Modifying
+    @Query("UPDATE Note n set n.views=n.views+1 WHERE n.id=?1")
+    fun updateViews(id: Int)
 
     @Modifying
     @Query("UPDATE Note n set n.access='SECRET' where n.access='PUBLIC' and n.notebook=?1")

@@ -11,6 +11,7 @@ import java.util.*
 @Service
 class AdminService(
         private val noteService: NoteService,
+        private val commentRepository: CommentRepository,
         private val notebookRepository: NotebookRepository,
         private val categoryRepository: CategoryRepository,
         private val tagRepository: TagRepository,
@@ -60,7 +61,7 @@ class AdminService(
                 noteService.stats(),
                 notebookRepository.count(),
                 categoryRepository.count(),
-                0, // TODO:
+                commentRepository.count(),
                 tagRepository.count(),
         )
     }

@@ -37,6 +37,14 @@ img {
     margin: 0;
 }
 
+.ui.comments .comment .author a {
+    color: rgba(0,0,0,.87);
+}
+
+.ui.comments .comment .author .admin {
+    color: #FB7299;
+}
+
 /* for block of numbers */
 .hljs-ln-numbers {
     -webkit-touch-callout: none;

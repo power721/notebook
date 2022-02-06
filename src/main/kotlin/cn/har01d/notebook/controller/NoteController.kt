@@ -1,8 +1,10 @@
 package cn.har01d.notebook.controller
 
+import cn.har01d.notebook.dto.CommentDto
 import cn.har01d.notebook.dto.NoteDto
 import cn.har01d.notebook.service.NoteService
 import cn.har01d.notebook.service.UserService
+import cn.har01d.notebook.vo.NoteVO
 import cn.har01d.notebook.vo.toVo
 import cn.har01d.notebook.vo.toVo2
 import org.springframework.data.domain.Pageable
@@ -21,17 +23,26 @@ class NoteController(private val service: NoteService, private val userService: 
 
     @Transactional
     @GetMapping("{id}")
-    fun get(@PathVariable id: String, view: Boolean, request: HttpServletRequest) = service.get(id).also {
-        if (view)  {
-            service.updateViews(it, request)
-            if (it.slug != null) {
-                val user = userService.getCurrentUser()
-                if (user == null || it.author.id != user.id) {
-                    it.rid = ""
+    fun get(@PathVariable id: String, view: Boolean, request: HttpServletRequest): NoteVO {
+        var hide = false
+        val result = service.get(id).also {
+            if (view) {
+                service.updateViews(it, request)
+                if (it.slug != null) {
+                    val user = userService.getCurrentUser()
+                    if (user == null || it.author.id != user.id) {
+                        hide = true
+                    }
                 }
             }
+        }.toVo()
+
+        if (hide) {
+            result.id = ""
         }
-    }.toVo()
+
+        return result
+    }
 
     @DeleteMapping("{id}")
     fun delete(@PathVariable id: String) = service.delete(id)
@@ -44,11 +55,19 @@ class NoteController(private val service: NoteService, private val userService: 
 
     @Transactional
     @PostMapping("{id}/content/{version}")
-    fun revertNoteContent(@PathVariable id: String, @PathVariable version: Int) = service.revertNoteContent(id, version).toVo()
+    fun revertNoteContent(@PathVariable id: String, @PathVariable version: Int) =
+        service.revertNoteContent(id, version).toVo()
 
     @Transactional
     @DeleteMapping("{id}/content/{version}")
     fun deleteNoteContent(@PathVariable id: String, @PathVariable version: Int) = service.deleteNoteContent(id, version)
+
+    @GetMapping("{id}/comments")
+    fun getComments(@PathVariable id: String, pageable: Pageable) = service.getComments(id, pageable).map { it.toVo() }
+
+    @Transactional
+    @PostMapping("{id}/comments")
+    fun addComment(@PathVariable id: String, @RequestBody dto: CommentDto) = service.addComment(id, dto).toVo()
 
     @Transactional
     @PostMapping("{id}/move")

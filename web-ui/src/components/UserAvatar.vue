@@ -2,12 +2,13 @@
   <Popup @show="load" trigger="hover" :position="position">
     <template slot="trigger">
       <img alt="avatar" :src="user.avatar" class="ui avatar link image" v-if="avatar&&user.avatar">
-      <router-link :to="'/users/'+user.id">@{{ user.username }}</router-link>
+      <router-link :to="'/users/'+user.id" :class="classObject" v-if="at">@{{ user.username }}</router-link>
+      <router-link :to="'/users/'+user.id" :class="classObject" v-else>{{ user.username }}</router-link>
     </template>
 
     <div class="ui card">
       <div class="left aligned content">
-        <img alt="avatar" :src="details.avatar" v-if="details.avatar" class="right floated ui image">
+        <img alt="avatar" :src="details.avatar||'https://cn.gravatar.com/avatar/'" class="right floated ui image">
         <router-link :to="'/users/'+user.id" class="header">{{ details.username }}</router-link>
         <div class="meta">
           加入于{{ details.createdTime | fromNow }} {{ details.createdTime | datetime }}
@@ -43,9 +44,18 @@ const cache: Cache<string, User> = new Cache<string, User>(60_000)
     Popup,
     MdViewer,
   },
+  computed: {
+    classObject: function () {
+      return {
+        admin: this.user.role === 'ROLE_ADMIN',
+        staff: this.user.role === 'ROLE_STAFF',
+      }
+    }
+  }
 })
 export default class UserAvatar extends Vue {
   @Prop({default: true}) private avatar!: boolean
+  @Prop({default: true}) private at!: boolean
   @Prop({default: 'bottom center'}) private position!: string
   @Prop() private user!: User
   private details: User = this.user
@@ -90,6 +100,10 @@ export default class UserAvatar extends Vue {
 .ui.card .ui.right.floated.image {
   width: 46px;
   margin: -6px 0 0;
+}
+
+.extra.content {
+  margin-top: 6px;
 }
 
 a {

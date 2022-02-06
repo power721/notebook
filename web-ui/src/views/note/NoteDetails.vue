@@ -98,6 +98,55 @@
       </div>
     </div>
 
+    <div class="ui left aligned raised segment" v-if="enableComment">
+      <div class="ui comments">
+        <h3 class="ui dividing header">{{total}} 评论</h3>
+        <div class="comment" v-for="comment of comments" :key="comment.id">
+          <a class="avatar">
+            <img alt="avatar" :src="comment.user.avatar||'https://cn.gravatar.com/avatar/'">
+          </a>
+          <div class="content">
+            <UserAvatar class="author" :user="comment.user" position="right center" :avatar="false" :at="false"></UserAvatar>
+            <div class="metadata">
+              <b v-if="comment.user.id===note.author.id">作者</b>
+              <span class="date" :data-tooltip="comment.createdTime | datetime">{{comment.createdTime | fromNow}}</span>
+            </div>
+            <div class="text markdown-body" v-html="comment.content"></div>
+            <div class="actions">
+              <a class="reply">回复</a>
+              <a class="reply">隐藏</a>
+              <a class="reply">举报</a>
+            </div>
+          </div>
+        </div>
+        <Pagination :page="page" :pages="pages" :total="total" :simple="true" @change="loadComments"></Pagination>
+        <form class="ui reply form" v-if="auth">
+          <div class="field">
+            <Popup trigger="hover" position="left center" style="float: right">
+              <template slot="trigger">
+                <a class="ui teal right ribbon label">
+                  <i class="help icon"></i>
+                </a>
+              </template>
+              <div class="ui message">
+                <ul class="list">
+                  <li>链接到笔记：[/notes/:id:]</li>
+                  <li>支持的标签：b, i, u, em, del, sub, sup, code</li>
+                </ul>
+              </div>
+            </Popup>
+            <Editor :init="config" v-model="comment"></Editor>
+          </div>
+          <div class="ui blue submit button" :class="{disabled:!comment||characters>2048}" @click.prevent="addComment">
+            发表
+          </div>
+          <div class="error" v-show="characters>2048">
+            评论内容太长 {{characters}}字符
+          </div>
+        </form>
+      </div>
+    </div>
+
     <Modal v-model="confirm" title="删除笔记">
       <p class="ui error message" v-if="note.deleted">是否永久删除笔记：{{ note.title }}？</p>
       <p class="ui warning message" v-else>是否删除笔记：{{ note.title }}？</p>
@@ -149,18 +198,23 @@ import Viewer from 'viewerjs'
 import 'viewerjs/dist/viewer.css'
 import {toPng} from 'html-to-image'
 import {Component, Vue} from 'vue-property-decorator'
+import Editor from '@tinymce/tinymce-vue'
 import hljs from 'highlight.js'
 import {Note} from '@/models/Note'
+import {Notebook} from '@/models/Notebook'
+import {Comment} from '@/models/Comment'
+import {tinymceConfig} from '@/models/mceConfig'
 import {Emoji} from '@/types/twemoji'
 import Dropdown from '@/components/Dropdown.vue'
 import Modal from '@/components/Modal.vue'
 import Popup from '@/components/Popup.vue'
+import Pagination from '@/components/Pagination.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
-import {Notebook} from '@/models/Notebook'
 import MdViewer from '@/components/MdViewer.vue'
 import accountService from '@/services/account.service'
 import configService from '@/services/config.service'
 import {createDiv, createElement, createLink} from '@/utils/utils'
+import tinymce from 'tinymce'
 
 declare const twemoji: Emoji
 
@@ -178,7 +232,9 @@ function goAnchor(anchor: string) {
     Dropdown,
     Modal,
     Popup,
+    Pagination,
     UserAvatar,
+    Editor,
     MdViewer,
   },
   watch: {
@@ -195,6 +251,11 @@ function goAnchor(anchor: string) {
 export default class NoteDetails extends Vue {
   id: string = ''
   notebookId: string = ''
+  comment: string = ''
+  characters: number = 0
+  page: number = 1
+  total: number = 0
+  pages: number = 0
   old: boolean = false
   loading: boolean = false
   author: boolean = false
@@ -203,6 +264,16 @@ export default class NoteDetails extends Vue {
   revert: boolean = false
   note: Note = new Note()
   notebooks: Notebook[] = []
+  comments: Comment[] = []
+  config = tinymceConfig
+
+  get auth(): boolean {
+    return this.$store.state.authenticated
+  }
+
+  get enableComment(): boolean {
+    return this.$store.state.siteConfig.enableComment
+  }
 
   get showViews(): boolean {
     return this.$store.state.siteConfig.showViews || this.$store.state.authenticated
@@ -226,6 +297,12 @@ export default class NoteDetails extends Vue {
 
   mounted() {
     this.load()
+    if (this.enableComment) {
+      this.loadComments()
+      if (this.auth) {
+        tinymce.activeEditor.on('wordCountUpdate', this.wordCountUpdate)
+      }
+    }
   }
 
   load() {
@@ -372,6 +449,27 @@ export default class NoteDetails extends Vue {
         link.remove()
       })
   }
+
+  loadComments(page: number = 1) {
+    this.page = page
+    axios.get(`/notes/${this.id}/comments?sort=id,desc&size=10&page=${page-1}`).then(({data}) => {
+      this.comments.length = 0
+      this.comments.push(...data.content)
+      this.total = data.totalElements
+      this.pages = data.totalPages
+    })
+  }
+
+  addComment() {
+    axios.post(`/notes/${this.id}/comments`, {content: this.comment}).then(() => {
+      this.comment = ''
+      this.loadComments(1)
+    })
+  }
+
+  wordCountUpdate(event) {
+    this.characters = event.wordCount.characters
+  }
 }
 </script>
 
@@ -386,6 +484,29 @@ export default class NoteDetails extends Vue {
 
 #content {
   margin-top: 0;
+}
+
+.ui.segment .ui.comments {
+  margin: 1.5em 0;
+  max-width: 100%;
+}
+
+.ui.segment .ui.comments .reply.form textarea {
+  height: auto;
+}
+
+.ui.segment .ui.comments .comment b {
+  color: #2185d0!important;
+}
+
+.error {
+  display: inline-block;
+  background-color: #fff6f6;
+  color: #9f3a38;
+  box-shadow: 0 0 0 1px #e0b4b4 inset, 0 0 0 0 transparent;
+  font-size: 1em;
+  padding: 0.568em 1em;
+  margin-left: 6px;
 }
 
 #qrcode {

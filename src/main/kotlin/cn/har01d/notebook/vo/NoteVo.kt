@@ -6,7 +6,7 @@ import cn.har01d.notebook.entity.Note
 import java.time.Instant
 
 data class NoteVO(
-        val id: String,
+        var id: String,
         val title: String,
         val slug: String?,
         val content: String,
