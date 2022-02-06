@@ -4,10 +4,19 @@ import cn.har01d.notebook.entity.Comment
 import java.time.Instant
 
 data class CommentVo(
+    val id: Int,
     val user: UserVo2,
     val content: String,
     val createdTime: Instant,
-    val id: Int
 )
 
-fun Comment.toVo() = CommentVo(user.toVo2(), content, createdTime, id!!)
+data class CommentVo2(
+    val id: Int,
+    val user: UserVo2,
+    val content: String,
+    val sticky: Boolean,
+    val createdTime: Instant,
+)
+
+fun Comment.toVo() = CommentVo(id!!, user.toVo2(), content, createdTime)
+fun Comment.toVo2() = CommentVo2(id!!, user.toVo2(), content, sticky, createdTime)

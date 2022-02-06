@@ -20,6 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.safety.Safelist
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.Duration
@@ -369,6 +370,15 @@ class NoteService(
 
         val note = noteRepository.findByRid(id) ?: noteRepository.findBySlug(id) ?: throw AppNotFoundException("笔记不存在")
         return commentRepository.findByNote(note, pageable)
+    }
+
+    fun getStickyComments(id: String, sort: Sort): List<Comment> {
+        if (!configService.get(Const.ENABLE_COMMENT, false)) {
+            throw AppForbiddenException("评论功能未开启", Error.COMMENT_DISABLED)
+        }
+
+        val note = noteRepository.findByRid(id) ?: noteRepository.findBySlug(id) ?: throw AppNotFoundException("笔记不存在")
+        return commentRepository.findByNoteAndStickyTrue(note, sort)
     }
 
     private val safelist = Safelist.simpleText().addTags("code", "del", "sub", "sup")

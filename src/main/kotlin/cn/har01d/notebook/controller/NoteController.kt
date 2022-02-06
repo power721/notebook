@@ -8,6 +8,7 @@ import cn.har01d.notebook.vo.NoteVO
 import cn.har01d.notebook.vo.toVo
 import cn.har01d.notebook.vo.toVo2
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
@@ -64,6 +65,9 @@ class NoteController(private val service: NoteService, private val userService: 
 
     @GetMapping("{id}/comments")
     fun getComments(@PathVariable id: String, pageable: Pageable) = service.getComments(id, pageable).map { it.toVo() }
+
+    @GetMapping("{id}/stickyComments")
+    fun getStickyComments(@PathVariable id: String, sort: Sort) = service.getStickyComments(id, sort).map { it.toVo2() }
 
     @Transactional
     @PostMapping("{id}/comments")

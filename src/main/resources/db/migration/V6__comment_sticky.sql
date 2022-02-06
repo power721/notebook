@@ -1,0 +1,1 @@
+ALTER TABLE comment ADD sticky boolean DEFAULT FALSE NOT NULL;

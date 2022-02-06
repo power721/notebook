@@ -103,22 +103,27 @@
 
     <div class="ui left aligned raised segment" v-if="enableComment">
       <div id="comments" class="ui comments">
-        <h3 class="ui dividing header">{{total}} 评论</h3>
+        <h3 class="ui dividing header">{{ total }} 评论</h3>
         <div class="comment" v-for="comment of comments" :key="comment.id">
           <a class="avatar">
             <img alt="avatar" :src="comment.user.avatar||'https://cn.gravatar.com/avatar/'">
           </a>
           <div class="content">
-            <UserAvatar class="author" :user="comment.user" position="right center" :avatar="false" :at="false"></UserAvatar>
+            <UserAvatar class="author" :user="comment.user" position="right center" :avatar="false"
+                        :at="false"></UserAvatar>
             <div class="metadata">
-              <b v-if="comment.user.id===note.author.id">作者</b>
-              <span class="date" :data-tooltip="comment.createdTime | datetime">{{comment.createdTime | fromNow}}</span>
+              <a v-if="comment.user.id===note.author.id" class="ui blue basic mini label">作者</a>
+              <a v-if="comment.sticky" class="ui blue basic mini label">置顶</a>
+              <span class="date"
+                    :data-tooltip="comment.createdTime | datetime">{{ comment.createdTime | fromNow }}</span>
             </div>
             <div class="text markdown-body" v-html="comment.content"></div>
             <div class="actions">
               <a class="reply">回复</a>
-              <a class="reply">隐藏</a>
-              <a class="reply">举报</a>
+              <a class="hide">隐藏</a>
+              <a class="stick" v-if="author&&!comment.sticky" @click="stick(comment.id)">置顶</a>
+              <a class="stick" v-if="author&&comment.sticky" @click="unstick(comment.id)">取消置顶</a>
+              <a class="report">举报</a>
             </div>
           </div>
         </div>
@@ -144,7 +149,7 @@
             发表
           </div>
           <div class="error" v-show="characters>2048">
-            评论内容太长 {{characters}}字符
+            评论内容太长 {{ characters }}字符
           </div>
         </form>
       </div>
@@ -258,11 +263,16 @@ export default class NoteDetails extends Vue {
   revert: boolean = false
   note: Note = new Note()
   notebooks: Notebook[] = []
+  stickyComments: Comment[] = []
   comments: Comment[] = []
   config = tinymceConfig
 
   get auth(): boolean {
     return this.$store.state.authenticated
+  }
+
+  get admin(): boolean {
+    return this.$store.state.admin
   }
 
   get enableComment(): boolean {
@@ -292,7 +302,9 @@ export default class NoteDetails extends Vue {
   mounted() {
     this.load()
     if (this.enableComment) {
-      this.loadComments()
+      this.getStickyComments().then(() => {
+        this.loadComments()
+      })
       if (this.auth) {
         tinymce.activeEditor.on('wordCountUpdate', this.wordCountUpdate)
       }
@@ -337,8 +349,8 @@ export default class NoteDetails extends Vue {
 
         // eslint-disable-next-line
         (window as any).highlightJsBadge({
-          copyIconClass: "copy outline icon",
-          checkIconClass: "check circle icon"
+          copyIconClass: 'copy outline icon',
+          checkIconClass: 'check circle icon'
         })
 
         const qrcode = document.getElementById('qrcode') as HTMLElement
@@ -348,7 +360,7 @@ export default class NoteDetails extends Vue {
         if (toc) {
           const origin = window.location.origin + '/#'
           const url = window.location.origin + '/#/notes/' + (this.note.slug || this.note.id)
-          const li = createElement('li', {}, createLink('['+this.note.title+']', url + '?anchor=top'))
+          const li = createElement('li', {}, createLink('[' + this.note.title + ']', url + '?anchor=top'))
           const ul = toc.querySelector('ul')
           ul.insertBefore(li, ul.firstChild)
           if (this.note.tags.length) {
@@ -456,10 +468,18 @@ export default class NoteDetails extends Vue {
       })
   }
 
+  getStickyComments() {
+    return axios.get(`/notes/${this.id}/stickyComments?sort=id,desc`).then(({data}) => {
+      this.stickyComments.length = 0
+      this.stickyComments.push(...data)
+    })
+  }
+
   loadComments(page: number = 1) {
     this.page = page
-    axios.get(`/notes/${this.id}/comments?sort=id,desc&size=10&page=${page-1}`).then(({data}) => {
+    axios.get(`/notes/${this.id}/comments?sort=id,desc&size=10&page=${page - 1}`).then(({data}) => {
       this.comments.length = 0
+      this.comments.push(...this.stickyComments)
       this.comments.push(...data.content)
       this.total = data.totalElements
       this.pages = data.totalPages
@@ -470,6 +490,22 @@ export default class NoteDetails extends Vue {
     axios.post(`/notes/${this.id}/comments`, {content: this.comment}).then(() => {
       this.comment = ''
       this.loadComments(1)
+    })
+  }
+
+  stick(id: number) {
+    axios.post(`/comments/${id}/stick`).then(({data}) => {
+      this.stickyComments.push(data)
+      this.comments.unshift(data)
+    })
+  }
+
+  unstick(id: number) {
+    axios.delete(`/comments/${id}/stick`).then(() => {
+      let index = this.stickyComments.findIndex(e => e.id === id)
+      this.stickyComments.splice(index, 1)
+      index = this.comments.findIndex(e => e.id === id)
+      this.comments.splice(index, 1)
     })
   }
 
@@ -505,8 +541,9 @@ export default class NoteDetails extends Vue {
   height: auto;
 }
 
-.ui.segment .ui.comments .comment b {
-  color: #2185d0!important;
+.ui.segment .ui.comments .comment .ui.mini.label {
+  font-size: 12px;
+  padding: 3px 4px;
 }
 
 .error {

@@ -23,6 +23,11 @@ module.exports = {
         ws: true,
         changeOrigin: true
       },
+      '/comments': {
+        target: API,
+        ws: true,
+        changeOrigin: true
+      },
       '/users': {
         target: API,
         ws: true,
