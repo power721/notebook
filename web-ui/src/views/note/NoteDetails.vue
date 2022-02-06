@@ -40,9 +40,12 @@
         <router-link class="ui teal small label"
                      :to="'/categories/'+(note.category.slug?note.category.slug:note.category.id)">
           {{ note.category.name }}
-        </router-link>&nbsp;
-        <span v-if="showWords">字数：{{ note.words }}</span>&nbsp;&nbsp;
-        <span v-if="showViews&&note.access!=='PRIVATE'">阅读：{{ note.views }}</span>&nbsp;
+        </router-link>
+        <span class="ui basic label" v-if="showWords">字数：{{ note.words }}</span>
+        <span class="ui basic label" v-if="showViews&&note.access!=='PRIVATE'">阅读：{{ note.views }}</span>
+        <a class="ui basic label" v-if="enableComment" @click="goAnchor('comments')">
+          评论：{{ total }}
+        </a>
         <Popup position="bottom right" trigger="hover">
           <template slot="trigger">
             <i class="share link blue icon"></i>
@@ -99,7 +102,7 @@
     </div>
 
     <div class="ui left aligned raised segment" v-if="enableComment">
-      <div class="ui comments">
+      <div id="comments" class="ui comments">
         <h3 class="ui dividing header">{{total}} 评论</h3>
         <div class="comment" v-for="comment of comments" :key="comment.id">
           <a class="avatar">
@@ -218,15 +221,6 @@ import tinymce from 'tinymce'
 
 declare const twemoji: Emoji
 
-function goAnchor(anchor: string) {
-  if (anchor) {
-    const element = document.getElementById(anchor)
-    if (element) {
-      element.scrollIntoView()
-    }
-  }
-}
-
 @Component<NoteDetails>({
   components: {
     Dropdown,
@@ -243,7 +237,7 @@ function goAnchor(anchor: string) {
         this.load()
       } else {
         const anchor = to.query.anchor as string || ''
-        goAnchor(anchor)
+        this.goAnchor(anchor)
       }
     }
   }
@@ -305,6 +299,15 @@ export default class NoteDetails extends Vue {
     }
   }
 
+  goAnchor(anchor: string) {
+    if (anchor) {
+      const element = document.getElementById(anchor)
+      if (element) {
+        element.scrollIntoView()
+      }
+    }
+  }
+
   load() {
     this.loading = true
     this.id = this.$route.params.id
@@ -345,11 +348,14 @@ export default class NoteDetails extends Vue {
         if (toc) {
           const origin = window.location.origin + '/#'
           const url = window.location.origin + '/#/notes/' + (this.note.slug || this.note.id)
-          const li = createElement('li', {}, createLink(this.note.title, url + '?anchor=top'))
+          const li = createElement('li', {}, createLink('['+this.note.title+']', url + '?anchor=top'))
           const ul = toc.querySelector('ul')
           ul.insertBefore(li, ul.firstChild)
           if (this.note.tags.length) {
-            ul.append(createElement('li', {}, createLink('标签', url + '?anchor=tags')))
+            ul.append(createElement('li', {}, createLink('[标签]', url + '?anchor=tags')))
+          }
+          if (this.enableComment) {
+            ul.append(createElement('li', {}, createLink('[评论]', url + '?anchor=comments')))
           }
           for (const a of toc.querySelectorAll('a')) {
             if (!a.href.includes('?anchor=')) {
@@ -372,7 +378,7 @@ export default class NoteDetails extends Vue {
 
         setTimeout(() => {
           const anchor = this.$route.query.anchor as string || ''
-          goAnchor(anchor)
+          this.goAnchor(anchor)
         }, 500)
       })
     })
@@ -480,6 +486,10 @@ export default class NoteDetails extends Vue {
 
 .article {
   word-break: break-word;
+}
+
+.share {
+  margin-left: 8px;
 }
 
 #content {

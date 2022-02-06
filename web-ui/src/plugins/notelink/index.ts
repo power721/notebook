@@ -26,7 +26,7 @@ tinymce.PluginManager.add('notelink', function (editor: Editor) {
         },
         {
           type: 'submit',
-          text: 'Save',
+          text: 'Insert',
           primary: true
         }
       ],

@@ -46,6 +46,7 @@ export const mceConfig: any = {
   textpattern_patterns: [
     {start: '*', end: '*', format: 'italic'},
     {start: '**', end: '**', format: 'bold'},
+    {start: '`', end: '`', format: 'code'},
     {start: '~~', end: '~~', format: 'strikethrough'},
     {start: '#', format: 'h1'},
     {start: '##', format: 'h2'},
@@ -118,6 +119,7 @@ export const tinymceConfig: any = {
   textpattern_patterns: [
     {start: '*', end: '*', format: 'italic'},
     {start: '**', end: '**', format: 'bold'},
+    {start: '`', end: '`', format: 'code'},
     {start: '~~', end: '~~', format: 'strikethrough'},
     {start: '#', format: 'h1'},
     {start: '##', format: 'h2'},

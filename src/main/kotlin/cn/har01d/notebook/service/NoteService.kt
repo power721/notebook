@@ -142,8 +142,13 @@ class NoteService(
         if (notebook.owner.id != user.id) {
             throw AppForbiddenException("用户无权操作")
         }
-        if (dto.slug != null && dto.slug.isNotEmpty() && noteRepository.existsBySlug(dto.slug)) {
-            throw AppException("slug重复")
+        if (dto.slug != null && dto.slug.isNotEmpty()) {
+            if (noteRepository.existsBySlug(dto.slug)) {
+                throw AppException("slug重复")
+            }
+            if (noteRepository.existsByRid(dto.slug)) {
+                throw AppException("slug与id冲突")
+            }
         }
         val category = getCategory(dto.categoryId ?: throw AppException("分类ID缺失"))
         var rid = IdUtils.generate()
@@ -192,6 +197,9 @@ class NoteService(
             val n = noteRepository.findBySlug(dto.slug)
             if (n != null && n.id != note.id) {
                 throw AppException("slug重复")
+            }
+            if (noteRepository.existsByRid(dto.slug)) {
+                throw AppException("slug与id冲突")
             }
             note.slug = dto.slug
         }
