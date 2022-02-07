@@ -2,6 +2,7 @@ package cn.har01d.notebook.controller
 
 import cn.har01d.notebook.core.Const
 import cn.har01d.notebook.core.exception.AppForbiddenException
+import cn.har01d.notebook.core.exception.AppNotFoundException
 import cn.har01d.notebook.entity.User
 import cn.har01d.notebook.service.AuditService
 import cn.har01d.notebook.service.ConfigService
@@ -76,10 +77,13 @@ class ImageController(
 
     @GetMapping("/{prefix}/{name}")
     fun getImage(@PathVariable prefix: String, @PathVariable name: String, response: HttpServletResponse) {
-        val localFile = File("$baseDir/$prefix", name)
+        val file = File("$baseDir/$prefix", name)
+        if (!file.exists()) {
+            throw AppNotFoundException("图片不存在")
+        }
         response.contentType = MediaType.IMAGE_PNG_VALUE
         response.setHeader(HttpHeaders.CACHE_CONTROL, "max-age=31536000")
-        localFile.inputStream().use {
+        file.inputStream().use {
             copy(it, response.outputStream)
         }
     }

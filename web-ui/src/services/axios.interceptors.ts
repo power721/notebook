@@ -82,7 +82,7 @@ axios.interceptors.response.use(function (response) {
   }
 
   const data = response.data
-  if (response.status === 401 && data.code === 40100) {
+  if (response.status === 401 && data.code === 10000) {
     auth.clean()
     router.push('/?_t=' + (new Date().getTime()))
   } else {

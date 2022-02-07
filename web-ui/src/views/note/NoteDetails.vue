@@ -480,6 +480,10 @@ export default class NoteDetails extends Vue {
     axios.get(`/notes/${this.id}/comments?sort=id,desc&size=10&page=${page - 1}`).then(({data}) => {
       this.comments.length = 0
       this.comments.push(...this.stickyComments)
+      this.stickyComments.forEach(c => {
+        const index = data.content.findIndex(e => e.id === c.id)
+        if (index >= 0) data.content.splice(index, 1)
+      })
       this.comments.push(...data.content)
       this.total = data.totalElements
       this.pages = data.totalPages

@@ -222,6 +222,11 @@
   position: fixed;
   top: 12px;
   right: 8px;
+  color: #A0A0A0;
+}
+
+#github:hover {
+  color: #505050;
 }
 
 #config .trigger {
