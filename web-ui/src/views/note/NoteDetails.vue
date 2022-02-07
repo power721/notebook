@@ -102,57 +102,7 @@
     </div>
 
     <div class="ui left aligned raised segment" v-if="enableComment">
-      <div id="comments" class="ui comments">
-        <h3 class="ui dividing header">{{ total }} 评论</h3>
-        <div class="comment" v-for="comment of comments" :key="comment.id">
-          <a class="avatar">
-            <img alt="avatar" :src="comment.user.avatar||'https://cn.gravatar.com/avatar/'">
-          </a>
-          <div class="content">
-            <UserAvatar class="author" :user="comment.user" position="right center" :avatar="false"
-                        :at="false"></UserAvatar>
-            <div class="metadata">
-              <a v-if="comment.user.id===note.author.id" class="ui blue basic mini label">作者</a>
-              <a v-if="comment.sticky" class="ui blue basic mini label">置顶</a>
-              <span class="date"
-                    :data-tooltip="comment.createdTime | datetime">{{ comment.createdTime | fromNow }}</span>
-            </div>
-            <div class="text markdown-body" v-html="comment.content"></div>
-            <div class="actions">
-              <a class="reply">回复</a>
-              <a class="hide">隐藏</a>
-              <a class="stick" v-if="author&&!comment.sticky" @click="stick(comment.id)">置顶</a>
-              <a class="stick" v-if="author&&comment.sticky" @click="unstick(comment.id)">取消置顶</a>
-              <a class="report">举报</a>
-            </div>
-          </div>
-        </div>
-        <Pagination :page="page" :pages="pages" :total="total" :simple="true" @change="loadComments"></Pagination>
-        <form class="ui reply form" v-if="auth">
-          <div class="field">
-            <Popup trigger="hover" position="left center" style="float: right">
-              <template slot="trigger">
-                <a class="ui teal right ribbon label">
-                  <i class="help icon"></i>
-                </a>
-              </template>
-              <div class="ui message">
-                <ul class="list">
-                  <li>链接到笔记：[/notes/:id:]</li>
-                  <li>支持的标签：b, i, u, em, del, sub, sup, code</li>
-                </ul>
-              </div>
-            </Popup>
-            <Editor :init="config" v-model="comment"></Editor>
-          </div>
-          <div class="ui blue submit button" :class="{disabled:!comment||characters>2048}" @click.prevent="addComment">
-            发表
-          </div>
-          <div class="error" v-show="characters>2048">
-            评论内容太长 {{ characters }}字符
-          </div>
-        </form>
-      </div>
+      <NoteComments :note="note" :id="id" @total="total=$event"></NoteComments>
     </div>
 
     <Modal v-model="confirm" title="删除笔记">
@@ -210,8 +160,6 @@ import Editor from '@tinymce/tinymce-vue'
 import hljs from 'highlight.js'
 import {Note} from '@/models/Note'
 import {Notebook} from '@/models/Notebook'
-import {Comment} from '@/models/Comment'
-import {tinymceConfig} from '@/models/mceConfig'
 import {Emoji} from '@/types/twemoji'
 import Dropdown from '@/components/Dropdown.vue'
 import Modal from '@/components/Modal.vue'
@@ -219,10 +167,9 @@ import Popup from '@/components/Popup.vue'
 import Pagination from '@/components/Pagination.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 import MdViewer from '@/components/MdViewer.vue'
-import accountService from '@/services/account.service'
 import configService from '@/services/config.service'
 import {createDiv, createElement, createLink} from '@/utils/utils'
-import tinymce from 'tinymce'
+import NoteComments from '@/views/note/NoteComments.vue'
 
 declare const twemoji: Emoji
 
@@ -235,6 +182,7 @@ declare const twemoji: Emoji
     UserAvatar,
     Editor,
     MdViewer,
+    NoteComments,
   },
   watch: {
     '$route'(to, from) {
@@ -250,22 +198,14 @@ declare const twemoji: Emoji
 export default class NoteDetails extends Vue {
   id: string = ''
   notebookId: string = ''
-  comment: string = ''
-  characters: number = 0
-  page: number = 1
-  total: number = 0
-  pages: number = 0
   old: boolean = false
   loading: boolean = false
-  author: boolean = false
   modal: boolean = false
   confirm: boolean = false
   revert: boolean = false
+  total: number = 0
   note: Note = new Note()
   notebooks: Notebook[] = []
-  stickyComments: Comment[] = []
-  comments: Comment[] = []
-  config = tinymceConfig
 
   get auth(): boolean {
     return this.$store.state.authenticated
@@ -273,6 +213,10 @@ export default class NoteDetails extends Vue {
 
   get admin(): boolean {
     return this.$store.state.admin
+  }
+
+  get author(): boolean {
+    return this.$store.state.user.id == this.note.author.id
   }
 
   get enableComment(): boolean {
@@ -301,14 +245,6 @@ export default class NoteDetails extends Vue {
 
   mounted() {
     this.load()
-    if (this.enableComment) {
-      this.getStickyComments().then(() => {
-        this.loadComments()
-      })
-      if (this.auth) {
-        tinymce.activeEditor.on('wordCountUpdate', this.wordCountUpdate)
-      }
-    }
   }
 
   goAnchor(anchor: string) {
@@ -329,7 +265,6 @@ export default class NoteDetails extends Vue {
       const now = new Date().getTime()
       const diff = now - new Date(this.note.createdTime).getTime()
       this.old = diff > 1000 * 3600 * 24 * 360
-      this.author = accountService.account.id === this.note.author.id
       this.loading = false
     }, () => {
       this.loading = false
@@ -467,55 +402,6 @@ export default class NoteDetails extends Vue {
         link.remove()
       })
   }
-
-  getStickyComments() {
-    return axios.get(`/notes/${this.id}/stickyComments?sort=id,desc`).then(({data}) => {
-      this.stickyComments.length = 0
-      this.stickyComments.push(...data)
-    })
-  }
-
-  loadComments(page: number = 1) {
-    this.page = page
-    axios.get(`/notes/${this.id}/comments?sort=id,desc&size=10&page=${page - 1}`).then(({data}) => {
-      this.comments.length = 0
-      this.comments.push(...this.stickyComments)
-      this.stickyComments.forEach(c => {
-        const index = data.content.findIndex(e => e.id === c.id)
-        if (index >= 0) data.content.splice(index, 1)
-      })
-      this.comments.push(...data.content)
-      this.total = data.totalElements
-      this.pages = data.totalPages
-    })
-  }
-
-  addComment() {
-    axios.post(`/notes/${this.id}/comments`, {content: this.comment}).then(() => {
-      this.comment = ''
-      this.loadComments(1)
-    })
-  }
-
-  stick(id: number) {
-    axios.post(`/comments/${id}/stick`).then(({data}) => {
-      this.stickyComments.push(data)
-      this.comments.unshift(data)
-    })
-  }
-
-  unstick(id: number) {
-    axios.delete(`/comments/${id}/stick`).then(() => {
-      let index = this.stickyComments.findIndex(e => e.id === id)
-      this.stickyComments.splice(index, 1)
-      index = this.comments.findIndex(e => e.id === id)
-      this.comments.splice(index, 1)
-    })
-  }
-
-  wordCountUpdate(event) {
-    this.characters = event.wordCount.characters
-  }
 }
 </script>
 
@@ -534,20 +420,6 @@ export default class NoteDetails extends Vue {
 
 #content {
   margin-top: 0;
-}
-
-.ui.segment .ui.comments {
-  margin: 1.5em 0;
-  max-width: 100%;
-}
-
-.ui.segment .ui.comments .reply.form textarea {
-  height: auto;
-}
-
-.ui.segment .ui.comments .comment .ui.mini.label {
-  font-size: 12px;
-  padding: 3px 4px;
 }
 
 .error {

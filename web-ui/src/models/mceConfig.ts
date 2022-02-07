@@ -108,7 +108,7 @@ export const mceConfig: any = {
 }
 
 export const tinymceConfig: any = {
-  height: 180,
+  height: 175,
   branding: false,
   language: 'zh_CN',
   plugins: ['charmap code emoticons textpattern wordcount notelink fullscreen'],
