@@ -170,6 +170,7 @@ import MdViewer from '@/components/MdViewer.vue'
 import configService from '@/services/config.service'
 import {createDiv, createElement, createLink} from '@/utils/utils'
 import NoteComments from '@/views/note/NoteComments.vue'
+import eventService from '@/services/event.service'
 
 declare const twemoji: Emoji
 
@@ -204,6 +205,7 @@ export default class NoteDetails extends Vue {
   confirm: boolean = false
   revert: boolean = false
   total: number = 0
+  handler: number = 0
   note: Note = new Note()
   notebooks: Notebook[] = []
 
@@ -245,6 +247,10 @@ export default class NoteDetails extends Vue {
 
   mounted() {
     this.load()
+  }
+
+  destroyed() {
+    eventService.off('resize', this.handler)
   }
 
   goAnchor(anchor: string) {
@@ -311,7 +317,7 @@ export default class NoteDetails extends Vue {
           }
           const width: number = document.getElementById('main')?.clientWidth || 0
           this.adjustToc(toc, width)
-          window.addEventListener('resize', () => {
+          this.handler = eventService.on('resize', () => {
             this.adjustToc(toc, width)
           })
         }

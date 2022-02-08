@@ -17,7 +17,6 @@ import javax.xml.bind.DatatypeConverter
 class EncryptService(private val configService: ConfigService) {
     var secretKey: String = configService.get(Const.SECRET_KEY, UUID.randomUUID().toString())
 
-//    @Scheduled(cron = "0 0 4 * * *")
     fun updateSecretKey() {
         configService.save(Const.SECRET_KEY, UUID.randomUUID().toString())
     }

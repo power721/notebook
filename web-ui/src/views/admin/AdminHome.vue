@@ -24,14 +24,21 @@
 
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
+  import eventService from '@/services/event.service'
 
   @Component
   export default class AdminHome extends Vue {
     wide = window.innerWidth > 720
+    handler: number = 0
+
     mounted() {
-      window.addEventListener('resize', () => {
+      this.handler = eventService.on('resize', () => {
         this.wide = window.innerWidth > 720
       })
+    }
+
+    destroyed() {
+      eventService.off('resize', this.handler)
     }
   }
 </script>

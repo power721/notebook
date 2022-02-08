@@ -59,11 +59,17 @@ class EventService {
 
 const eventService = new EventService()
 
-const events = ['click', 'touchend', 'scroll', 'mousemove', 'keypress']
+const events = ['click', 'touchend', 'scroll', 'mousemove', 'keypress', 'resize']
 events.forEach(type => {
-  document.addEventListener(type, (event) => {
-    eventService.handle(event)
-  }, false)
+  if (type === 'resize') {
+    window.addEventListener(type, (event) => {
+      eventService.handle(event)
+    }, false)
+  } else {
+    document.addEventListener(type, (event) => {
+      eventService.handle(event)
+    }, false)
+  }
 })
 
 export default eventService
