@@ -48,7 +48,7 @@ class DataEncryptFilter(
 
         filterChain.doFilter(requestWrapper, responseWrapper)
 
-        response.setIntHeader("x-process-time", (System.currentTimeMillis() - start).toInt())
+        response.setIntHeader("X-Process-Time", (System.currentTimeMillis() - start).toInt())
         response.outputStream.write(responseWrapper.data)
     }
 

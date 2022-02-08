@@ -4,7 +4,6 @@ import cn.har01d.notebook.core.Const
 import cn.har01d.notebook.core.Error
 import cn.har01d.notebook.core.exception.AppException
 import org.bouncycastle.jce.provider.BouncyCastleProvider
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -47,7 +46,7 @@ class EncryptService(private val configService: ConfigService) {
         }
     }
 
-    fun encrypt(special: Boolean, data: ByteArray, sign: String, time: String): String {
+    fun encrypt(data: ByteArray, sign: String, time: String, special: Boolean): String {
         return try {
             val prefix = if (special) "Notebook" else secretKey
             val password = "$prefix-$sign-${time}5"

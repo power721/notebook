@@ -1,8 +1,9 @@
 import axios, {AxiosRequestConfig} from 'axios'
-import auth from '@/services/account.service'
-import router from '@/router'
 import Vue from 'vue'
 import CryptoJS from 'crypto-js'
+import { v4 as uuidv4 } from 'uuid'
+import auth from '@/services/account.service'
+import router from '@/router'
 import configService from '@/services/config.service'
 
 const bypass = ['/accounts/info', '/config/site', '/config/menus']
@@ -44,6 +45,7 @@ axios.interceptors.request.use(function (config) {
   }
   const time = new Date().getTime() + timeDiff
   config.headers.common['time'] = time
+  config.headers.common['X-Request-ID'] = uuidv4()
   if (config.data && configService.siteConfig.secretKey && !(config.data instanceof FormData)) {
     const data = encrypt(JSON.stringify(config.data), time)
     config.data = {data}
