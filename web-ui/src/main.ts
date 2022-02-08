@@ -5,8 +5,6 @@ import App from './App.vue'
 import './filters'
 import router from './router'
 import store from './store'
-import auth from '@/services/account.service'
-import UserMenu from '@/views/user/UserMenu.vue'
 import '@/services/heartbeat'
 import '@/services/axios.interceptors'
 
@@ -40,15 +38,13 @@ import '@npkg/tinymce-plugins/imagetools'
 import '@npkg/tinymce-plugins/axupimgs'
 import '@npkg/tinymce-plugins/upfile'
 import '@/plugins/notelink'
-
 import '@/assets/langs/zh_CN'
+
+import 'bytemd/dist/index.min.css'
+import 'juejin-markdown-themes'
 
 import 'element-ui/lib/theme-chalk/index.css'
 import 'semantic-ui-css/semantic.min.css'
-
-import 'bytemd/dist/index.min.css'
-
-import 'juejin-markdown-themes'
 
 Vue.config.productionTip = false
 
@@ -57,15 +53,11 @@ Vue.component(Option.name, Option)
 Vue.component(Radio.name, Radio)
 Vue.component(RadioGroup.name, RadioGroup)
 
-Vue.component('UserMenu', UserMenu)
-
 Vue.use(Toasted, {
   theme: 'outline',
   position: 'top-right',
   duration: 5000
 })
-
-auth.getInfo()
 
 new Vue({
   router,

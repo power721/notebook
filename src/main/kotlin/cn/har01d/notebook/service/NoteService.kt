@@ -128,7 +128,8 @@ class NoteService(
         noteRepository.updateViews(note.id!!)
     }
 
-    fun String.notelink() = this.replace("\\[/notes/(.+)]".toRegex()) {
+    private val regex = "\\[/notes/(.+)]".toRegex()
+    fun String.notelink() = this.replace(regex) {
         val nid = it.groupValues[1]
         val n = noteRepository.findByRid(nid) ?: noteRepository.findBySlug(nid)
         if (n != null) "<a href=\"/#/notes/$nid\" target=\"_blank\">${n.content!!.title}</a>" else it.value

@@ -220,15 +220,15 @@ export default class NoteDetails extends Vue {
   }
 
   get enableComment(): boolean {
-    return this.$store.state.siteConfig.enableComment
+    return this.$store.getters.enableComment
   }
 
   get showViews(): boolean {
-    return this.$store.state.siteConfig.showViews || this.$store.state.authenticated
+    return this.$store.getters.showViews
   }
 
   get showWords(): boolean {
-    return this.$store.state.siteConfig.showWords
+    return this.$store.getters.showWords
   }
 
   get signature(): string {

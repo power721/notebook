@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {AppState} from '@/models/state'
-import {Account, Role} from '@/models/Account'
-import {SiteConfig} from '@/models/SiteConfig'
-import configService from '@/services/config.service'
 import {Menu} from '@/models/Menu'
+import {SiteConfig} from '@/models/SiteConfig'
+import {Account, Role} from '@/models/Account'
+import accountService from '@/services/account.service'
+import configService from '@/services/config.service'
 
 Vue.use(Vuex)
 
@@ -22,6 +23,26 @@ export default new Vuex.Store({
       new Menu(5, '关于', '/about', 'info'),
     ],
   } as AppState,
+  getters: {
+    admin(state: AppState): boolean {
+      return state.user.role == Role[Role.ROLE_ADMIN]
+    },
+    showViews(state: AppState): boolean {
+      return state.siteConfig.showViews || state.authenticated
+    },
+    showWords(state: AppState): boolean {
+      return state.siteConfig.showWords
+    },
+    enableSignup(state: AppState): boolean {
+      return state.siteConfig.enableSignup
+    },
+    enableComment(state: AppState): boolean {
+      return state.siteConfig.enableComment
+    },
+    editorMode(state: AppState): string {
+      return state.user.editorMode || 'markdown'
+    },
+  },
   mutations: {
     user(state: AppState, user: Account) {
       state.user = user
@@ -54,6 +75,9 @@ export default new Vuex.Store({
     },
     getMenus() {
       configService.getMenus()
+    },
+    getUserInfo() {
+      accountService.getInfo()
     },
   },
   modules: {}

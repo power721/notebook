@@ -30,6 +30,10 @@
         <label>GitHub</label>
         <input type="url" v-model="siteConfig.github" name="github">
       </div>
+      <div class="field">
+        <label>Secret Key</label>
+        <input type="text" v-model="siteConfig.secretKey" name="secretKey" readonly>
+      </div>
 
       <div class="ui equal width grid">
         <div class="column">

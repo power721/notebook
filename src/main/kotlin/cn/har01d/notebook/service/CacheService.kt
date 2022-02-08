@@ -147,9 +147,10 @@ abstract class RedisCache<V>(
     override fun asMap(): ConcurrentMap<String, V> {
         val map = ConcurrentHashMap<String, V>()
         for (key in redisTemplate.keys("$prefix:*")) {
-            val value = getIfPresent(key)
+            val rawkey = key.toString().replace("$prefix:", "")
+            val value = getIfPresent(rawkey)
             if (value != null) {
-                map[key.toString().replace("$prefix:", "")] = value
+                map[rawkey] = value
             }
         }
         return map

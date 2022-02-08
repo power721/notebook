@@ -67,7 +67,7 @@ import {themes} from '@/models/themes'
   }
 })
 export default class UserInfo extends Vue {
-  editorMode = this.$store.state.user.editorMode || 'markdown'
+  editorMode = this.$store.getters.editorMode
   mdTheme = this.$store.state.user.mdTheme || ''
   signature = this.$store.state.user.signature || ''
   themes = themes

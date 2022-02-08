@@ -115,11 +115,13 @@
   import FloatingActions from '@/views/FloatingActions.vue'
   import {Menu} from '@/models/Menu'
   import AppMenu from '@/components/AppMenu.vue'
+  import UserMenu from '@/views/user/UserMenu.vue'
 
   @Component({
     components: {
       Popup,
       AppMenu,
+      UserMenu,
       FloatingActions
     }
   })
@@ -157,6 +159,7 @@
       this.fontSize = +(localStorage.getItem('fontSize') || '16')
       this.$store.dispatch('getSiteConfig')
       this.$store.dispatch('getMenus')
+      this.$store.dispatch('getUserInfo')
     }
 
     mounted() {

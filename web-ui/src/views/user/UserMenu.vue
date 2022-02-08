@@ -29,7 +29,7 @@
     show: boolean = false
 
     get admin(): boolean {
-      return this.$store.state.user.role === Role[Role.ROLE_ADMIN]
+      return this.$store.state.admin
     }
 
     get user(): Account {

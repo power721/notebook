@@ -174,7 +174,7 @@ export default class EditNote extends Vue {
   note: Note = new Note()
   noteCache: Note = new Note()
   draftHandler: number = 0
-  editorMode = this.$store.state.user.editorMode || 'markdown'
+  editorMode = this.$store.getters.editorMode
   config = mceConfig
 
   mounted() {

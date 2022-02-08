@@ -7,7 +7,7 @@ export class ConfigService {
   devConfig: DveConfig = new DveConfig()
 
   getSiteConfig() {
-    return axios.get('/config/site').then(({data}) => {
+    axios.get('/config/site').then(({data}) => {
       this.siteConfig = data
       store.commit('config', data)
       return data

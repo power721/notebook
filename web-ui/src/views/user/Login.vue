@@ -86,7 +86,7 @@ export default class Login extends Vue {
   }
 
   get enableSignup() {
-    return configService.siteConfig.enableSignup
+    return this.$store.getters.enableSignup
   }
 
   submit() {

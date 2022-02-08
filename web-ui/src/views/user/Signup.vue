@@ -61,7 +61,7 @@
     }
 
     check() {
-      if (!configService.siteConfig.enableSignup) {
+      if (!this.$store.getters.enableSignup) {
         this.$toasted.error('禁止用户注册')
         setTimeout(() => this.$router.push('/'), 100)
       }
