@@ -68,12 +68,18 @@
 <script lang="ts">
   import axios from 'axios'
   import {Component, Vue} from 'vue-property-decorator'
+  import hljs from 'highlight.js'
   import Modal from '@/components/Modal.vue'
   import MdViewer from '@/components/MdViewer.vue'
   import {Note, NoteHistory} from '@/models/Note'
   import {ResponseError} from '@/models/ResponseError'
   import accountService from '@/services/account.service'
   import configService from '@/services/config.service'
+  import {Emoji} from '@/types/twemoji'
+  import {loadThemeStyles} from '@/plugins/themeLoader'
+  import eventService from '@/services/event.service'
+
+  declare const twemoji: Emoji
 
   @Component({
     components: {
@@ -88,6 +94,7 @@
     list: NoteHistory[] = []
     history: NoteHistory = new NoteHistory()
     note: Note = new Note()
+    styles: HTMLElement[] = []
 
     get content(): string {
       return (this.note.author.mdTheme ? `---\ntheme: ${this.note.author.mdTheme}\n---\n` : '') + this.history.content
@@ -96,6 +103,10 @@
     mounted() {
       this.id = this.$route.params.id
       this.load()
+    }
+
+    destroyed() {
+      this.styles.forEach(e => e.remove())
     }
 
     load() {
@@ -129,13 +140,19 @@
       }
     }
 
-    private parse() {
+    parse() {
       setTimeout(() => {
-        document.querySelectorAll('pre[class*=language-]').forEach(e => e.classList.add('line-numbers'))
         document.querySelectorAll('.article').forEach(node => {
-          (window as any).twemoji.parse(node, {'size': 72})
-        });
-        (window as any).Prism.highlightAll()
+          twemoji.parse(node as HTMLElement, {'size': 72})
+        })
+
+        if (!this.note.markdown) {
+          document.querySelectorAll('pre[class*=language-] code').forEach(el => {
+            hljs.highlightElement(el as HTMLElement)
+          })
+
+         this.styles = loadThemeStyles(this.note.author.mdTheme)
+        }
       }, 0)
     }
 

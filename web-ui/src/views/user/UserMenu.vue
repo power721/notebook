@@ -20,7 +20,7 @@
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator'
   import accountService from '@/services/account.service'
-  import {Account, Role} from '@/models/Account'
+  import {Account} from '@/models/Account'
   import eventService from '@/services/event.service'
 
   @Component

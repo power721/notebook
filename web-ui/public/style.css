@@ -17,6 +17,10 @@ img.emoji {
     width: 1.25em;
 }
 
+.medium-zoom-image--opened {
+    z-index: 2;
+}
+
 img {
     max-width: 100%;
 }

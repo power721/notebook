@@ -26,6 +26,7 @@
     "element-ui": "^2.14.1",
     "html-to-image": "^1.9.0",
     "juejin-markdown-themes": "^1.23.0",
+    "medium-zoom": "^1.0.6",
     "qrcode": "^1.5.0",
     "rehype-external-links": "^1.0.1",
     "semantic-ui-css": "^2.4.1",

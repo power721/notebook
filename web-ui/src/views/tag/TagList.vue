@@ -26,7 +26,6 @@
   import Modal from '@/components/Modal.vue'
   import {goTop} from '@/utils/utils'
   import configService from '@/services/config.service'
-  import {Role} from '@/models/Account'
   import {Tag} from '@/models/Note'
 
   @Component<Pageable>({

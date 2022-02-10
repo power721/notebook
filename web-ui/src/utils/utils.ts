@@ -19,19 +19,21 @@ export function goTop(top = 60) {
   })
 }
 
-export function loadCss(url: string) {
+export function loadCss(url: string, className: string = 'dynamic') {
   const link = document.createElement('link')
   link.href = url
   link.type = 'text/css'
   link.rel = 'stylesheet'
+  link.classList.add(className)
   document.head.appendChild(link)
   return link
 }
 
-export function loadJs(url: string) {
+export function loadJs(url: string, className: string = 'dynamic') {
   const script = document.createElement('script')
   script.type = 'text/javascript'
   script.src = url
+  script.classList.add(className)
   document.head.appendChild(script)
   console.log('load javascript file: ' + url)
 }

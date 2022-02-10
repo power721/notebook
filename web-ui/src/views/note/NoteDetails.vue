@@ -152,8 +152,7 @@
 <script lang="ts">
 import axios from 'axios'
 import {toCanvas} from 'qrcode'
-import Viewer from 'viewerjs'
-import 'viewerjs/dist/viewer.css'
+import mediumZoom from 'medium-zoom'
 import {toPng} from 'html-to-image'
 import {Component, Vue} from 'vue-property-decorator'
 import Editor from '@tinymce/tinymce-vue'
@@ -322,12 +321,8 @@ export default class NoteDetails extends Vue {
           })
         }
 
-        const el = document.getElementById('content') as HTMLElement
-        new Viewer(el, {
-          navbar: false, title: false, filter(image: HTMLElement) {
-            return image.className !== 'emoji'
-          }
-        })
+        const images = Array.from(document.querySelectorAll('img')).filter(image => image.className !== 'emoji')
+        mediumZoom(images)
 
         setTimeout(() => {
           const anchor = this.$route.query.anchor as string || ''

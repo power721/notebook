@@ -104,7 +104,6 @@
   import {Category} from '@/models/Category'
   import {goTop} from '@/utils/utils'
   import configService from '@/services/config.service'
-  import {Role} from '@/models/Account'
 
   @Component<Pageable>({
     components: {

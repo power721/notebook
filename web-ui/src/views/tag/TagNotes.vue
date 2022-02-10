@@ -77,7 +77,6 @@
   import UserAvatar from '@/components/UserAvatar.vue'
   import configService from '@/services/config.service'
   import {goTop} from '@/utils/utils'
-  import {Role} from '@/models/Account'
 
   @Component<Pageable>({
     components: {

@@ -2,7 +2,6 @@ import gfm from '@bytemd/plugin-gfm'
 import zhGfm from '@bytemd/plugin-gfm/lib/locales/zh_Hans.json'
 import breaks from '@bytemd/plugin-breaks'
 import frontmatter from '@bytemd/plugin-frontmatter'
-import footnotes from '@bytemd/plugin-footnotes'
 import highlight from '@bytemd/plugin-highlight'
 import gemoji from '@bytemd/plugin-gemoji'
 import math from '@bytemd/plugin-math'
@@ -17,7 +16,6 @@ export const plugins = [
   gfm({locale: zhGfm}),
   breaks(),
   frontmatter(),
-  // footnotes(),
   highlight(),
   gemoji(),
   math({locale: zhMath}),
