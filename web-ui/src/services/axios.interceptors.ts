@@ -1,43 +1,12 @@
-import axios, {AxiosRequestConfig} from 'axios'
+import axios from 'axios'
 import Vue from 'vue'
-import CryptoJS from 'crypto-js'
-import { v4 as uuidv4 } from 'uuid'
+import {v4 as uuidv4} from 'uuid'
 import auth from '@/services/account.service'
 import router from '@/router'
 import configService from '@/services/config.service'
+import {decrypt, encrypt, md5} from '@/services/encrypt'
 
-const bypass = ['/accounts/info', '/config/site', '/config/menus']
 let timeDiff = 0
-
-function md5(data: string) {
-  return btoa(CryptoJS.MD5(data).toString())
-}
-
-function getIv(config: AxiosRequestConfig, salt: string, time: number): string {
-  const prefix = bypass.includes(config.url || '') ? 'Notebook' : configService.siteConfig.secretKey
-  return prefix + '-' + salt + '-' + time
-}
-
-function encrypt(data: string, time: number): string {
-  return CryptoJS.AES.encrypt(data, configService.siteConfig.secretKey + '-' + time).toString()
-}
-
-function decrypt(config: AxiosRequestConfig, data: string, sign: string): string {
-  const hash = md5(configService.devConfig.developer + '-' + data)
-  if (hash !== sign) {
-    Vue.toasted.error('数据校验错误，请刷新页面！')
-    throw new Error('数据校验错误，请刷新页面！')
-  }
-  console.log(config.url)
-  const salt = config.headers['sign']
-  const time = +config.headers['time'] * 10 + 5
-  const text = CryptoJS.AES.decrypt(data, getIv(config, salt, time)).toString(CryptoJS.enc.Utf8)
-  const padding = text.substring(text.length - salt.length, text.length)
-  if (salt !== padding) {
-    throw new Error('数据校验错误！')
-  }
-  return text.substring(0, text.length - padding.length)
-}
 
 axios.interceptors.request.use(function (config) {
   if (auth.getToken()) {

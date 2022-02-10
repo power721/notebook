@@ -44,7 +44,10 @@ import 'bytemd/dist/index.min.css'
 import 'juejin-markdown-themes'
 
 import 'element-ui/lib/theme-chalk/index.css'
-import 'semantic-ui-css/semantic.min.css'
+
+if (process.env.NODE_ENV === 'development') {
+  require('semantic-ui-css/semantic.min.css')
+}
 
 Vue.config.productionTip = false
 
