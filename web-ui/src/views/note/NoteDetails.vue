@@ -296,7 +296,7 @@ export default class NoteDetails extends Vue {
         const qrcode = document.getElementById('qrcode') as HTMLElement
         toCanvas(qrcode, window.location.href, {width: 150})
 
-        const toc = document.querySelector('.mce-toc')
+        const toc = document.querySelector('.mce-toc') as HTMLElement
         if (toc) {
           const origin = window.location.origin + '/#'
           const url = window.location.origin + '/#/notes/' + (this.note.slug || this.note.id)
@@ -332,17 +332,20 @@ export default class NoteDetails extends Vue {
     })
   }
 
-  adjustToc(toc: Element, width: number) {
+  adjustToc(toc: HTMLElement, width: number) {
     const offset = (document.body.clientWidth - width) / 2
     toc.classList.remove('rail0', 'rail1', 'rail2')
     if (offset < 350) {
-      //
+      toc.style.width = '100%'
     } else if (offset < 450) {
       toc.classList.add('rail0')
+      toc.style.width = (offset - 30) + 'px'
     } else if (offset < 550) {
       toc.classList.add('rail1')
+      toc.style.width = (offset - 60) + 'px'
     } else {
       toc.classList.add('rail2')
+      toc.style.width = (offset - 110) + 'px'
     }
   }
 

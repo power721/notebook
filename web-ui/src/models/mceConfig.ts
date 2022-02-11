@@ -23,14 +23,15 @@ export const mceConfig: any = {
   plugins: [
     'autolink link media table advlist lists hr' + fileUpload + imageUpload,
     'code codesample charmap image imagetools quickbars preview fullscreen',
-    'insertdatetime toc paste wordcount help searchreplace emoticons textpattern notelink'
+    'insertdatetime toc paste wordcount help searchreplace emoticons textpattern notelink remoteimage'
   ],
   menu: {
     insert: {
       title: 'Insert',
-      items: 'image axupimgs link media upfile attachment template codesample inserttable | notelink charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime'
+      items: 'image remoteimage axupimgs link media upfile attachment template codesample inserttable | notelink charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime'
     },
   },
+  contextmenu: 'link image remoteimage imagetools table spellchecker lists',
   relative_urls: false,
   image_uploadtab: configService.siteConfig.enableImageUpload,
   emoticons_database_url: 'https://cdn.jsdelivr.net/npm/tinymce@5.10.2/plugins/emoticons/js/emojis.min.js',

@@ -128,19 +128,33 @@ img {
     display: none;
 }
 
+.mce-toc.rail0>ul, .mce-toc.rail1>ul, .mce-toc.rail2>ul {
+    overflow: auto;
+    max-height: 600px;
+}
+
 .mce-toc.rail0 {
     position: fixed;
+    top: 160px;
     left: 20px;
 }
 
 .mce-toc.rail1 {
     position: fixed;
+    top: 160px;
     left: 50px;
 }
 
 .mce-toc.rail2 {
     position: fixed;
+    top: 160px;
     left: 100px;
+}
+
+@media only screen and (max-height: 860px) {
+    .mce-toc.rail0>ul, .mce-toc.rail1>ul, .mce-toc.rail2>ul {
+        max-height: 400px;
+    }
 }
 
 #main.fluid .mce-toc{

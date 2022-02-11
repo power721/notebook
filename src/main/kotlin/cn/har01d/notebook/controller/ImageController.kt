@@ -1,6 +1,7 @@
 package cn.har01d.notebook.controller
 
 import cn.har01d.notebook.core.Const
+import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppNotFoundException
 import cn.har01d.notebook.entity.User
@@ -12,6 +13,7 @@ import cn.har01d.notebook.util.IdUtils
 import cn.har01d.notebook.util.copy
 import cn.har01d.notebook.util.generateFileName
 import cn.har01d.notebook.vo.UploadResponse
+import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.util.FileCopyUtils
@@ -28,8 +30,10 @@ class ImageController(
     private val auditService: AuditService,
     private val configService: ConfigService,
     private val qiniuService: QiniuService,
+    private val restTemplateBuilder: RestTemplateBuilder
 ) {
     private val baseDir = "upload/images"
+    private val restTemplate = restTemplateBuilder.build()
 
     @PostConstruct
     fun init() {
@@ -44,7 +48,7 @@ class ImageController(
         }
 
         val user = userService.requireCurrentUser()
-        return files.map { uploadImage(user, it) }
+        return files.map { uploadImage(user, it.bytes) }
     }
 
     @PostMapping
@@ -54,16 +58,27 @@ class ImageController(
         }
 
         val user = userService.requireCurrentUser()
-        return uploadImage(user, file)
+        return uploadImage(user, file.bytes)
     }
 
-    private fun uploadImage(user: User, file: MultipartFile): UploadResponse {
+    @PostMapping("/remote")
+    fun uploadRemoteImage(url: String): UploadResponse {
+        if (!configService.get(Const.ENABLE_IMAGE_UPLOAD, true)) {
+            throw AppForbiddenException("未开启图片上传功能")
+        }
+
+        val user = userService.requireCurrentUser()
+        val content = restTemplate.getForObject(url, ByteArray::class.java) ?: throw AppException("无法下载远程图片")
+        return uploadImage(user, content)
+    }
+
+    private fun uploadImage(user: User, content: ByteArray): UploadResponse {
         val prefix = IdUtils.encode(user.id!! + IdUtils.USER_OFFSET)
         val dir = File(baseDir, prefix)
         dir.mkdirs()
         val localFile = File(dir, generateFileName())
         localFile.createNewFile()
-        FileCopyUtils.copy(file.bytes, localFile)
+        FileCopyUtils.copy(content, localFile)
 
         val response = if (configService.get(Const.QINIU_ENABLED, false)) {
             qiniuService.uploadImage("images/${prefix}", localFile)

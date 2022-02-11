@@ -38,6 +38,7 @@ import '@npkg/tinymce-plugins/imagetools'
 import '@npkg/tinymce-plugins/axupimgs'
 import '@npkg/tinymce-plugins/upfile'
 import '@/plugins/notelink'
+import '@/plugins/remoteimage'
 import '@/assets/langs/zh_CN'
 
 import 'bytemd/dist/index.min.css'
