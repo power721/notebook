@@ -1,6 +1,7 @@
 package cn.har01d.notebook.controller
 
 import cn.har01d.notebook.core.Const
+import cn.har01d.notebook.core.Error
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppNotFoundException
 import cn.har01d.notebook.service.AuditService
@@ -37,7 +38,7 @@ class UploadController(
     @PostMapping
     fun upload(@RequestParam(value = "file") file: MultipartFile): UploadResponse {
         if (!configService.get(Const.ENABLE_FILE_UPLOAD, true)) {
-            throw AppForbiddenException("未开启文件上传功能")
+            throw AppForbiddenException("未开启文件上传功能", Error.UPLOAD_DISABLED)
         }
 
         val user = userService.requireCurrentUser()

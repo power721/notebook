@@ -1,6 +1,7 @@
 package cn.har01d.notebook.controller
 
 import cn.har01d.notebook.core.Const
+import cn.har01d.notebook.core.Error
 import cn.har01d.notebook.core.exception.AppException
 import cn.har01d.notebook.core.exception.AppForbiddenException
 import cn.har01d.notebook.core.exception.AppNotFoundException
@@ -20,6 +21,8 @@ import org.springframework.util.FileCopyUtils
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
+import java.net.MalformedURLException
+import java.net.URL
 import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletResponse
 
@@ -44,7 +47,7 @@ class ImageController(
     @PostMapping("/multiple")
     fun uploadImages(@RequestParam(value = "file") files: List<MultipartFile>): List<UploadResponse> {
         if (!configService.get(Const.ENABLE_IMAGE_UPLOAD, true)) {
-            throw AppForbiddenException("未开启图片上传功能")
+            throw AppForbiddenException("未开启图片上传功能", Error.UPLOAD_DISABLED)
         }
 
         val user = userService.requireCurrentUser()
@@ -54,7 +57,7 @@ class ImageController(
     @PostMapping
     fun upload(@RequestParam(value = "file") file: MultipartFile): UploadResponse {
         if (!configService.get(Const.ENABLE_IMAGE_UPLOAD, true)) {
-            throw AppForbiddenException("未开启图片上传功能")
+            throw AppForbiddenException("未开启图片上传功能", Error.UPLOAD_DISABLED)
         }
 
         val user = userService.requireCurrentUser()
@@ -64,7 +67,13 @@ class ImageController(
     @PostMapping("/remote")
     fun uploadRemoteImage(url: String): UploadResponse {
         if (!configService.get(Const.ENABLE_IMAGE_UPLOAD, true)) {
-            throw AppForbiddenException("未开启图片上传功能")
+            throw AppForbiddenException("未开启图片上传功能", Error.UPLOAD_DISABLED)
+        }
+
+        try {
+            URL(url)
+        } catch (e: MalformedURLException) {
+            throw AppException("图片地址不正确", Error.INVALID_URL, e)
         }
 
         val user = userService.requireCurrentUser()
