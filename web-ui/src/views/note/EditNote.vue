@@ -118,6 +118,9 @@
 
       <div class="required field">
         <label>内容</label>
+        <a class="ui teal right ribbon label" title="切换编辑器" v-if="!id" @click="switchEditor">
+          <i class="edit icon"></i>
+        </a>
         <Editor v-if="editorMode==='html'" :init="config" v-model="note.content" @change="clear"></Editor>
         <MdEditor v-else v-model="note.content" @change="clear"></MdEditor>
       </div>
@@ -193,7 +196,6 @@ export default class EditNote extends Vue {
       configService.setTitle('编辑笔记')
       this.loadNote().then(() => this.loadDraft())
     } else {
-      this.note.markdown = this.editorMode === 'markdown'
       configService.setTitle('创建笔记')
       this.loadDraft()
     }
@@ -314,12 +316,21 @@ export default class EditNote extends Vue {
         this.$router.push('/notes/' + (this.note.slug ? this.note.slug : this.note.id))
       })
     } else {
+      this.note.markdown = this.editorMode === 'markdown'
       axios.post(`/notes`, this.note).then(({data}) => {
         this.cleanDraft()
         this.note = data
         this.$toasted.success('创建成功')
         this.$router.push('/notes/' + (this.note.slug ? this.note.slug : this.note.id))
       })
+    }
+  }
+
+  switchEditor() {
+    if (this.editorMode === 'html') {
+      this.editorMode = 'markdown'
+    } else {
+      this.editorMode = 'html'
     }
   }
 
@@ -386,5 +397,12 @@ export default class EditNote extends Vue {
 <style scoped>
 .ui.form {
   padding-bottom: 33px;
+}
+
+.ui.right.ribbon {
+  position: absolute;
+  z-index: 999;
+  margin-top: -28px;
+  margin-left: -12px;
 }
 </style>
