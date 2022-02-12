@@ -131,6 +131,10 @@ export default class Popup extends Vue {
       }
     }
 
+    if (style.left < 0) {
+      style.left = 6
+    }
+
     this.style = mapStyle(style)
   }
 
