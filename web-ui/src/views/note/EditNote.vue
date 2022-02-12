@@ -308,17 +308,17 @@ export default class EditNote extends Vue {
   submit() {
     if (this.id) {
       axios.put(`/notes/${this.note.id}`, this.note).then(({data}) => {
+        this.cleanDraft()
         this.note = data
         this.$toasted.success('更新成功')
         this.$router.push('/notes/' + (this.note.slug ? this.note.slug : this.note.id))
-        this.cleanDraft()
       })
     } else {
       axios.post(`/notes`, this.note).then(({data}) => {
+        this.cleanDraft()
         this.note = data
         this.$toasted.success('创建成功')
         this.$router.push('/notes/' + (this.note.slug ? this.note.slug : this.note.id))
-        this.cleanDraft()
       })
     }
   }

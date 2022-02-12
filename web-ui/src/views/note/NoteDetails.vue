@@ -322,7 +322,7 @@ export default class NoteDetails extends Vue {
         }
 
         const images = Array.from(document.querySelectorAll('img')).filter(image => image.className !== 'emoji')
-        mediumZoom(images)
+        mediumZoom(images, {background: 'black'})
 
         setTimeout(() => {
           const anchor = this.$route.query.anchor as string || ''
@@ -339,13 +339,13 @@ export default class NoteDetails extends Vue {
       toc.style.width = '100%'
     } else if (offset < 450) {
       toc.classList.add('rail0')
-      toc.style.width = (offset - 30) + 'px'
+      toc.style['max-width'] = (offset - 30) + 'px'
     } else if (offset < 550) {
       toc.classList.add('rail1')
-      toc.style.width = (offset - 60) + 'px'
+      toc.style['max-width'] = (offset - 60) + 'px'
     } else {
       toc.classList.add('rail2')
-      toc.style.width = (offset - 110) + 'px'
+      toc.style['max-width'] = (offset - 110) + 'px'
     }
   }
 

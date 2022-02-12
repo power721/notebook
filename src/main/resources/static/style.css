@@ -130,25 +130,31 @@ img {
 
 .mce-toc.rail0>ul, .mce-toc.rail1>ul, .mce-toc.rail2>ul {
     overflow: auto;
-    max-height: 600px;
+    max-height: 750px;
 }
 
 .mce-toc.rail0 {
     position: fixed;
-    top: 160px;
+    top: 150px;
     left: 20px;
 }
 
 .mce-toc.rail1 {
     position: fixed;
-    top: 160px;
+    top: 150px;
     left: 50px;
 }
 
 .mce-toc.rail2 {
     position: fixed;
-    top: 160px;
+    top: 150px;
     left: 100px;
+}
+
+@media only screen and (max-height: 1080px) {
+    .mce-toc.rail0>ul, .mce-toc.rail1>ul, .mce-toc.rail2>ul {
+        max-height: 600px;
+    }
 }
 
 @media only screen and (max-height: 860px) {
@@ -157,7 +163,7 @@ img {
     }
 }
 
-#main.fluid .mce-toc{
+#main.fluid .mce-toc {
     position: relative;
     left: auto;
 }
