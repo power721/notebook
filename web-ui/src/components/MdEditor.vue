@@ -11,7 +11,7 @@
 import {Component, Prop, Vue} from 'vue-property-decorator'
 import axios from 'axios'
 import {Editor} from '@bytemd/vue'
-import zhHans from 'bytemd/lib/locales/zh_Hans.json'
+import zhHans from 'bytemd/locales/zh_Hans.json'
 import {plugins} from '@/plugins/bytemd-plugins'
 
 @Component({

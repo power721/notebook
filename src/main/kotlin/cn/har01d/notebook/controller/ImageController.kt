@@ -45,7 +45,7 @@ class ImageController(
     }
 
     @PostMapping("/multiple")
-    fun uploadImages(@RequestParam(value = "file") files: List<MultipartFile>): List<UploadResponse> {
+    fun uploadImages(@RequestPart(value = "file") files: List<MultipartFile>): List<UploadResponse> {
         if (!configService.get(Const.ENABLE_IMAGE_UPLOAD, true)) {
             throw AppForbiddenException("未开启图片上传功能", Error.UPLOAD_DISABLED)
         }
@@ -55,7 +55,7 @@ class ImageController(
     }
 
     @PostMapping
-    fun upload(@RequestParam(value = "file") file: MultipartFile): UploadResponse {
+    fun upload(@RequestPart(value = "file") file: MultipartFile): UploadResponse {
         if (!configService.get(Const.ENABLE_IMAGE_UPLOAD, true)) {
             throw AppForbiddenException("未开启图片上传功能", Error.UPLOAD_DISABLED)
         }
