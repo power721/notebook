@@ -321,7 +321,7 @@ export default class NoteDetails extends Vue {
           })
         }
 
-        const images = Array.from(document.querySelectorAll('img')).filter(image => image.className !== 'emoji')
+        const images = Array.from(document.getElementById('main').querySelectorAll('img')).filter(image => image.className !== 'emoji')
         mediumZoom(images, {background: 'black'})
 
         setTimeout(() => {

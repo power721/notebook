@@ -2,6 +2,10 @@
     float: right;
 }
 
+.reply .tox .tox-editor-header {
+    z-index: 0;
+}
+
 .top.right.dropdown {
     position: absolute;
     top: 12px;
