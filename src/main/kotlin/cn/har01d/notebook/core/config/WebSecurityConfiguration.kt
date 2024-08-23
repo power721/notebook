@@ -8,9 +8,9 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.web.bind.annotation.CrossOrigin
 import javax.servlet.http.HttpServletResponse
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse
 @Configuration
 @CrossOrigin
 @EnableWebSecurity
-class WebSecurityConfiguration(private val tokenFilter: TokenFilter) : WebSecurityConfigurerAdapter() {
+class WebSecurityConfiguration(private val tokenFilter: TokenFilter) {
     @Bean
     fun authenticationEntryPoint(): AuthenticationEntryPoint? {
         return AuthenticationEntryPoint { _, response, _ ->
@@ -33,13 +33,20 @@ class WebSecurityConfiguration(private val tokenFilter: TokenFilter) : WebSecuri
         return roleHierarchyImpl
     }
 
-    override fun configure(http: HttpSecurity) {
+    @Bean
+    fun security(http: HttpSecurity): SecurityFilterChain {
         http
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS).permitAll()
             .antMatchers(HttpMethod.GET, "/config/**").permitAll()
             .antMatchers(HttpMethod.GET, "/menus").permitAll()
-            .antMatchers(HttpMethod.POST, "/accounts/login", "/accounts/logout", "/accounts/signup", "/accounts/heartbeat").permitAll()
+            .antMatchers(
+                HttpMethod.POST,
+                "/accounts/login",
+                "/accounts/logout",
+                "/accounts/signup",
+                "/accounts/heartbeat"
+            ).permitAll()
             .antMatchers(HttpMethod.POST, "/categories").hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, "/categories/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.DELETE, "/categories/**").hasRole("ADMIN")
@@ -59,5 +66,6 @@ class WebSecurityConfiguration(private val tokenFilter: TokenFilter) : WebSecuri
             .formLogin().disable()
             .logout().disable()
             .addFilterBefore(tokenFilter, BasicAuthenticationFilter::class.java)
+        return http.build()
     }
 }

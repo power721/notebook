@@ -14,7 +14,7 @@
     <name>notebook</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <kotlin.version>1.7.0</kotlin.version>
     </properties>
 
@@ -52,7 +52,7 @@
             <!-- jsoup HTML parser library @ https://jsoup.org/ -->
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.14.3</version>
+            <version>1.15.2</version>
         </dependency>
         <dependency>
             <groupId>com.github.penggle</groupId>
@@ -62,13 +62,13 @@
         <dependency>
             <groupId>com.qiniu</groupId>
             <artifactId>qiniu-java-sdk</artifactId>
-            <version>[7.5.0, 7.5.99]</version>
+            <version>7.11.0</version>
         </dependency>
 
         <dependency>
             <groupId>cn.spark2fire.alberti</groupId>
             <artifactId>auth-jwt</artifactId>
-            <version>0.0.8</version>
+            <version>0.0.10</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>

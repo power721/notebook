@@ -57,7 +57,7 @@ axios.interceptors.response.use(function (response) {
     auth.clean()
     router.push('/?_t=' + (new Date().getTime()))
   } else {
-    Vue.toasted.error(data.message)
+    Vue.toasted.error(data.message, {singleton: true})
   }
   return Promise.reject(data)
 })
